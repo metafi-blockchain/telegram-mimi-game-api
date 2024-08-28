@@ -1,0 +1,5 @@
+export const EVENT = {
+    CREATE_DAO:'CREATE_DAO',
+    ADD_ADMIN:'ADD_ADMIN',
+    ADD_OPERATOR: 'ADD_OPERATOR'
+}
