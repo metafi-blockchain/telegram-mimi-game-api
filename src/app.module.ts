@@ -14,6 +14,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { NftCategoriesModule } from './modules/nft-categories/nft-categories.module';
 import { NftsModule } from './modules/nfts/nfts.module';
 import { CronjobsModule } from './modules/cronjobs/cronjobs.module';
+import { RequestModule } from './request/request.module';
 
 
 
@@ -49,6 +50,7 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       NftCategoriesModule,
       NftsModule,
       CronjobsModule,
+      RequestModule,
   
     ],
   controllers: [],
