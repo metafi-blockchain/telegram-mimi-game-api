@@ -14,7 +14,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { NftCategoriesModule } from './modules/nft-categories/nft-categories.module';
 import { NftsModule } from './modules/nfts/nfts.module';
 import { CronjobsModule } from './modules/cronjobs/cronjobs.module';
-import { RequestModule } from './request/request.module';
+import { RequestModule } from './modules/request/request.module';
 
 
 
@@ -36,7 +36,6 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
               useNewUrlParser: true,
               useUnifiedTopology: true,
             }
-
           })
       }),
       // MongooseModule .forRoot('mongodb+srv://dev:pQkZzHzuIfV0u1sP@cluster0.xyhwi3x.mongodb.net/db-dev'),
