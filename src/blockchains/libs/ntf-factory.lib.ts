@@ -3,6 +3,7 @@
 import {Bytes} from 'web3-types';
 import Web3, {Contract} from 'web3';
 import NFTFactoryAbi from '../abis/EnteralKingdomNFTFactory2.json';
+import { DeployNFTFactoryParams } from './interface';
 
 export class NFTFactory {
 
@@ -12,20 +13,21 @@ export class NFTFactory {
     this.web3 = new Web3(_provider);
     this.factoryContract = _factoryContract;
   }
-  
-  async deployNft(_salt: number, _name: string, _symbol: string, _owner: string){
+
+  async deployNft(params: DeployNFTFactoryParams){
 
     if (!this.web3) {
       console.log('Web3 or contract ABI is not initialized');
       return null;
     }
-    const contract = this._useFactoryContract();
-
+    const contract = this.getFactoryContract();
+    console.log("owner:", params.owner);
+    
     const txData = contract.methods.deploy({
-      owner: _owner,
-      salt: _salt,
-      name: _name,
-      symbol: _symbol,
+      owner: params.owner,
+      salt:  params.salt,
+      name:  params.name,
+      symbol:params.symbol,
 
     }).encodeABI() as Bytes
     return {
@@ -35,7 +37,7 @@ export class NFTFactory {
     };
   }
 
-  private _useFactoryContract(): Contract<any> {
+  public getFactoryContract(): Contract<any> {
     return new this.web3.eth.Contract(NFTFactoryAbi.abi, this.factoryContract);
   }
 

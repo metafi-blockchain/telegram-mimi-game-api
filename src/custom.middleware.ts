@@ -5,10 +5,6 @@ import { Request, Response, NextFunction } from 'express';
 
 
 
-
-
-
-
 /**
  * Middleware will running before chay truoc JWT AUTH
  * Có thể dùng viết logic dùng chặn request (Có thể dùng thu viện helmet )

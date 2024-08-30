@@ -4,10 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 export const swaggerSetup= (app: any)=>{
 
     const config = new DocumentBuilder()
-    .setTitle('Gize Dao API Docs')
-    .setDescription('The Gize Dao API description')
+    .setTitle('Marketplace  API Docs')
+    .setDescription('The Marketplace  API description')
     .setVersion('1.0.1')
-    .addTag('Gize Dao')
+    .addTag('Marketplace')
     .build();
 
     const document = SwaggerModule.createDocument(app, config);

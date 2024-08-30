@@ -10,11 +10,12 @@ import { APP_PIPE } from '@nestjs/core';
 import { SqsConsumerModule } from './modules/sqs-consumer/sqs-consumer.module';
 import { SqsManagerEventModule } from './modules/sqs-manager-event/sqs-event.module';
 import { CustomMiddleware } from './custom.middleware';
-import { TransactionModule } from './modules/transaction/transaction.module';
-import { NftCategoriesModule } from './modules/nft-categories/nft-categories.module';
 import { NftsModule } from './modules/nfts/nfts.module';
 import { CronjobsModule } from './modules/cronjobs/cronjobs.module';
 import { RequestModule } from './modules/request/request.module';
+import { BlockchainEventListenerModule } from './modules/blockchain-event-listener/blockchain-event-listener.module';
+import { NftTypesModule } from './modules/nft-types/nft-types.module';
+import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
 
 
 
@@ -42,14 +43,14 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       ActivityLogsModule,
 
       S3Module,
-
       SqsConsumerModule,
       SqsManagerEventModule,
-      TransactionModule,
-      NftCategoriesModule,
       NftsModule,
       CronjobsModule,
       RequestModule,
+      BlockchainEventListenerModule,
+      NftTypesModule,
+      OracleConfigsModule,
   
     ],
   controllers: [],
