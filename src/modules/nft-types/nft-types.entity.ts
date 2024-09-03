@@ -7,6 +7,13 @@ export interface NftType extends BaseEntity {
 
 }
 
+
+export enum TRANSACTION {
+    SUBMITTING = 'SUBMITTING',
+    SENDING = 'SENDING',
+    DONE = 'DONE',
+    ERROR = 'ERROR',
+}
 @Schema({ timestamps: true })
 
 export class NftType  implements BaseEntity {
@@ -23,8 +30,15 @@ export class NftType  implements BaseEntity {
     @Prop({ type: String, default: '' })
     owner: string;
 
-    @Prop({ default: true, type: Boolean })
+    @Prop({ type: String, default: TRANSACTION.SENDING })
+    status: TRANSACTION
+
+    @Prop({ default: false, type: Boolean })
     is_active: boolean;
+    
+    @Prop({ type: String, default: '',  unique: true  })
+    transaction_hash: string;
+    
 
 }
 

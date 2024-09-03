@@ -1,7 +1,6 @@
 import Web3, {Bytes, NumberTypes, Numbers} from 'web3';
 import {CryptoUtils} from '../utils';
 import {SendTransactionDataConfirm,} from '../types';
-import {hexToBigInt} from 'viem';
 import { Transaction} from 'ethers';
 
 
@@ -17,12 +16,17 @@ export class BaseService {
     privateKey: string
   ): Promise<boolean> {
     try {
+
+      console.log('=====sendTransactionAndConfirm=====');
       const wallet = CryptoUtils.getWalletFromPrivateKey(privateKey);
       const gasPrice = await this.web3.eth.getGasPrice();
 
       const nonce = await this.web3.eth.getTransactionCount(wallet, 'pending');
 
       const {value, calldata, address, gasEstimate} = params;
+      
+    
+      console.log('gasEstimate:', gasEstimate);
 
       const gasEstimateOnchain = gasEstimate
         ? gasEstimate
@@ -32,6 +36,9 @@ export class BaseService {
             data: calldata,
             value: value,
           });
+
+      console.log('gasEstimateOnchain:', gasEstimateOnchain);
+          
       //@ts-ignore
       const tx = {
         to: address,
@@ -44,7 +51,12 @@ export class BaseService {
       } as Transaction;
 
       const signedTx = await this.web3.eth.accounts.signTransaction( tx, privateKey);
-
+      console.log("privateKey:", privateKey);
+      
+      console.log('calldata:', calldata);
+      console.log('signedTx:', signedTx);
+  
+  
       const receipt = await this.web3.eth.sendSignedTransaction( signedTx.rawTransaction as Bytes);
 
       console.log('[', Date(), ']','tx:',receipt.transactionHash,' - block: ', receipt.blockNumber);

@@ -34,6 +34,7 @@ import { OracleConfigsService } from '../configs/oracle-configs.service';
     },
 
   ],
-  controllers: [NftTypesController]
+  controllers: [NftTypesController],
+  exports: [NftTypesService]
 })
 export class NftTypesModule {}

@@ -7,12 +7,12 @@ import {ConfigModule , ConfigService} from '@nestjs/config'
 import { S3Module } from './modules/s3/s3.module';
 
 import { APP_PIPE } from '@nestjs/core';
-import { SqsConsumerModule } from './modules/sqs-consumer/sqs-consumer.module';
-import { SqsManagerEventModule } from './modules/sqs-manager-event/sqs-event.module';
+// import { SqsConsumerModule } from './modules/sqs-consumer/sqs-consumer.module';
+// import { SqsManagerEventModule } from './modules/sqs-manager-event/sqs-event.module';
 import { CustomMiddleware } from './custom.middleware';
 import { NftsModule } from './modules/nfts/nfts.module';
 import { CronjobsModule } from './modules/cronjobs/cronjobs.module';
-import { RequestModule } from './modules/request/request.module';
+import { RequestModule } from './modules/mint-request/mint-request.module';
 import { BlockchainEventListenerModule } from './modules/blockchain-event-listener/blockchain-event-listener.module';
 import { NftTypesModule } from './modules/nft-types/nft-types.module';
 import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
@@ -43,8 +43,8 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       ActivityLogsModule,
 
       S3Module,
-      SqsConsumerModule,
-      SqsManagerEventModule,
+      // SqsConsumerModule,
+      // SqsManagerEventModule,
       NftsModule,
       CronjobsModule,
       RequestModule,

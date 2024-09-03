@@ -25,11 +25,12 @@ export class NFTFactoryService extends BaseService {
       return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
 
-    async listenToEvents(event: string, callback: any){
-     const contract = this.factory.getFactoryContract();
-    contract.events[event]().on('data', callback);
-     
-    }
-  
+    async getContractDeployAddress(param: DeployNFTFactoryParams) {
+        const address = await this.factory.getDeployContractAddress(param);
+        if (!address) throw new Error('Can not get address'); 
+        return address;
+    };
+
+   
     
   }

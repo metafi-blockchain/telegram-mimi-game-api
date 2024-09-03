@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 import factoryAbi from '../../blockchains/abis/EnteralKingdomNFTFactory2.json';
 import { encryptPrivateKeyWithARES } from 'src/utils';
 import { ConfigService } from '@nestjs/config';
+import { NftTypesService } from '../nft-types/nft-types.service';
+import erc721Abi from '../../blockchains/abis/EnteralKingDomERC21.json';
 
 
 
@@ -13,7 +15,7 @@ export class BlockchainEventListenerService implements OnModuleInit{
     private factoryContract: ethers.Contract;
     private depositContract: ethers.Contract;
 
-    constructor(private readonly configService: ConfigService) {     
+    constructor(private readonly configService: ConfigService, private nftTypService: NftTypesService  ) {     
     }
 
 
@@ -27,23 +29,50 @@ export class BlockchainEventListenerService implements OnModuleInit{
         
         // Kết nối đến provider
         this.provider = new ethers.JsonRpcProvider(rpcUrl);
+
         
         // Kết nối đến hợp đồng
         this.factoryContract = new ethers.Contract(contractAddress, factoryAbi.abi, this.provider);
+
+        //get all contract nft type
+        const nftTypes = await this.nftTypService.findAllWithCondition({
+          is_active: true,
+          status: 'DONE'
+        });
+       
+        
+       
+          nftTypes.forEach(async (nftType) => {
+            console.log('nftType:', nftType);
+
+            const contractAddress = nftType.nft_address;
+              const erc721Contract = new ethers.Contract(contractAddress, erc721Abi.abi, this.provider);
+              erc721Contract.on('NFTMinted', (recipient, newTokenId, event) => {
+              console.log('Full event data:', event);
+              this.handleMintNftEvent(recipient, newTokenId, event);
+            });
+            
+          });
+      
+        
+
     
         // Đăng ký sự kiện từ hợp đồng
         this.factoryContract.on('Deployed', (arg1, arg2, event) => {
-          console.log(`Event detected: ${arg1}, ${arg2}`);
+  
           console.log('Full event data:', event);
     
           // Xử lý logic khi nhận được sự kiện
-          this.handleEvent(arg1, arg2, event);
+          this.handleDeployNftEvent(arg1, arg2, event);
         });
       }
     
-      private handleEvent(arg1: any, arg2: any, event: Event) {
+      private handleDeployNftEvent(arg1: any, arg2: any, event: Event) {
         // Xử lý logic khi nhận được sự kiện từ hợp đồng
         console.log('Handling event:', arg1, arg2);
-        
+      }
+
+      private handleMintNftEvent(recipient: string, tokenId: number, event: Event){
+        console.log('Handling mint:', recipient, tokenId);
       }
 }

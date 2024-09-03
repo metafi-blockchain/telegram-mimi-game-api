@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RequestController } from './request.controller';
+import { MintRequestController } from './mint-request.controller';
 
 describe('RequestController', () => {
-  let controller: RequestController;
+  let controller: MintRequestController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [RequestController],
+      controllers: [MintRequestController],
     }).compile();
 
-    controller = module.get<RequestController>(RequestController);
+    controller = module.get<MintRequestController>(MintRequestController);
   });
 
   it('should be defined', () => {
