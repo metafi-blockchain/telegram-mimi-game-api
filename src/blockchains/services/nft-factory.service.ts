@@ -18,11 +18,18 @@ export class NFTFactoryService extends BaseService {
     }
 
     async deployNft(param: DeployNFTFactoryParams, privateKey: string){
-      const sendTxData = await this.factory.deployNft( param);
+
+        const callData = this.factory.getDeployNftData(param);
+        const sendTxData = {
+            address: this.factory.getContractFactoryAddress(),
+            calldata: callData,
+            value: '0',
+            gasEstimate: 3000000,
+        };
   
-      if (!sendTxData) throw new Error('Can not join Data');
-  
-      return await this.sendTransactionAndConfirm(sendTxData, privateKey);
+        if (!sendTxData) throw new Error('Can not join Data');
+    
+        return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
 
     async getContractDeployAddress(param: DeployNFTFactoryParams) {

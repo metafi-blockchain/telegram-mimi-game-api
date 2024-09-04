@@ -18,16 +18,16 @@ export class MintRequestService extends BaseService<MintRequest> {
     }
     //create many mint request
     async createManyMintRequest(gens: string[]){
-    
-            //check gen is unique
-      
-
-            return this.mintRequestModel.insertMany(gens.map(gen => ({gen})))
-      
-        
+        return this.mintRequestModel.insertMany(gens.map(gen => ({gen})))
     }
+
     async findWithCondition(condition ={}){
         return this.mintRequestModel.find(condition).exec();
+    }
+
+    async checkGenExits(gen: string): Promise<boolean>{
+        const nft = await this.mintRequestModel.findOne({gen}).exec();
+        return !!nft;
     }
 
 }

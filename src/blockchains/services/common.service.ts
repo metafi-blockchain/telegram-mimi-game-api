@@ -51,9 +51,7 @@ export class BaseService {
       } as Transaction;
 
       const signedTx = await this.web3.eth.accounts.signTransaction( tx, privateKey);
-      console.log("privateKey:", privateKey);
-      
-      console.log('calldata:', calldata);
+
       console.log('signedTx:', signedTx);
   
   

@@ -32,9 +32,18 @@ export class NFTFactory {
     };
   }
 
-  public getFactoryContract(): Contract<any> {
-    return new this.web3.eth.Contract(NFTFactoryAbi.abi, this.factoryContract);
+  public getDeployNftData(params: DeployNFTFactoryParams): Bytes{
+    if (!this.web3) {
+      console.log('Web3 or contract ABI is not initialized');
+      return null;
+    }
+    const contract = this.getFactoryContract();
+    
+    return contract.methods.deploy( params.owner, params.salt,params.name,params.symbol).encodeABI() as Bytes
   }
+
+
+
 
   public async getDeployContractAddress(params: DeployNFTFactoryParams){
     try {
@@ -45,7 +54,14 @@ export class NFTFactory {
       console.log('Error:', error);
       return null;
     }
+  }
 
+  public getContractFactoryAddress(){
+    return this.factoryContract;
+  }
+
+  private getFactoryContract(): Contract<any> {
+    return new this.web3.eth.Contract(NFTFactoryAbi.abi, this.factoryContract);
   }
 
 
