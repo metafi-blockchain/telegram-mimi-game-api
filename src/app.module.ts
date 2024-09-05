@@ -17,6 +17,7 @@ import { BlockchainEventListenerModule } from './modules/blockchain-event-listen
 import { NftTypesModule } from './modules/nft-types/nft-types.module';
 import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 
@@ -28,6 +29,7 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
           isGlobal: true,
           envFilePath: pathENV
       }),
+      ScheduleModule.forRoot(),
       UsersModule,
       JWTAuthModule,
       MongooseModule.forRootAsync({

@@ -1,0 +1,20 @@
+{
+    "name": "Monerat",
+    "symbol": "MONR",
+    "description": "Its movement speed in the water is extremely fast, its movement speed is also increased by 1.5 times when moving near the water. The fins on Moruna's back are so sharp that they can easily cut small boats in half.",
+    "image": "https://unipet2024.s3.ap-southeast-1.amazonaws.com/collections/images/monerat.png",
+    "external_url": "https://unipet.io",
+    "properties": {
+        "collection": {
+            "name": "Monerat"
+        }
+    },
+    "creators": [
+        {
+            "address": "2z6bJQHscXWHNQAB8Q3YA1RiKg2QBn84Uax3FSANtvDU",
+            "verified": 1,
+            "share": 100
+        }
+    ],
+    "seller_fee_basis_points": 300
+}

@@ -26,7 +26,8 @@ export class MultiDelegateCallService extends BaseService {
         }
        
         const callData =  this.multiCallContract.getMultiDelegateCallData(mintData);
-
+        console.log('callData:', callData);
+        
         const sendTxData = {
             address: this.multiCallContract.getMultiDelegateContractAddress(),
             calldata: callData,

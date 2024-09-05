@@ -26,6 +26,7 @@ export class BlockchainEventListenerService implements OnModuleInit{
         const contractAddress = this.configService.get<string>('NFT_FACTORY_ADDRESS') ; // Địa chỉ hợp đồng thông minh
         
         console.log('rpcUrl:', rpcUrl);
+    
         console.log('contractAddress:', contractAddress);
         
         // Kết nối đến provider
@@ -44,7 +45,8 @@ export class BlockchainEventListenerService implements OnModuleInit{
         
        
           nftTypes.forEach(async (nftType) => {
-
+            console.log("listening event for nft type", nftType);
+            
             const contractAddress = nftType.nft_address;
               const erc721Contract = new ethers.Contract(contractAddress, erc721Abi.abi, this.provider);
               erc721Contract.on('NFTMinted', (recipient, tokenId, uri, event) => {

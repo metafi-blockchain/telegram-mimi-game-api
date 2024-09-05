@@ -1,0 +1,62 @@
+{
+    "name": "Kigosy #0001",
+    "symbol": "Kigosy",
+    "description": "One of the many Gladiators fighting in the name of Gaimin to spread the word around the globe and unlock rewards and treasures on the Gaimin Platform.",
+    "seller_fee_basis_points": 1000,
+    "image": "https://unipet2024.s3.ap-southeast-1.amazonaws.com/collections/images/kigosy.png",
+    "external_url": "https://unipet.io",
+    "edition": 1,
+    "collection": {
+        "name": "Kigosy",
+        "family": "Kigosy"
+    },
+    "attributes": [
+        {
+            "trait_type": "Gen",
+            "value": "100100170700030100"
+        },
+
+        {
+            "trait_type": "Sex",
+            "value": "Male"
+        },
+        {
+            "trait_type": "Element",
+            "value": "Water, Light ,Mystery"
+        },
+        {
+            "trait_type": "ATK",
+            "value": 1650
+        },
+        {
+            "trait_type": "DEF",
+            "value": 500
+        },
+        {
+            "trait_type": "HP",
+            "value": 10000
+        },
+        {
+            "trait_type": "grow ATK",
+            "value": 210
+        },
+        {
+            "trait_type": "grow DEF",
+            "value": 115
+        },
+        {
+            "trait_type": "grow HP",
+            "value": 1780
+        }
+        
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "https://unipet2024.s3.ap-southeast-1.amazonaws.com/collections/images/kigosy.png",
+                "type": "image/png"
+            }
+        ],
+        "category": "image"
+    }
+}
