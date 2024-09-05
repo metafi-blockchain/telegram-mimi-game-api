@@ -5,6 +5,7 @@ import { encryptPrivateKeyWithARES } from 'src/utils';
 import { ConfigService } from '@nestjs/config';
 import { NftTypesService } from '../nft-types/nft-types.service';
 import erc721Abi from '../../blockchains/abis/EnteralKingDomERC21.json';
+import { MintNftEvent } from 'src/blockchains/libs/interface';
 
 
 
@@ -43,15 +44,18 @@ export class BlockchainEventListenerService implements OnModuleInit{
         
        
           nftTypes.forEach(async (nftType) => {
-            console.log('nftType:', nftType);
 
             const contractAddress = nftType.nft_address;
               const erc721Contract = new ethers.Contract(contractAddress, erc721Abi.abi, this.provider);
-              erc721Contract.on('NFTMinted', (recipient, newTokenId, event) => {
-              console.log('Full event data:', event);
-              this.handleMintNftEvent(recipient, newTokenId, event);
+              erc721Contract.on('NFTMinted', (recipient, tokenId, uri, event) => {
+              console.log('Full event data:', event.log);
+              this.handleMintNftEvent({
+                recipient,
+                tokenId,
+                uri
+              }, event);
             });
-            
+
           });
       
         
@@ -60,7 +64,7 @@ export class BlockchainEventListenerService implements OnModuleInit{
         // Đăng ký sự kiện từ hợp đồng
         this.factoryContract.on('Deployed', (arg1, arg2, event) => {
   
-          console.log('Full event data:', event);
+          // console.log('Full event data:', event);
     
           // Xử lý logic khi nhận được sự kiện
           this.handleDeployNftEvent(arg1, arg2, event);
@@ -72,7 +76,9 @@ export class BlockchainEventListenerService implements OnModuleInit{
         console.log('Handling event:', arg1, arg2);
       }
 
-      private handleMintNftEvent(recipient: string, tokenId: number, event: Event){
-        console.log('Handling mint:', recipient, tokenId);
+      private handleMintNftEvent( data: MintNftEvent,event: Event){
+        console.log('Full event data:', event);
+        
+        // console.log('Handling mint:', recipient, tokenId);
       }
 }

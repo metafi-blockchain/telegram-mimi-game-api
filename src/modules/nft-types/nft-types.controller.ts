@@ -8,13 +8,13 @@ export class NftTypesController {
     
     constructor(
         private readonly nftTypesService: NftTypesService,
-        private readonly nftFactoryService: NFTFactoryService,
     ) {}
 
     @Post('/deploy')
     async createNftType(@Body() nftType: CreateNftTypeDto) {
         return this.nftTypesService.deployNftType(nftType);
     }
+    
 
 }
 

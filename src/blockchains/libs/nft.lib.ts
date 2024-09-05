@@ -6,7 +6,7 @@ import NFTAbi from '../abis/EnteralKingDomERC21.json';
 import { DeployNFTFactoryParams, MintNFT } from './interface';
 import { estimateGas } from 'web3/lib/commonjs/eth.exports';
 
-export class NFTLibrary {
+export class ERC721Library {
 
   private web3: Web3;
   private nftContract: string;
@@ -25,20 +25,22 @@ export class NFTLibrary {
     
     return contract.methods.mintNFT( params.recipient, params.uri).encodeABI() as Bytes
   }
+
+
   getMintBatchERC721Data(params: MintNFT[]): Bytes[]{
 
     if (!this.web3) {
       console.log('Web3 or contract ABI is not initialized');
       return [];
     }
-    let callDatas: Bytes[] = [];
+    let callData: Bytes[] = [];
     const contract = this.getNftContract();
     for (let i = 0; i < params.length; i++) {
         const param = params[i];
-        const callData = contract.methods.mintNFT( param.recipient, param.uri).encodeABI() as Bytes
-        callDatas.push(callData);
+        const mintData = contract.methods.mintNFT( param.recipient, param.uri).encodeABI() as Bytes
+        callData.push(mintData);
     }
-    return callDatas;
+    return callData;
   }
 
    getBurnERC721Data(tokenId: number): Bytes{

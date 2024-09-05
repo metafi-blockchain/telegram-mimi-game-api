@@ -10,9 +10,7 @@ export interface MintRequest extends BaseEntity {
 
 export enum STATUS {
     SUBMITTING = 'SUBMITTING',
-    SENDING = 'SENDING',
     DONE = 'DONE',
-    ERROR = 'ERROR',
 }
 @Schema({ timestamps: true })
 

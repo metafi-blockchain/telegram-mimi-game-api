@@ -16,6 +16,7 @@ import { RequestModule } from './modules/mint-request/mint-request.module';
 import { BlockchainEventListenerModule } from './modules/blockchain-event-listener/blockchain-event-listener.module';
 import { NftTypesModule } from './modules/nft-types/nft-types.module';
 import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
+import { TelegramModule } from './modules/telegram/telegram.module';
 
 
 
@@ -51,6 +52,7 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       BlockchainEventListenerModule,
       NftTypesModule,
       OracleConfigsModule,
+      TelegramModule,
   
     ],
   controllers: [],

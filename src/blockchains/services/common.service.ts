@@ -2,6 +2,7 @@ import Web3, {Bytes, NumberTypes, Numbers} from 'web3';
 import {CryptoUtils} from '../utils';
 import {SendTransactionDataConfirm,} from '../types';
 import { Transaction} from 'ethers';
+import { ResponseSendTransaction } from '../libs/interface';
 
 
 export class BaseService {
@@ -14,7 +15,7 @@ export class BaseService {
   async sendTransactionAndConfirm(
     params: SendTransactionDataConfirm,
     privateKey: string
-  ): Promise<boolean> {
+  ): Promise<ResponseSendTransaction> {
     try {
 
       console.log('=====sendTransactionAndConfirm=====');
@@ -26,7 +27,7 @@ export class BaseService {
       const {value, calldata, address, gasEstimate} = params;
       
     
-      console.log('gasEstimate:', gasEstimate);
+      // console.log('gasEstimate:', gasEstimate);
 
       const gasEstimateOnchain = gasEstimate
         ? gasEstimate
@@ -37,7 +38,7 @@ export class BaseService {
             value: value,
           });
 
-      console.log('gasEstimateOnchain:', gasEstimateOnchain);
+      // console.log('gasEstimateOnchain:', gasEstimateOnchain);
           
       //@ts-ignore
       const tx = {
@@ -52,17 +53,27 @@ export class BaseService {
 
       const signedTx = await this.web3.eth.accounts.signTransaction( tx, privateKey);
 
-      console.log('signedTx:', signedTx);
+
   
   
       const receipt = await this.web3.eth.sendSignedTransaction( signedTx.rawTransaction as Bytes);
 
+      console.log(JSON.stringify(receipt.events));
+      
       console.log('[', Date(), ']','tx:',receipt.transactionHash,' - block: ', receipt.blockNumber);
       console.log(`========== Transaction ${receipt.status}  ===========\n`);
-      return true;
+      return {
+        status: !!receipt.status,
+        transactionHash: receipt.transactionHash.toString(),
+        blockNumber: Number(receipt.blockNumber),
+        events: receipt.events,
+      }
     } catch (error) {
       console.log(error);
-      return false;
+      return {
+        status: false,
+        transactionHash: ""
+      }
     }
   }
 

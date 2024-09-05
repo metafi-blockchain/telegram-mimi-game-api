@@ -1,6 +1,4 @@
-import {BigNumberish, parseUnits} from 'ethers';
 import {NFTFactory} from '../libs';
-import {CryptoUtils} from '../utils';
 import {BaseService} from './common.service';
 import { DeployNFTFactoryParams } from '../libs/interface';
 

@@ -8,6 +8,7 @@ import { ActivityLogsModule } from '../activitylogs/activity-logs.module';
 @Module({
   imports:[MongooseModule.forFeature([{name: MintRequest.name, schema: MintRequestSchema}]), ActivityLogsModule],
   providers: [MintRequestService],
-  controllers: [MintRequestController]
+  controllers: [MintRequestController],
+  exports: [MintRequestService]
 })
 export class RequestModule {}
