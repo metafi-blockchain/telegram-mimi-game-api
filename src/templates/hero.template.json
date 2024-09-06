@@ -7,38 +7,7 @@
     "image": "ipfs://Qm.../avatar1.png",
     "external_url": "https://cryptoavatars.com/avatar/1",
     "attributes": [
-      {
-        "trait_type": "gen",
-        "value": "xxx"
-      },
-      {
-        "trait_type": "Rarity",
-        "value": "Legendary"
-      },
-      {
-        "trait_type": "Skills",
-        "value": "Pharaoh's Authority, Viper's Kiss,Exquisite Beauty,  Queens of king, Avatar of Isis"
-      },
-      {
-        "trait_type": "Commander Might",
-        "value": 4500
-      },
-      {
-        "trait_type": "Base Might",
-        "value": 1200
-      },
-      {
-        "trait_type": "Commander Level",
-        "value": 100
-      },
-      {
-        "trait_type": "Commander Skill",
-        "value": 3200
-      },
-      {
-        "trait_type": "Commander Talent",
-        "value": 0
-      }
+      
     ]
   }
   

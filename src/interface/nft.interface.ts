@@ -6,14 +6,16 @@ export interface ICategory{
 
 
 export type IHero = {
-        version: Number,
-        heroId: String | Number,
-        name: String,
-        rarity: String,
-        skills: String,
-        commanderMight: Number,
-        baseMight: Number,
-        commanderLevel : Number,
-        commanderSkill: Number,
-        commanderTalent: Number,
+        version: number,
+        heroId: string | number,
+        name: string,
+        description?: string,
+        image?: string,
+        rarity: string,
+        skills?: string,
+        commanderMight?: number,
+        baseMight?: number,
+        commanderLevel? : number,
+        commanderSkill?: number,
+        commanderTalent?: number,
 }

@@ -35,20 +35,20 @@ export class NFT  implements BaseEntity {
     @Prop({ type: String})
     nftId: string;
 
+    @Prop({ type: String, required: true, unique: true })
+    gen: string;
+
     @Prop({ type: String, default: '' })
     uri: string;
 
     @Prop({ type: String})
     owner: string;
 
-    @Prop({ type: String, required: true, unique: true })
-    gen: string;
-
     @Prop({ type: String, default: MINT_STATUS.INITIALIZE })
     minting_status: MINT_STATUS
 
-    // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: NftType.name, index: 1 })
-    // nft_type: NftType
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: NftType.name, index: 1 })
+    nft_type: NftType
 
 
     @Prop({ type: String, default: "" })

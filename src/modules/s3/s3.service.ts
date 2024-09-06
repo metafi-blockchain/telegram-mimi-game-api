@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { ReadStream } from 'fs';
+import * as fs from 'fs';
 
 @Injectable()
 export class S3Service {
@@ -36,5 +37,24 @@ export class S3Service {
     });
     await this.s3.send(command);
     return `https://${this.bucketName}.s3.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${fileName}`;;
+  }
+
+  async uploadFromPath(
+    path: string,
+  ): Promise<string> {
+    if (!fs.existsSync(path)) {
+      throw new Error('File not found');
+    }
+    const file = await fs.readFileSync(path);
+    const fileName = path.split('/').pop();
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: fileName,
+      Body: file,
+      ACL: "public-read",
+      ContentType: 'application/json',
+    });
+    await this.s3.send(command);
+    return `https://${this.bucketName}.s3.${this.configService.get<string>('AWS_REGION')}.amazonaws.com/${fileName}`;
   }
 }

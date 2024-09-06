@@ -34,11 +34,8 @@ export const getPetObjectInfo = (gen: string ) : IHero=> {
     const hero  = decodePetGen(gen);
 
     if(!hero) return null;
-    console.log("hero", hero.id);
     
     if(!HERO_COLLECTIONS[hero.id]) return null;
-
-
     return {
         version: hero.version,
         heroId: hero.id,

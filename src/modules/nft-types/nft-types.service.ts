@@ -21,14 +21,11 @@ export class NftTypesService extends BaseService<NftType> {
 
     async deployNftType(nftType: CreateNftTypeDto){
 
-        try {
-     
-                
+        try { 
             const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
             if(!privateKey) throw new Error('Invalid Operator Private Key')
     
             //create on database
-
             const contractAdd =  await this.nftFactoryService.getContractDeployAddress({
                 owner: nftType.owner,
                 salt: nftType.salt,
@@ -46,8 +43,7 @@ export class NftTypesService extends BaseService<NftType> {
                 salt: nftType.salt,
                 owner: nftType.owner,
                 status: TRANSACTION.SENDING,
-                is_active: false,
-                type: nftType.type,
+                collection_type: nftType.type
             });
 
             //send request to blockchain
@@ -67,11 +63,10 @@ export class NftTypesService extends BaseService<NftType> {
                 nft.status = TRANSACTION.ERROR;
                 await nft.save();
             })   
-            
-            
             return nft; 
         } catch (error) {
             console.log(error);
+            throw new Error('Can not deploy nft type')
         }
 
     }

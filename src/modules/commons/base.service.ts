@@ -42,4 +42,8 @@ export abstract class BaseService<T extends Document> {
     }
     return deletedEntity;
   }
+
+  finOneWithCondition(cond: any): Promise<T> {
+    return this.model.findOne(cond).exec();
+  }
 }

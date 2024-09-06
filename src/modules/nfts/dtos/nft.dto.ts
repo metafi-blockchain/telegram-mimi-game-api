@@ -4,6 +4,7 @@ import {IsString} from 'class-validator'
 
 
 export class CreateNftDto {
+
     @IsString()
     uri: string;
     @IsString()
@@ -12,6 +13,8 @@ export class CreateNftDto {
     owner: string;
     @IsString()
     gen: string;
+    @IsString()
+    name?: string;
 }
 
 

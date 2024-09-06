@@ -30,7 +30,7 @@ export class ERC721Service extends BaseService {
       }
       const recipients = nftMints.map( nft => nft.recipient);
       const uris = nftMints.map( nft => nft.uri);
-      const callData =  this.nftContract.getMintBatchERC721Data( recipients, uris);
+      const callData =  this.nftContract.getMintBatchERC721Data(recipients, uris);
       const sendTxData = {
         address: this.nftContract.getContractNftAddress(),
         calldata: callData,

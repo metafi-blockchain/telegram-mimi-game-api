@@ -14,14 +14,18 @@ export enum TRANSACTION {
     DONE = 'DONE',
     ERROR = 'ERROR',
 }
+export enum COLLECTION_TYPE {
+    HERO = 'hero',
+    PET = 'pet',
+}
 @Schema({ timestamps: true })
 
 export class NftType  implements BaseEntity {
 
     _id: mongoose.Schema.Types.ObjectId
-    @Prop({ type: String, required: true, unique: true })
+    @Prop({ type: String, required: true})
     name: string;
-    @Prop({ type: String, required: true, unique: true })
+    @Prop({ type: String, required: true})
     symbol: string;
     @Prop({ type: String, default: '' })
     nft_address: string;
@@ -36,8 +40,8 @@ export class NftType  implements BaseEntity {
     @Prop({ default: false, type: Boolean })
     is_active: boolean;
 
-    @Prop({ default: false, type: Boolean })
-    type: string    ;
+    @Prop({ default: false, type: String })
+    collection_type: COLLECTION_TYPE    ;
     
     @Prop({ type: String, default: '',  unique: true  })
     transaction_hash: string;
