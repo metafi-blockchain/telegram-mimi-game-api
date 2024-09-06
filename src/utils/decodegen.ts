@@ -1,5 +1,5 @@
-import { NFT_COLLECTIONS, PetElements } from "src/constants";
-import { CharacterNft } from "src/interface/nft.interface";
+import { HERO_COLLECTIONS, PetElements } from "src/constants";
+import { IHero } from "src/interface/nft.interface";
 
 // const {PetContains, CollectionNft} = require('../../constants/index');
 
@@ -17,7 +17,7 @@ export const decodePetGen = (gen: String) => {
     return {
         Id: Number(gen.substring(0, 8)),
         version: Number(gen.substring(8, 10)),
-        petId: Number(gen.substring(10, 18)).toString().padStart(3, '0'),
+        id: Number(gen.substring(10, 18)).toString().padStart(3, '0'),
         sex: Number(gen.substring(18, 19)),
         element: gen.substring(19, 25).padStart(6, '0'),
         baseAtk: Number(gen.substring(25, 31)),
@@ -30,26 +30,26 @@ export const decodePetGen = (gen: String) => {
 
 }
 
-export const getPetObjectInfo = (gen: string ) : CharacterNft=> {
-    const petGen  = decodePetGen(gen);
+export const getPetObjectInfo = (gen: string ) : IHero=> {
+    const hero  = decodePetGen(gen);
 
-    if(!petGen) return null;
-
-    if(!NFT_COLLECTIONS[petGen.petId]) return null;
+    if(!hero) return null;
+    console.log("hero", hero.id);
+    
+    if(!HERO_COLLECTIONS[hero.id]) return null;
 
 
     return {
-        version: petGen.version,
-        petId: petGen.petId,
-        name: NFT_COLLECTIONS[petGen.petId]?.name,
-        sex:  petGen.sex === 0 ? "Male" : "Female",
-        element: getElementFromGen(petGen.element),
-        baseAtk: petGen.baseAtk,
-        baseDef: petGen.baseDef,
-        baseHp: petGen.baseHp,
-        growAtk: petGen.growAtk,
-        growDef: petGen.growDef,
-        growHp:  petGen.growHp
+        version: hero.version,
+        heroId: hero.id,
+        name: HERO_COLLECTIONS[hero.id]?.name,
+        rarity:  hero.sex === 1 ? "Legendary" : "Normal",
+        skills: HERO_COLLECTIONS[hero.id]?.skills,
+        baseMight: hero.baseAtk + hero.baseDef + hero.baseHp,
+        commanderMight: hero.baseAtk,
+        commanderSkill: hero.baseDef,
+        commanderLevel: hero.baseHp,
+        commanderTalent: hero.growAtk,
        };
 }
 

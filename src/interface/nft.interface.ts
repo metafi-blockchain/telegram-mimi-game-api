@@ -5,16 +5,15 @@ export interface ICategory{
 }
 
 
-export type CharacterNft = {
+export type IHero = {
         version: Number,
-        petId: String | Number,
+        heroId: String | Number,
         name: String,
-        sex:  "Male" | "Female",
-        element: String,
-        baseAtk: Number,
-        baseDef: Number,
-        baseHp: Number,
-        growAtk: Number,
-        growDef: Number,
-        growHp:  Number
+        rarity: String,
+        skills: String,
+        commanderMight: Number,
+        baseMight: Number,
+        commanderLevel : Number,
+        commanderSkill: Number,
+        commanderTalent: Number,
 }

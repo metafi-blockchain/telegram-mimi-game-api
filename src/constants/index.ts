@@ -1,2 +1,2 @@
 export * from './pet.constant';
-export * from './nft-collection';
+export * from './hero-collection';

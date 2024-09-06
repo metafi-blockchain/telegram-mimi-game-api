@@ -7,7 +7,7 @@ import { RequestModule } from '../mint-request/mint-request.module';
 
 
 @Module({
-  imports : [NftsModule, S3Module, RequestModule],
+  imports : [NftsModule, S3Module, RequestModule, ],
   providers: [CronjobsService]
 })
 export class CronjobsModule {

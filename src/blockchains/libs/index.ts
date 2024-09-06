@@ -1,2 +1,2 @@
 export * from './ntf-factory.lib'
-export * from './nft.lib'
+export * from './ERC721.lib'

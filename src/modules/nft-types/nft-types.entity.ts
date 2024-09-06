@@ -35,6 +35,9 @@ export class NftType  implements BaseEntity {
 
     @Prop({ default: false, type: Boolean })
     is_active: boolean;
+
+    @Prop({ default: false, type: Boolean })
+    type: string    ;
     
     @Prop({ type: String, default: '',  unique: true  })
     transaction_hash: string;

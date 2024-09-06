@@ -23,5 +23,21 @@ export class ERC721Service extends BaseService {
       return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
 
+    async mintBatchNFT(nftMints: MintNFT[], privateKey: string): Promise<ResponseSendTransaction> {
+      if (!nftMints.length) {
+        console.log('No NFT to mint');
+        return null
+      }
+      const recipients = nftMints.map( nft => nft.recipient);
+      const uris = nftMints.map( nft => nft.uri);
+      const callData =  this.nftContract.getMintBatchERC721Data( recipients, uris);
+      const sendTxData = {
+        address: this.nftContract.getContractNftAddress(),
+        calldata: callData,
+        value: '0'
+      };
+      return await this.sendTransactionAndConfirm(sendTxData, privateKey);
+    }
+
     
   }

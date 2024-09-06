@@ -1,2 +1,2 @@
 export * from './crypto.utils'
-export * from './decodegen'
+export * from './decodeGen'

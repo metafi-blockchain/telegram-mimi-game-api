@@ -12,5 +12,7 @@ export class CreateNftTypeDto {
     owner: string;
     @IsNumber()
     salt: number;
+    @IsString()
+    type: string;
 }
 

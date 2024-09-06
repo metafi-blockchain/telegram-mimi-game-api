@@ -46,7 +46,8 @@ export class NftTypesService extends BaseService<NftType> {
                 salt: nftType.salt,
                 owner: nftType.owner,
                 status: TRANSACTION.SENDING,
-                is_active: false
+                is_active: false,
+                type: nftType.type,
             });
 
             //send request to blockchain
@@ -59,6 +60,7 @@ export class NftTypesService extends BaseService<NftType> {
                 console.log('tx:', tx);
                 nft.status = TRANSACTION.DONE;
                 nft.is_active = true;
+                nft.transaction_hash = tx.transactionHash;
                 await nft.save();
             }).catch(async (err) => {
                 console.log('err:', err);

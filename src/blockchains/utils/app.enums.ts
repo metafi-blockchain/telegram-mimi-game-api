@@ -6,10 +6,3 @@ export enum TOKENS {
     HASH_ALGORITHMS = 'SHA256',
 }
 
-export enum  STEP_UP_POINT {
-    UPDATE_PROFILE = 1,
-    VERIFY_EMAIL = 5,
-    UPDATE_ADDRESS = 5,
-    CREATE_PROPOSAL = 5,
-    VOTE_PROPOSAL = 1,
-}
