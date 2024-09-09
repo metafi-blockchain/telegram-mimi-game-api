@@ -49,7 +49,7 @@ export class CronjobsService {
                 collection_address: nftType.nft_address,
             }).then(async (nft) => {    
                 console.log('nft create: ', gen);
-                await this.mintRequest.update(request._id.toString(), { status: STATUS.DONE });
+                await this.mintRequest.update({_id: request._id }, { status: STATUS.DONE });
             });
         }
 
@@ -79,6 +79,7 @@ export class CronjobsService {
         const filePath = `${path}/${gen}.json`; // File path
         const heroTemplate = getHeroJsonTemplate(gen);
         fs.writeFileSync(filePath, JSON.stringify(heroTemplate));
+
         const uri = await this.s3Service.uploadFromPath(`${path}/${gen}.json`)
         fs.unlinkSync(filePath);
         console.log('File uploaded to s3:', uri)

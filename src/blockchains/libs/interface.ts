@@ -16,6 +16,7 @@ export type ResponseSendTransaction = {
     blockNumber?: number,
     events?: any
     data?: any,
+    message?: any,
 }
 
 export type MintNftEvent = {
@@ -23,3 +24,21 @@ export type MintNftEvent = {
     uri: string
     recipient: string
 }
+
+export type DepositEvent = {
+    from: string,
+    tokenAddress: string,
+    amount: number,
+    time: number,
+}
+
+export type SetPackageParam = {
+    token : string,
+    amounts: number[]
+}
+
+export type DepositParam = {
+    token : string,
+    id: number
+}
+

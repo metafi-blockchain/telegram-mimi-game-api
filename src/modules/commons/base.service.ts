@@ -22,15 +22,15 @@ export abstract class BaseService<T extends Document> {
     return createdEntity.save();
   }
 
-  async update(id: string, updateDto: any): Promise<T> {
-    const updatedEntity = await this.model
-      .findByIdAndUpdate(id, updateDto, { new: true })
-      .exec();
-    if (!updatedEntity) {
-      throw new NotFoundException(`Entity with ID ${id} not found`);
-    }
-    return updatedEntity;
-  }
+  // async update(id: string, updateDto: any): Promise<T> {
+  //   const updatedEntity = await this.model
+  //     .findByIdAndUpdate(id, updateDto, { new: true })
+  //     .exec();
+  //   if (!updatedEntity) {
+  //     throw new NotFoundException(`Entity with ID ${id} not found`);
+  //   }
+  //   return updatedEntity;
+  // }
 
   aggregate(cond: any): any {
     return this.model.aggregate(cond);
@@ -46,4 +46,7 @@ export abstract class BaseService<T extends Document> {
   finOneWithCondition(cond: any): Promise<T> {
     return this.model.findOne(cond).exec();
   }
+  update(cond: any, attrs: Partial<T>){
+    return this.model.findOneAndUpdate(cond, {$set: attrs}, {new: true} ).exec();
+}
 }

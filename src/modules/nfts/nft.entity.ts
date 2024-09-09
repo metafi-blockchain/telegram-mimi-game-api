@@ -19,7 +19,6 @@ export enum MINT_STATUS  {
     INITIALIZE = 'INITIALIZE',
     SENDING = 'SENDING',
     MINTED = 'MINTED',
-    DONE = 'DONE',
     ERROR = 'ERROR',
 }
 @Schema({ timestamps: true })
@@ -29,11 +28,11 @@ export class NFT  implements BaseEntity {
     _id: mongoose.Schema.Types.ObjectId
 
 
-    @Prop({ type: String, required: true})
+    @Prop({ type: String, required: true, index: 1 })
     collection_address: string
 
-    @Prop({ type: String})
-    nftId: string;
+    @Prop({ type: Number})
+    tokenId: number;
 
     @Prop({ type: String, required: true, unique: true })
     gen: string;

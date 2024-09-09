@@ -2,7 +2,7 @@
 
 import {Bytes} from 'web3-types';
 import Web3, {Contract} from 'web3';
-import NFTAbi from '../abis/EnteralKingDomERC21.json';
+import NFTAbi from '../abis/EnteralKingDomERC721.json';
 import { DeployNFTFactoryParams, MintNFT } from './interface';
 import { estimateGas } from 'web3/lib/commonjs/eth.exports';
 
@@ -34,7 +34,7 @@ export class ERC721Library {
       return null;
     }
     const contract = this.getNftContract();
-    return contract.methods.mintBatchNFT( recipients, uris).encodeABI() as Bytes
+    return contract.methods.mintBatchNFT(recipients, uris).encodeABI() as Bytes
 
   }
 

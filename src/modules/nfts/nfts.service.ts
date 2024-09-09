@@ -76,6 +76,10 @@ export class NftsService extends BaseService<NFT> {
 
 
     async mintBatchNFT(collection_address: string, nftMints: NFT[]): Promise<ResponseSendTransaction> {
+        if (!nftMints.length) {
+            console.log('No NFT to mint');
+            return {status: false};
+        }
         const privateKey = await this.getPrivateKeyMint();
         const rpcUrl = this.configService.get<string>('RPC_URL')
         const erc721Service = new ERC721Service(collection_address, rpcUrl);
@@ -124,6 +128,8 @@ export class NftsService extends BaseService<NFT> {
         if(!privateKey) throw new Error('Invalid Operator Private Key')
         return privateKey;
     }
+
+
 
 
 }

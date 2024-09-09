@@ -9,6 +9,7 @@ export class MintRequestController {
 
     
     }
+    
     //create many mint request
     @Post('/request-many')
     async createManyMintRequest(@Body() gens: string[]){

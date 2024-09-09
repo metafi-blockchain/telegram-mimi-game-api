@@ -1,3 +1,3 @@
 export * from './common.service'
 export * from './nft-factory.service'
-export * from './nft.service'
+export * from './erc721.service'

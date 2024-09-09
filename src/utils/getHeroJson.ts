@@ -7,7 +7,7 @@ import { HERO_COLLECTIONS } from '../constants/hero-collection';
 import { IHero } from 'src/interface/nft.interface';
 
 
-export const getHeroJsonTemplate = (gen: string ): IHero | null  => {
+export const getHeroJsonTemplate = (gen: string )  => {
     const hrOb = getPetObjectInfo(gen);
     
     const idHero = hrOb.heroId.toString().padStart(3, '0');
@@ -22,8 +22,9 @@ export const getHeroJsonTemplate = (gen: string ): IHero | null  => {
     heroTemplate.description = fullHero.description;
     heroTemplate.image = fullHero.image;
     heroTemplate.attributes = _createAttributeHero(gen, fullHero);
+    heroTemplate.external_url = fullHero.image;
  
-    return fullHero;
+    return heroTemplate;
 };
 
 export type HeroAttribute = {

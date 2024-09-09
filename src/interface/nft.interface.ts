@@ -11,7 +11,7 @@ export type IHero = {
         name: string,
         description?: string,
         image?: string,
-        rarity: string,
+        rarity?: string,
         skills?: string,
         commanderMight?: number,
         baseMight?: number,
