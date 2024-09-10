@@ -1,7 +1,6 @@
 import {ERC721Library} from '../libs';
 import {BaseService} from './common.service';
 import {  MintNFT, ResponseSendTransaction } from '../libs/interface';
-import { MultiDelegateCall } from '../libs/mutildelegatecall.lib';
 
 
 export class ERC721Service extends BaseService {
@@ -14,7 +13,7 @@ export class ERC721Service extends BaseService {
     }
 
     async mintNFT(param: MintNFT, privateKey: string): Promise<ResponseSendTransaction> {
-      const callData =  this.nftContract.getMintERC721Data( param);
+      const callData =  this.nftContract.mintERC721Data( param);
         const sendTxData = {
             address: this.nftContract.getContractNftAddress(),
             calldata: callData,
@@ -24,16 +23,13 @@ export class ERC721Service extends BaseService {
     }
 
     async mintBatchNFT(nftMints: MintNFT[], privateKey: string): Promise<ResponseSendTransaction> {
-      if (!nftMints.length) {
-        console.log('No NFT to mint');
-        return {status: false};
-      }
+
       const recipients = nftMints.map( nft => nft.recipient);
       const uris = nftMints.map( nft => nft.uri);
-      console.log('recipients:', recipients);
-      console.log('uris:', uris);
+
+      // console.log(`'recipients:${recipients}' -- 'uris:${uris}'`);
       
-      const callData =  this.nftContract.getMintBatchERC721Data(recipients, uris);
+      const callData =  this.nftContract.mintBatchERC721Data(recipients, uris);
       const sendTxData = {
         address: this.nftContract.getContractNftAddress(),
         calldata: callData,
@@ -41,6 +37,7 @@ export class ERC721Service extends BaseService {
       };
       return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
+
 
     
   }

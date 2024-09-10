@@ -15,12 +15,6 @@ export class DepositLib{
     this.depositContract = _depositContract;
   }
 
-    getDepositData(params: any): Bytes{
- 
-        const contract = this.getDepositContract();
-        
-        return contract.methods.deposit( params.recipient, params.uri).encodeABI() as Bytes
-    }
 
     setPackageData(params: SetPackageParam): Bytes{
        

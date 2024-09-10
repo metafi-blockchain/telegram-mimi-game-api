@@ -16,7 +16,7 @@ export class ERC721Library {
     this.nftContract = _nftContract;
   }
 
-  getMintERC721Data(params: MintNFT): Bytes{
+  mintERC721Data(params: MintNFT): Bytes{
 
     if (!this.web3) {
       console.log('Web3 or contract ABI is not initialized');
@@ -28,7 +28,7 @@ export class ERC721Library {
   }
 
 
-  getMintBatchERC721Data(recipients: string[], uris: string[]): Bytes{
+  mintBatchERC721Data(recipients: string[], uris: string[]): Bytes{
     if (!this.web3) {
       console.log('Web3 or contract ABI is not initialized');
       return null;

@@ -13,11 +13,7 @@ export enum STATUS {
     DONE = 'DONE',
 }
 
-export enum TYPE {
-    MINT = 'MINT',
-    BURN = 'BURN',
-    WITHDRAW = 'WITHDRAW',
-}
+
 @Schema({ timestamps: true })
 
 export class MintRequest  implements BaseEntity {
@@ -29,10 +25,8 @@ export class MintRequest  implements BaseEntity {
     gen: string;
 
     @Prop({ type: String})
-    to: string;
+    reception: string;
 
-    @Prop({ type: String, required: true})
-    type: TYPE;
 
     @Prop({ type: String, default: STATUS.SUBMITTING})
     status: STATUS

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { NftTypesService } from './nft-types.service';
-import { NftTypesController } from './nft-types.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ActivityLogsModule } from 'src/modules/activitylogs/activity-logs.module';
 import { NftType, NftTypeSchema } from './nft-types.entity';
@@ -34,7 +33,7 @@ import { OracleConfigsService } from '../configs/oracle-configs.service';
     },
 
   ],
-  controllers: [NftTypesController],
+  controllers: [],
   exports: [NftTypesService]
 })
 export class NftTypesModule {}

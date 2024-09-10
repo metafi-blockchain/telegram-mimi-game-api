@@ -2,13 +2,13 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ethers } from 'ethers';
 import factoryAbi from '../../blockchains/abis/EnteralKingdomNFTFactory2.json';
 import depositAbi from '../../blockchains/abis/EnterKingDomDeposit.json';
-import { encryptPrivateKeyWithARES } from 'src/utils';
+import marketPlaceAbi from '../../blockchains/abis/EnteralKingDomMarketplace.json';
 import { ConfigService } from '@nestjs/config';
 import { NftTypesService } from '../nft-types/nft-types.service';
 import erc721Abi from '../../blockchains/abis/EnteralKingDomERC721.json';
-import { MintNftEvent } from 'src/blockchains/libs/interface';
 import { NftsService } from '../nfts/nfts.service';
-import { MINT_STATUS } from '../nfts/nft.entity';
+import { MINT_STATUS, NFT_STATUS } from '../nfts/nft.entity';
+import { MintNftEvent } from 'src/interface';
 
 
 
@@ -18,6 +18,7 @@ export class BlockchainEventListenerService implements OnModuleInit{
     private provider: ethers.JsonRpcProvider;
     private factoryContract: ethers.Contract;
     private depositContract: ethers.Contract;
+    private marketPlaceContract: ethers.Contract;
 
 
     constructor(private readonly configService: ConfigService, 
@@ -32,7 +33,7 @@ export class BlockchainEventListenerService implements OnModuleInit{
         const rpcUrl = this.configService.get<string>('RPC_URL'); // Địa chỉ RPC của blockchain
         const factoryContractAddress = this.configService.get<string>('NFT_FACTORY_ADDRESS') ; // Địa chỉ hợp đồng thông minh
         const depositContractAddress = this.configService.get<string>('DEPOSIT_CONTRACT_ADDRESS') ; // Địa chỉ hợp đồng thông minh
-
+        const marketPlaceContractAddress = this.configService.get<string>('MARKET_PLACE_CONTRACT_ADDRESS') ; // Địa chỉ hợp đồng thông minh
         console.log('rpcUrl:', rpcUrl);
     
         
@@ -49,8 +50,6 @@ export class BlockchainEventListenerService implements OnModuleInit{
         });
        
         if(nftTypes.length === 0) return; 
-        
-       
         // listen event from nft contract
           nftTypes.forEach(async (nftType) => {
             console.log("listening event for nft: ", nftType.nft_address);
@@ -79,6 +78,14 @@ export class BlockchainEventListenerService implements OnModuleInit{
             
           });
       
+          //listen event from marketplace contract
+          this.marketPlaceContract = new ethers.Contract(marketPlaceContractAddress, marketPlaceAbi, this.provider);
+          console.log("listening event for MarketPlace: ", marketPlaceContractAddress);
+          this.marketPlaceContract.on('SetNftSupport', (nftAddress: string, isSupport: boolean, event ) => {
+            //handle trade event
+            this.nftTypService.update({ nft_address: nftAddress}, {is_active: isSupport});
+            
+          });
         
 
     
@@ -102,11 +109,13 @@ export class BlockchainEventListenerService implements OnModuleInit{
         console.log('Full data:', data);
         await this.nftService.update({ uri: data.uri}, {
           minting_status: MINT_STATUS.MINTED,
+          nft_status: NFT_STATUS.AVAILABLE,
           tokenId: Number(data.tokenId),
           owner: data.recipient
         });
 
         console.log('Full event data:', event['log']);
+        //create transaction history
         
         // console.log('Handling mint:', recipient, tokenId);
       }

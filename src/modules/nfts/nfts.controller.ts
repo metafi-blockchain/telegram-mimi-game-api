@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, NotFoundException, Post } from '@nestjs/common';
 import { CreateNftDto, MintNftDto } from './dtos/nft.dto';
 import { NftsService } from './nfts.service';
+import { MINT_STATUS } from './nft.entity';
 
 @Controller('nfts')
 export class NftsController {
@@ -13,12 +14,7 @@ export class NftsController {
         return this.nftService.createNft(nftType);
     }
 
-    @Post('/mint')
-    async mintNft(@Body() nft: MintNftDto) {
-        console.log('gen:', nft);
-        
-        return this.nftService.mintNft(nft.gen);
-    }
+
 
 
 }

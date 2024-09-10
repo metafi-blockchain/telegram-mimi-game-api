@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { NFT, NFTSchema } from './nft.entity';
 import { MultiDelegateCallService } from 'src/blockchains/services/multicall.service';
 import { ConfigService } from '@nestjs/config';
-import { RequestModule } from '../mint-request/mint-request.module';
 import { OracleConfigsModule } from '../configs/oracle-configs.module';
 import { NftsController } from './nfts.controller';
 import { TelegramModule } from '../telegram/telegram.module';
@@ -12,7 +11,6 @@ import { TelegramModule } from '../telegram/telegram.module';
 @Module({
   imports: [
     OracleConfigsModule,
-    RequestModule,
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
     TelegramModule
   ],

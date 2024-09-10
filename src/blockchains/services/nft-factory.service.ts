@@ -17,7 +17,7 @@ export class NFTFactoryService extends BaseService {
 
     async deployNft(param: DeployNFTFactoryParams, privateKey: string){
 
-        const callData = this.factory.getDeployNftData(param);
+        const callData = this.factory.deployNftData(param);
         const sendTxData = {
             address: this.factory.getContractFactoryAddress(),
             calldata: callData,

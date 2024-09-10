@@ -3,7 +3,7 @@ export interface DeployNFTFactoryParams {
     owner: string, salt: number, name: string, symbol: string,
 }
 
-export interface MintNFT {
+export type MintNFT = {
     recipient: string, 
     uri: string,
     collection_address: string,
@@ -19,18 +19,6 @@ export type ResponseSendTransaction = {
     message?: any,
 }
 
-export type MintNftEvent = {
-    tokenId: number
-    uri: string
-    recipient: string
-}
-
-export type DepositEvent = {
-    from: string,
-    tokenAddress: string,
-    amount: number,
-    time: number,
-}
 
 export type SetPackageParam = {
     token : string,
@@ -42,3 +30,13 @@ export type DepositParam = {
     id: number
 }
 
+
+
+export type ListingByAdminParam = {
+    nftsAddress: string,
+    nftIds: number[],
+    prices: number[],
+    currencies: string[],
+    durations: number[],
+
+}

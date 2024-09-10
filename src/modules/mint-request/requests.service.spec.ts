@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MintRequestService } from './mint-request.service';
+import { MintRequestService } from './requests.service';
 
 describe('MintRequestService', () => {
   let service: MintRequestService;

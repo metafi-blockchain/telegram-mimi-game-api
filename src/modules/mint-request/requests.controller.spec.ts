@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MintRequestController } from './mint-request.controller';
+import { MintRequestController } from './requests.controller';
 
 describe('RequestController', () => {
   let controller: MintRequestController;

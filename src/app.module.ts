@@ -12,12 +12,13 @@ import { APP_PIPE } from '@nestjs/core';
 import { CustomMiddleware } from './custom.middleware';
 import { NftsModule } from './modules/nfts/nfts.module';
 import { CronjobsModule } from './modules/cronjobs/cronjobs.module';
-import { RequestModule } from './modules/mint-request/mint-request.module';
+import { RequestModule } from './modules/mint-request/requests.module';
 import { BlockchainEventListenerModule } from './modules/blockchain-event-listener/blockchain-event-listener.module';
 import { NftTypesModule } from './modules/nft-types/nft-types.module';
 import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TransactionHistoryModule } from './modules/transaction-history/transaction-history.module';
 
 
 
@@ -55,6 +56,7 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       NftTypesModule,
       OracleConfigsModule,
       TelegramModule,
+      TransactionHistoryModule,
   
     ],
   controllers: [],

@@ -1,7 +1,7 @@
 import {ERC721Library} from '../libs';
 import {BaseService} from './common.service';
 import {  MintNFT } from '../libs/interface';
-import { MultiDelegateCall } from '../libs/mutildelegatecall.lib';
+import { MultiDelegateCall } from '../libs/multi-delegate-call.lib';
 
 
 
@@ -21,7 +21,7 @@ export class MultiDelegateCallService extends BaseService {
         for (let i = 0; i < nftMints.length; i++) {
             const param = nftMints[i];
             const nftContract = new ERC721Library( this.provider, param.collection_address );
-            const dt = nftContract.getMintERC721Data(param);
+            const dt = nftContract.mintERC721Data(param);
             mintData.push(dt);
         }
        

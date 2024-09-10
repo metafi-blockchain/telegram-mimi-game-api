@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { MultiDelegateCallService } from 'src/blockchains/services/multicall.service';
 import { MINT_STATUS, NFT } from './nft.entity';
 import { Model } from 'mongoose';
-import { MintRequestService } from '../mint-request/mint-request.service';
 import { CreateNftDto } from './dtos/nft.dto';
 import { OracleConfigsService } from '../configs/oracle-configs.service';
 import { ERC721Service } from 'src/blockchains/services';
@@ -33,11 +32,10 @@ export class NftsService extends BaseService<NFT> {
        return this.nftModel.create(nft);
     }
 
-    async mintNft(gen: string){
-        const nft = await this.nftModel.findOne({gen}).exec();
-        if (!nft) throw new Error('NFT not found or NFT already minted');
+    async mintNft(nft: NFT){
 
-        const privateKey = await this.getPrivateKeyMint();
+
+        const privateKey = await this._getPrivateKeyMint();
         const defaultOwner = CryptoUtils.getWalletFromPrivateKey(privateKey);
 
         const nftMint =  {
@@ -51,27 +49,13 @@ export class NftsService extends BaseService<NFT> {
         if(result.status){
             nft.minting_status = MINT_STATUS.MINTED;
             await nft.save();
-            this.telegramService.sendMessage(`mint nft with gen: ${gen} success`)
+            this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} success`)
         }else{
-            this.telegramService.sendMessage(`mint nft with gen: ${gen} failed`)    
+            this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} failed`)    
         }
         return result;
         // return await this.multiDelegateCallService.mintBatchNFT([nftMint], privateKey);
 
-    }
-
-    async mintNftBatch(gens: string[]){
-
-        //check same 1 collection
-        //get nft
-        const nfts = await this.nftModel.find({gen: {$in: gens}, minting_status: MINT_STATUS.INITIALIZE}).exec();
-        if (!nfts) throw new Error('NFT not found');
-
-        const listNfts = nfts.map(nft => ({recipient: nft.owner, uri: nft.uri, collection_address: nft.collection_address}));
-
-        const privateKey = await this.getPrivateKeyMint();
-        const result = await this.multiDelegateCallService.mintBatchNFT(listNfts, privateKey);
-        return result; 
     }
 
 
@@ -80,7 +64,7 @@ export class NftsService extends BaseService<NFT> {
             console.log('No NFT to mint');
             return {status: false};
         }
-        const privateKey = await this.getPrivateKeyMint();
+        const privateKey = await this._getPrivateKeyMint();
         const rpcUrl = this.configService.get<string>('RPC_URL')
         const erc721Service = new ERC721Service(collection_address, rpcUrl);
         const defaultOwner = CryptoUtils.getWalletFromPrivateKey(privateKey);
@@ -123,7 +107,7 @@ export class NftsService extends BaseService<NFT> {
     }
 
 
-    private async getPrivateKeyMint(): Promise<string>{
+    private async _getPrivateKeyMint(): Promise<string>{
         const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
         if(!privateKey) throw new Error('Invalid Operator Private Key')
         return privateKey;

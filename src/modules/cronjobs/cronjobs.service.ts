@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { NftsService } from '../nfts/nfts.service';
-import { MintRequestService } from '../mint-request/mint-request.service';
+import { MintRequestService } from '../mint-request/requests.service';
 import { S3Service } from '../s3/s3.service';
-import { STATUS } from '../mint-request/mint-request.entity';
+import { STATUS } from '../mint-request/request.entity';
 import * as fs from 'fs';
 import { getHeroJsonTemplate } from 'src/utils/getHeroJson';
 import { NftTypesService } from '../nft-types/nft-types.service';
@@ -21,7 +21,7 @@ export class CronjobsService {
 
     }
     // RUN create nft from gen and upload to s3 every hour
-    @Cron(CronExpression.EVERY_MINUTE)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async handleCreateHeroCron() {
         let path = 'src/templates';
         const mintRequest = await this.mintRequest.findWithCondition({ status: STATUS.SUBMITTING });
@@ -45,10 +45,10 @@ export class CronjobsService {
                 name: heroTemplate.name,
                 gen: gen,
                 uri: s3Url,
-                owner: request.to ? request.to : '',
+                owner: request.reception ? request.reception : '',
                 collection_address: nftType.nft_address,
             }).then(async (nft) => {    
-                console.log('nft create: ', gen);
+                console.log('nft create: ', nft.gen);
                 await this.mintRequest.update({_id: request._id }, { status: STATUS.DONE });
             });
         }
@@ -56,9 +56,9 @@ export class CronjobsService {
     }
 
     // Custom cron expression (runs every day at midnight)
-    @Cron(CronExpression.EVERY_MINUTE)
+    @Cron(CronExpression.EVERY_HOUR)
     async handleMintNft() {
-        console.log('Cron job mint nft');
+        console.log("=============Start create mint =========");
         const nftTypes = await this.nftTypeService.findAllWithCondition({  status: TRANSACTION.DONE });
         const requests = [];
         for (let i = 0; i < nftTypes.length; i++) {

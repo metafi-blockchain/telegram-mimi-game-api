@@ -12,7 +12,7 @@ export interface NFT extends BaseEntity {
 export enum NFT_STATUS {
     LISTING_MARKET = 'LISTING_MARKET',
     ACTIVE_IN_GAME = 'ACTIVE_IN_GAME',
-    MINTED = 'MINTED',
+    AVAILABLE = 'AVAILABLE',
 }
 
 export enum MINT_STATUS  {
