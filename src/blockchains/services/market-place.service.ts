@@ -15,7 +15,11 @@ export class MarketService extends BaseService {
     }
 
     async listingByAdmin(param: ListingByAdminParam, privateKey: string): Promise<ResponseSendTransaction> {
-        const callData = this.marketContract.listingByAdminData(param);
+       
+        
+        const callData = await this.marketContract.listingByAdminData(param);
+        console.log('callData:', callData);
+        
         const sendTxData = {
             address: this.marketContract.getMarketContractAddress(),
             calldata: callData,

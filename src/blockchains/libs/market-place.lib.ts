@@ -17,7 +17,7 @@ export class MarketPlaceLib {
   async listingByAdminData(params: ListingByAdminParam){
 
     const contract = this.getMarketContract();
-    return contract.methods.listingByAdmin( params.nftsAddress, params.nftIds,params.currencies, params.prices, params.durations).encodeABI() as Bytes
+    return contract.methods.listingByAdmin( params.nftsAddress, params.nftIds, params.currencies, params.prices, params.durations).encodeABI() as Bytes
   }
 
   async setNFTSupportData(nftContractAddress: string[], active: boolean[]){

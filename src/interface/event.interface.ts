@@ -10,3 +10,28 @@ export type DepositEvent = {
     amount: number,
     time: number,
 }
+
+
+export type ListingEvent = {
+    ownerAddress: string,
+    nftAddress: string,
+    nftId: number,
+    listingUserAddress: string,
+    currency: string,
+    listingPrice: number,
+    listingTime: number,
+    openTime: number
+}
+
+export type PurchaseEvent = {
+    previousOwner: string,
+    newOwner: string,
+    nftAddress: string,
+    nftId: number,
+    currency: string,
+    listingPrice: number,
+    price: number,
+    sellerAmount: number,
+    commissionAmount: number,
+    time: number
+}

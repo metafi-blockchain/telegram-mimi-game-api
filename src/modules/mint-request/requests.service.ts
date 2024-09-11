@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MarketService } from 'src/blockchains/services/market-place.service';
 import { OracleConfigsService } from '../configs/oracle-configs.service';
-import { ListNftsByIdsDto } from './dtos';
+import { ListNftsDto } from './dtos';
 import { ListingByAdminParam } from 'src/blockchains/libs/interface';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class MintRequestService extends BaseService<MintRequest> {
        super(mintRequestModel)
    };
 
-    async listingNftByTokenIds(params : ListNftsByIdsDto){
+    async listingNftByAdmin(params : ListNftsDto){
         const privateKey = await this._getPrivateKeyMint();
         let data = {
             nftsAddress: params.nftAddress,
@@ -32,20 +32,6 @@ export class MintRequestService extends BaseService<MintRequest> {
         } as ListingByAdminParam
         return this.marketPlaceService.listingByAdmin(data, privateKey)
     }
-
-    async listingNftByGen(params : ListNftsByIdsDto){
-        const privateKey = await this._getPrivateKeyMint();
-        let data = {
-            nftsAddress: params.nftAddress,
-            nftIds: params.tokenIds,
-            prices: params.prices,
-            currencies: params.currencies,
-            durations: params.durations,
-
-        } as ListingByAdminParam
-        return this.marketPlaceService.listingByAdmin(data, privateKey)
-    }
-
 
 
     async setNftSupportMarket(nftAddress: string [], active: boolean[]){

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Topic, EventTypeService } from './event.strategy.pattern';
 import { EVENT } from './event.constants';
 

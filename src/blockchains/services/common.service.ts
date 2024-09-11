@@ -54,7 +54,7 @@ export class BaseService {
       const signedTx = await this.web3.eth.accounts.signTransaction( tx, privateKey);
       const receipt = await this.web3.eth.sendSignedTransaction( signedTx.rawTransaction as Bytes);
 
-      console.log(JSON.stringify(receipt.events));
+      // console.log(JSON.stringify(receipt.events));
       
       console.log('[', Date(), ']','tx:',receipt.transactionHash,' - block: ', receipt.blockNumber);
       console.log(`========== Transaction ${receipt.status}  ===========\n`);

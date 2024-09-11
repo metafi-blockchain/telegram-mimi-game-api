@@ -18,4 +18,5 @@ export type IHero = {
         commanderLevel? : number,
         commanderSkill?: number,
         commanderTalent?: number,
+        type?:number,
 }

@@ -55,6 +55,7 @@ export class NftTypesService extends BaseService<NftType> {
             }, privateKey).then(async (tx) => {
                 console.log('tx:', tx);
                 nft.status = TRANSACTION.DONE;
+                nft.is_active = true;
                 nft.transaction_hash = tx.transactionHash;
                 await nft.save();
             }).catch(async (err) => {

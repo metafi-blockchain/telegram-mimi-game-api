@@ -21,7 +21,7 @@ export class CronjobsService {
 
     }
     // RUN create nft from gen and upload to s3 every hour
-    @Cron(CronExpression.EVERY_30_MINUTES)
+    @Cron(CronExpression.EVERY_MINUTE)
     async handleCreateHeroCron() {
         let path = 'src/templates';
         const mintRequest = await this.mintRequest.findWithCondition({ status: STATUS.SUBMITTING });
@@ -57,7 +57,7 @@ export class CronjobsService {
 
     // Custom cron expression (runs every day at midnight)
     @Cron(CronExpression.EVERY_HOUR)
-    async handleMintNft() {
+    async handleMintNfts() {
         console.log("=============Start create mint =========");
         const nftTypes = await this.nftTypeService.findAllWithCondition({  status: TRANSACTION.DONE });
         const requests = [];

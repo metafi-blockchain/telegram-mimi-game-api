@@ -40,6 +40,9 @@ export class NftType  implements BaseEntity {
     @Prop({ default: false, type: Boolean })
     is_active: boolean;
 
+    @Prop({ default: false, type: Boolean })
+    is_market_support: boolean;
+
     @Prop({ default: false, type: String })
     collection_type: COLLECTION_TYPE    ;
     

@@ -32,7 +32,7 @@ export class SetNftSupport {
 }
 
 
-export class ListNftsByIdsDto {
+export class ListNftsDto {
     @IsString()
     nftAddress: string;
 

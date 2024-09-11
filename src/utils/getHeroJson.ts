@@ -9,8 +9,14 @@ import { IHero } from 'src/interface/nft.interface';
 
 export const getHeroJsonTemplate = (gen: string )  => {
     const hrOb = getPetObjectInfo(gen);
+    if(!hrOb) {
+        console.log('Not found hero with gen: ', gen);
+        return null;
+    }
     
     const idHero = hrOb.heroId.toString().padStart(3, '0');
+    console.log('idHero', idHero);
+    
 
     const hero = HERO_COLLECTIONS[idHero];
     if (!hero) {
