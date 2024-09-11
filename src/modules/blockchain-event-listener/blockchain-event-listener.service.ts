@@ -8,8 +8,9 @@ import { NftTypesService } from '../nft-types/nft-types.service';
 import erc721Abi from '../../blockchains/abis/EnteralKingDomERC721.json';
 import { NftsService } from '../nfts/nfts.service';
 import { MINT_STATUS, NFT_STATUS } from '../nfts/nft.entity';
-import { ListingEvent, MintNftEvent, PurchaseEvent } from 'src/interface';
-import { TransactionHistoryService } from '../transaction-history/transaction-history.service';
+import { ListingEvent, MintNftEvent, PriceUpdateEvent, PurchaseEvent, UnListingEvent } from 'src/interface';
+import { TransactionHistoryService } from '../event-log-history/event-history.service';
+import  { Web3 } from 'web3';
 
 @Injectable()
 export class BlockchainEventListenerService implements OnModuleInit {
@@ -17,6 +18,7 @@ export class BlockchainEventListenerService implements OnModuleInit {
   private factoryContract: ethers.Contract;
   private depositContract: ethers.Contract;
   private marketPlaceContract: ethers.Contract;
+  private rpcUrl : string;
 
 
   constructor(
@@ -27,21 +29,16 @@ export class BlockchainEventListenerService implements OnModuleInit {
   ) { }
 
   async onModuleInit() {
-    const rpcUrl = this.configService.get<string>('RPC_URL');
+    this.rpcUrl = this.configService.get<string>('RPC_URL');
     const factoryContractAddress = this.configService.get<string>('NFT_FACTORY_ADDRESS');
     const depositContractAddress = this.configService.get<string>('DEPOSIT_CONTRACT_ADDRESS');
     const marketPlaceContractAddress = this.configService.get<string>('MARKET_PLACE_CONTRACT_ADDRESS');
-
-    console.log('rpcUrl:', rpcUrl);
-
+ 
     // Connect to provider
-    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    this.provider = new ethers.JsonRpcProvider(this.rpcUrl);
 
     // Get all active NFT types
-    const nftTypes = await this.nftTypService.findAllWithCondition({
-      status: 'DONE',
-      is_active: true,
-    });
+    const nftTypes = await this.nftTypService.findAllWithCondition({status: 'DONE', is_active: true,});
 
     // Listen for NFT minting events
     await Promise.all(nftTypes.map(async (nftType) => this.listenToNftMintingEvents(nftType.nft_address)));
@@ -62,9 +59,10 @@ export class BlockchainEventListenerService implements OnModuleInit {
 
     const erc721Contract = new ethers.Contract(contractAddress, erc721Abi.abi, this.provider);
     erc721Contract.on('NFTMinted', (recipient, tokenId, uri, event) => {
-      console.log('Full event data:', event.log);
+      console.log('Full event data:', event);
       console.log('tokenId:', tokenId);
       this.handleMintNftEvent({ recipient, tokenId, uri }, event);
+      this.handleCreateLogEventHistory(event);
     });
   }
 
@@ -76,6 +74,8 @@ export class BlockchainEventListenerService implements OnModuleInit {
     this.depositContract.on('Desposit', (from, tokenAddress, amount, time, event) => {
       console.log('Full deposit event data:', event.log);
       // Add deposit event handling logic here
+      this.handleDepositEvent(from, tokenAddress, amount, time);
+      this.handleCreateLogEventHistory(event);
     });
   }
 
@@ -85,20 +85,36 @@ export class BlockchainEventListenerService implements OnModuleInit {
     console.log('Listening for Marketplace events at:', marketPlaceContractAddress);
 
     // Uncomment to handle specific Marketplace events
-    this.marketPlaceContract.on('SetNftSupport', (nftAddress, isSupport, event) => {
-      this.handleSetNftSupportEvent(nftAddress, isSupport, event);
+    this.marketPlaceContract.on('SetNftSupport', async (nftAddress, isSupport, event) => {
+     await this.handleSetNftSupportEvent(nftAddress, isSupport, event);
+     await this.handleCreateLogEventHistory(event);
     });
 
     //listing event Listing(address ownerAddress, address nftAddress, uint256 nftId, address listingUserAddress, string currency, uint256 listingPrice, uint256 listingTime, uint256 openTime);
     this.marketPlaceContract.on('Listing', async (ownerAddress: string, nftAddress: string, nftId: number, listingUserAddress: string, currency: string,listingPrice: number, listingTime: number, openTime: number, event: any) => {
       const data = { ownerAddress, nftAddress,  nftId,  listingUserAddress, currency,  listingPrice, listingTime,  openTime,} as ListingEvent;
-      this.handleListingNftEvent(data, event);
+      await this.handleListingNftEvent(data, event);
+      await this.handleCreateLogEventHistory(event);
+    });
+    // listing event UnListing(address ownerAddress, address nftAddress, uint256 nftId, uint256 time);
+    this.marketPlaceContract.on('UnListing', async (ownerAddress: string, nftAddress: string, nftId: number,  openTime: number, event: any) => {
+      const data = { ownerAddress, nftAddress,  nftId , time: openTime} as UnListingEvent;
+      await this.handleUnListingEvent(data, event);
+      await this.handleCreateLogEventHistory(event);
+    });
+
+    this.marketPlaceContract.on('PriceUpdate', async (ownerAddress: string, nftAddress: string, nftId: number,  oldPrice: number, newPrice, openTime, event: any) => {
+      const data = { ownerAddress, nftAddress,  nftId , openTime, newPrice, oldPrice} as PriceUpdateEvent;
+      await this.handleUpdatePriceListingEvent(data, event);
+      await this.handleCreateLogEventHistory(event);
+
     });
 
     //listing event Purchase(address previousOwner, address newOwner, address nftAddress, uint256 nftId, string currency, uint256 listingPrice, uint256 price, uint256 sellerAmount, uint256 commissionAmount, uint256 time);
     this.marketPlaceContract.on('Purchase', async (previousOwner: string, newOwner: string, nftAddress: string, nftId: number, currency: string, listingPrice: number, price: number, sellerAmount: number, commissionAmount: number, time: number, event: any) => {
       const data = { previousOwner, newOwner, nftAddress, nftId, currency, listingPrice, price, sellerAmount, commissionAmount, time } as PurchaseEvent;
-      this.handlePurchaseNftEvent(data, event);
+      await this.handlePurchaseNftEvent(data, event);
+      await this.handleCreateLogEventHistory(event);
     });
   }
 
@@ -109,17 +125,18 @@ export class BlockchainEventListenerService implements OnModuleInit {
 
     this.factoryContract.on('Deployed', (arg1, arg2, event) => {
       this.handleDeployNftEvent(arg1, arg2, event);
+      this.handleCreateLogEventHistory(event);
     });
   }
 
   // Function to handle deployment event from Factory contract
-  private handleDeployNftEvent(arg1: any, arg2: any, event: Event) {
+  private async handleDeployNftEvent(arg1: any, arg2: any, event: any) {
     console.log('Handling deployment event:', arg1, arg2);
     // Add deployment handling logic here
   }
 
   // Function to handle NFT mint event
-  private async handleMintNftEvent(data: MintNftEvent, event: Event) {
+  private async handleMintNftEvent(data: MintNftEvent, event: any) {
     // console.log('Full mint data:', data);
     await this.nftService.update({ uri: data.uri }, {
       minting_status: MINT_STATUS.MINTED,
@@ -127,28 +144,26 @@ export class BlockchainEventListenerService implements OnModuleInit {
       tokenId: Number(data.tokenId),
       owner: data.recipient,
     });
-
-    console.log('Full event log data:', event['log']);
+    await this.handleCreateLogEventHistory(event);
     // Add transaction history logic here if needed
   }
 
-  private handleDepositEvent() {
+  private handleDepositEvent(from: string, tokenAddress: string, amount: number, packageId: number) {
     //save to transaction history
     // Add deposit event handling logic here
   }
 
 
-  private handleSetNftSupportEvent(nftAddress: string, isSupport: boolean, event: any) {
+  private async handleSetNftSupportEvent(nftAddress: string, isSupport: boolean, event: any) {
     // Add set NFT support event handling logic here
-    this.nftTypService.update({ nft_address: nftAddress }, { is_market_support: isSupport });
+   await this.nftTypService.update({ nft_address: nftAddress }, { is_market_support: isSupport });
     console.log('Set NFT support event:', event.log);
-
   }
 
-  private handleListingNftEvent(data: ListingEvent, event: any) {
+  private async handleListingNftEvent(data: ListingEvent, event: any) {
     console.log(' Listing event:', event.log);
     const { nftAddress, nftId, ownerAddress, currency, listingPrice, openTime } = data;
-    this.nftService.update({ tokenId: nftId, collection_address: nftAddress }, {
+    await  this.nftService.update({ tokenId: nftId, collection_address: nftAddress }, {
       owner: ownerAddress,
       currency,
       price: listingPrice,
@@ -157,7 +172,7 @@ export class BlockchainEventListenerService implements OnModuleInit {
     })
   }
 
-  private handlePurchaseNftEvent(data: PurchaseEvent, event: any) {
+  private async handlePurchaseNftEvent(data: PurchaseEvent, event: any) {
     console.log('Purchase event:', event.log);
     const { nftAddress, nftId, newOwner } = data;
     this.nftService.update({ tokenId: nftId, collection_address: nftAddress }, {
@@ -168,4 +183,55 @@ export class BlockchainEventListenerService implements OnModuleInit {
       nft_status: NFT_STATUS.AVAILABLE,
     })
   }
+  private async handleUnListingEvent(data: UnListingEvent, event: any) {
+    console.log('UnListing event:', event.log);
+    const { nftAddress, nftId, ownerAddress } = data;
+    await this.nftService.update({ tokenId: nftId, collection_address: nftAddress, owner: ownerAddress }, {
+      currency: "",
+      price: 0,
+      open_time: 0,
+      nft_status: NFT_STATUS.AVAILABLE,
+    })
+  }
+
+  private async handleUpdatePriceListingEvent(data: PriceUpdateEvent, event: any) {
+    console.log('Price Update event:', event.log);
+    const { nftAddress, nftId, ownerAddress, newPrice, openTime } = data;
+    await this.nftService.update({ tokenId: nftId, collection_address: nftAddress, owner: ownerAddress }, {
+        price: newPrice,
+        open_time: openTime,
+    })
+  }
+
+  private async handleCreateLogEventHistory( event: any) {
+    try {
+      console.log('Create log event');
+    const web3 = new Web3(this.rpcUrl);
+    const transactionHash = event['transactionHash'];
+
+    const tx = await web3.eth.getTransaction(transactionHash);
+
+    const eventLog = event['log'];
+    await this.transactionService.create({
+      transaction_hash: transactionHash,
+      contract_address: eventLog['address'],
+      from: tx.from,
+      to: tx.to,
+      value: tx.value,
+      block_hash: eventLog['blockHash'],
+      block_number: eventLog['blockNumber'],
+      event_type: event.filter,
+      log_data: JSON.stringify(eventLog),
+
+    }); 
+    } catch (error) {
+      console.log('Error create log event:', error);
+    }
+    
+    // Add transaction history logic here
+  }
+
+  
+
+
 }

@@ -165,16 +165,18 @@ export class MintRequestController {
 
     }
 
+
     @Post('/mint-nft-by-gen')
     async mintNft(@Body() nftDto: MintNftDto) {
         const nft = await this.nftService.finOneWithCondition({ gen: nftDto.gen, minting_status: MINT_STATUS.INITIALIZE });
         if (!nft) throw new NotFoundException('NFT not found or NFT already minted');
+        return this.nftService.mintNft(nft);
     }
 
     //get all mint request 
     @Get('get-mint-submitting')
     async getAllMintRequest() {
-        return this.requestService.findWithCondition({ status: STATUS.SUBMITTING })
+        return this.requestService.findWithCondition({ status: STATUS.SUBMIT })
     }
 
 

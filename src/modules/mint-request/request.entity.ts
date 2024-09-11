@@ -9,7 +9,7 @@ export interface MintRequest extends BaseEntity {
 
 
 export enum STATUS {
-    SUBMITTING = 'SUBMITTING',
+    SUBMIT = 'SUBMIT',
     DONE = 'DONE',
 }
 
@@ -28,7 +28,7 @@ export class MintRequest  implements BaseEntity {
     reception: string;
 
 
-    @Prop({ type: String, default: STATUS.SUBMITTING})
+    @Prop({ type: String, default: STATUS.SUBMIT})
     status: STATUS
 }
 

@@ -18,7 +18,7 @@ import { NftTypesModule } from './modules/nft-types/nft-types.module';
 import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TransactionHistoryModule } from './modules/transaction-history/transaction-history.module';
+import { TransactionHistoryModule } from './modules/event-log-history/event-history.module';
 
 
 

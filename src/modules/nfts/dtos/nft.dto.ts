@@ -1,6 +1,7 @@
 
 
 import {IsString} from 'class-validator'
+import { Attributes } from '../nft.entity';
 
 
 export class CreateNftDto {
@@ -15,6 +16,8 @@ export class CreateNftDto {
     gen: string;
     @IsString()
     name?: string;
+
+    attributes?: Attributes[];
 }
 
 

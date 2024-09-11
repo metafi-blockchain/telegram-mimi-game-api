@@ -35,3 +35,19 @@ export type PurchaseEvent = {
     commissionAmount: number,
     time: number
 }
+
+export type UnListingEvent = {
+    ownerAddress: string,
+    nftAddress: string,
+    nftId: number,
+    time: number
+}
+
+export type PriceUpdateEvent = {
+    ownerAddress: string,
+    nftAddress: string,
+    nftId: number,
+    oldPrice: number,
+    newPrice: number,
+    openTime: number
+}

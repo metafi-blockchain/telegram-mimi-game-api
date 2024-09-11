@@ -24,7 +24,7 @@ export class CronjobsService {
     @Cron(CronExpression.EVERY_MINUTE)
     async handleCreateHeroCron() {
         let path = 'src/templates';
-        const mintRequest = await this.mintRequest.findWithCondition({ status: STATUS.SUBMITTING });
+        const mintRequest = await this.mintRequest.findWithCondition({ status: STATUS.SUBMIT });
 
         if (!mintRequest.length) return;
         console.log("=============Start create nft and upload to s3=========");
@@ -47,6 +47,7 @@ export class CronjobsService {
                 uri: s3Url,
                 owner: request.reception ? request.reception : '',
                 collection_address: nftType.nft_address,
+                attributes: heroTemplate.attributes,
             }).then(async (nft) => {    
                 console.log('nft create: ', nft.gen);
                 await this.mintRequest.update({_id: request._id }, { status: STATUS.DONE });

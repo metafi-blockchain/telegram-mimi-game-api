@@ -3,7 +3,7 @@ import { BlockchainEventListenerService } from './blockchain-event-listener.serv
 import { NftTypesModule } from '../nft-types/nft-types.module';
 import { NftsModule } from '../nfts/nfts.module';
 import { Transaction } from 'ethers';
-import { TransactionHistoryModule } from '../transaction-history/transaction-history.module';
+import { TransactionHistoryModule } from '../event-log-history/event-history.module';
 
 @Module({
   providers: [BlockchainEventListenerService],
