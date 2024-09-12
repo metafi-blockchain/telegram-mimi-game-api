@@ -74,6 +74,11 @@ export class NftTypesService extends BaseService<NftType> {
     async findAllWithCondition(cond: {}){
         return this.nftModel.find(cond).exec()
     }
+
+    async checkCanUpdateByBlockNumber(nft_address: string , blockNumber: number){
+        const nftTypes = await this.nftModel.findOne({nft_address}).exec()
+        return Number(blockNumber) > Number(nftTypes.block_number)
+    }
     
 
 }

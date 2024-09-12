@@ -51,3 +51,18 @@ export type PriceUpdateEvent = {
     newPrice: number,
     openTime: number
 }
+
+export type ActiveGameEvent = {
+    nftAddress: string,
+    nftId: number,
+    ownerAddress: string,
+    feeContract: number,
+    feeAmount: number,
+    time: number
+}
+export type DeActiveGameEvent = {
+    nftAddress: string,
+    nftId: number,
+    ownerAddress: string,
+    time: number
+}

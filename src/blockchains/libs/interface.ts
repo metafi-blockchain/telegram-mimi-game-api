@@ -38,5 +38,8 @@ export type ListingByAdminParam = {
     prices: number[],
     currencies: string[],
     durations: number[],
+}
 
+export interface EventStrategy {
+    handleEvent(event: any): Promise<void>;
 }

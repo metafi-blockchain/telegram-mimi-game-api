@@ -49,7 +49,8 @@
     "swagger-ui-express": "^5.0.1",
     "viem": "^2.20.1",
     "web3": "^4.12.1",
-    "web3-types": "^1.7.0"
+    "web3-types": "^1.7.0",
+    "winston": "^3.14.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -70,6 +70,9 @@ export class NFT  implements BaseEntity {
     @Prop({ type: Array<Attributes>, default: [] })
     attributes: Attributes[]
 
+    @Prop({ type: Number, default: 0 })
+    block_number: number;
+
 }
 
 export const NFTSchema = SchemaFactory.createForClass(NFT)

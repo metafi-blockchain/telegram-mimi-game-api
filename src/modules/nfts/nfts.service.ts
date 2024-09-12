@@ -47,8 +47,8 @@ export class NftsService extends BaseService<NFT> {
         const erc721Service = new ERC721Service(nft.collection_address, rpcUrl)
         const result = await erc721Service.mintNFT(nftMint, privateKey)
         if(result.status){
-            nft.minting_status = MINT_STATUS.MINTED;
-            await nft.save();
+            // nft.minting_status = MINT_STATUS.MINTED;
+            // await nft.save();
             this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} success`)
         }else{
             this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} failed`)    
@@ -104,6 +104,11 @@ export class NftsService extends BaseService<NFT> {
         ]);
     
         return nftRequest; // This returns the aggregated NFT data
+    }
+
+    async checkCanUpdateByBlockNumber(nftContractAddress: string, nftId: number, block_number: number){
+        const nft = await this.nftModel.findOne({tokenId: Number(nftId), collection_address: nftContractAddress}).exec();
+        return nft.block_number < block_number;
     }
 
 

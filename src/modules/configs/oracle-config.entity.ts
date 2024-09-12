@@ -11,8 +11,13 @@ export interface OracleConfig extends BaseEntity {
 export class OracleConfig  implements BaseEntity {
 
     _id: mongoose.Schema.Types.ObjectId
-    @Prop({ type: String, required: true, unique: true })
+    @Prop({ type: String})
     private_key_hash: string;
+
+    @Prop({ type: Number})
+    block_number: number;
+
+    
 
 }
 
