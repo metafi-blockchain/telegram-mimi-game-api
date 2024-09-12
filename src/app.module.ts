@@ -19,6 +19,7 @@ import { OracleConfigsModule } from './modules/configs/oracle-configs.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TransactionHistoryModule } from './modules/event-log-history/event-history.module';
+import { Web3Module } from './modules/web3/web3.module';
 
 
 
@@ -57,6 +58,7 @@ const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env
       OracleConfigsModule,
       TelegramModule,
       TransactionHistoryModule,
+      Web3Module,
   
     ],
   controllers: [],

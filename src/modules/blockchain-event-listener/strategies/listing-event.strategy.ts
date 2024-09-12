@@ -1,25 +1,27 @@
 
 import { EventStrategy } from 'src/blockchains/libs/interface';
-import { TransactionHistoryService } from 'src/modules/event-log-history/event-history.service';
 import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
-import Web3 from 'web3';
 
 export class ListingEventStrategy implements EventStrategy {
   constructor(
     private nftService: NftsService,
-    private transactionService: TransactionHistoryService,
-    private web3: Web3
   ) {}
 
   async handleEvent(event: any): Promise<void> {
-    const { ownerAddress, nftAddress, nftId, listingPrice, openTime, currency } = event.args;
+    const { previousOwner, newOwner, nft, nftId, currency, listingPrice, openTime } = event.args;
     const blockNumber = Number(event['log'].blockNumber);
 
+   const canUpdate = await this.nftService.checkCanUpdateByBlockNumber(nft, nftId, blockNumber);
+    if (!canUpdate) {
+      console.log(`ListingEvent skipped for tokenId: ${nftId}`);
+      return;
+    }
+
     await this.nftService.update(
-      { tokenId: nftId, collection_address: nftAddress },
+      { tokenId: Number(nftId), collection_address: nft },
       {
-        owner: ownerAddress,
+        owner: newOwner,
         currency,
         price: listingPrice,
         open_time: Number(openTime),
@@ -28,26 +30,6 @@ export class ListingEventStrategy implements EventStrategy {
       }
     );
 
-    await this.logTransaction(event);
     console.log(`ListingEvent handled successfully for tokenId: ${nftId}`);
-  }
-
-  private async logTransaction(event: any) {
-    const eventLog = event['log'];
-    const transactionHash = eventLog['transactionHash'];
-    if (!transactionHash) return;
-
-    const tx = await this.web3.eth.getTransaction(transactionHash);
-    await this.transactionService.create({
-      transaction_hash: transactionHash,
-      contract_address: eventLog['address'],
-      from: tx.from,
-      to: tx.to,
-      value: Number(tx.value),
-      block_hash: eventLog['blockHash'],
-      block_number: eventLog['blockNumber'],
-      event_type: event.filter,
-      log_data: JSON.stringify(eventLog),
-    });
   }
 }
