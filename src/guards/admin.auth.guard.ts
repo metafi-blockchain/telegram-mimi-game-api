@@ -10,18 +10,22 @@ export class AdminGuard implements CanActivate {
   // constructor( private userService: UsersService ) {}
   async canActivate(context: ExecutionContext) {
 
+    const req = context.switchToHttp().getRequest();            
+    return req?.user?.role == 0;
+        
+    
+  }
+}
+
+
+export class OperatorGuard implements CanActivate {
+
+  // constructor( private userService: UsersService ) {}
+  async canActivate(context: ExecutionContext) {
+
     const req = context.switchToHttp().getRequest();    
         
-    try {
-        if(!req.user){
-            return false
-        }
-        return req.user.role === 0;
+    return req?.user?.role == 1;
         
-    } catch (err) { 
-        console.log(err);
-        
-        return false
-    }
   }
 }

@@ -5,7 +5,15 @@ import { CreateNftTypeDto, ListNftsDto, MintNftsDo, MintNftDto, SetNftSupport, L
 import { NftTypesService } from '../nft-types/nft-types.service';
 import { NftsService } from '../nfts/nfts.service';
 import { MINT_STATUS, NFT, NFT_STATUS } from '../nfts/nft.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { AdminGuard } from 'src/guards/admin.auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 
+
+@ApiBearerAuth()
+@UseGuards(AdminGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('requests')
 export class MintRequestController {
     constructor(
@@ -17,14 +25,13 @@ export class MintRequestController {
 
     }
 
-
     @Post('/deploy-nft-contract')
     async createNftType(@Body() nftType: CreateNftTypeDto) {
 
         return this.nftTypesService.deployNftType(nftType);
     }
 
-    //create many mint request
+    @ApiResponse({ status: 403, description: 'Forbidden.'})
     @Post('/create-request-mint-nfts')
     async createManyMintRequest(@Body() parma: MintNftsDo) {
 
@@ -32,8 +39,6 @@ export class MintRequestController {
 
         if (gens.length === 0) throw new BadRequestException('gens is required')
         // if(!reception) throw new BadRequestException('reception is required')
-
-        console.log('gens:', gens);
         const response = await this.requestService.findWithCondition({ gen: { $in: gens } })
 
         if (response.length > 0) {

@@ -45,6 +45,8 @@ export class JwtMiddleware implements NestMiddleware {
         const decoded =  jwt.verify(token ,public_key);
 
         const  email = decoded.sub as string
+        console.log("email", email);
+        
         
         const user = await this.userService.findByEmail(email);
         
