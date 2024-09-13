@@ -202,11 +202,11 @@ export class BlockchainEventListenerService implements OnModuleInit {
 
   // Utility function to update NFT if it passes block number validation
   private async updateNftIfCan(nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
-    const canUpdate = await this.nftService.checkCanUpdateByBlockNumber(nftAddress, nftId, block_number);
-    if (!canUpdate) {
-      console.log(`Cannot update NFT with tokenId: ${nftId} at block: ${block_number}`);
-      return;
-    }
+    // const canUpdate = await this.nftService.checkCanUpdateByBlockNumber(nftAddress, nftId, block_number);
+    // if (!canUpdate) {
+    //   console.log(`Cannot update NFT with tokenId: ${nftId} at block: ${block_number}`);
+    //   return;
+    // }
     await this.nftService.update({ tokenId: nftId, collection_address: nftAddress }, { ...updateFields, block_number });
   }
 

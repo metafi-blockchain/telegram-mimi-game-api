@@ -29,7 +29,7 @@ export class BlockchainEventListenerService implements OnModuleInit {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
     // Initialize the strategy factory
-    this.eventStrategyFactory = new EventStrategyFactory(this.nftService);
+    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService);
   }
 
   async onModuleInit() {
@@ -37,6 +37,16 @@ export class BlockchainEventListenerService implements OnModuleInit {
     const depositContractAddress = this.configService.get<string>('DEPOSIT_CONTRACT_ADDRESS');
     const marketPlaceContractAddress = this.configService.get<string>('MARKET_PLACE_CONTRACT_ADDRESS');
     const gameContractAddress = this.configService.get<string>('GAME_CONTRACT_ADDRESS');
+
+
+    const factoryContract = new ethers.Contract(factoryContractAddress, factoryAbi.abi, this.provider);
+
+    // factoryContract.on('Deployed', async (_nft, _nftId, _uri, event) => {
+    //   console.log('Deployed event:', event.args);
+    //   await this.handleEvent('Deployed', event)
+    // });
+
+
     const nftTypes = await this.nftTypService.findAllWithCondition({ status: 'DONE', is_active: true });
     
     await Promise.all(nftTypes.map((nftType) => {
@@ -56,17 +66,19 @@ export class BlockchainEventListenerService implements OnModuleInit {
     
     const marketPlaceContract = new ethers.Contract(marketPlaceContractAddress, marketPlaceAbi, this.provider);
 
-    // Register listeners for different events
-   
-
+    marketPlaceContract.on('SetNftSupport', async ( _nft, _isSupport, event) => {
+      await this.handleEvent('SetNftSupport', event)
+    });
 
     marketPlaceContract.on('Listing', async (_owner, _nft, _nftId, _listing, _currency, _listingPrice, _listingTime, _openTime, event) => {
       await this.handleEvent('Listing', event)
     });
+
     marketPlaceContract.on('UnListing', async (_owner, _nfts, _nftId, _openTime, event) => {
       console.log('UnListing event:', event.args);
       await this.handleEvent('UnListing', event)
     });
+
     marketPlaceContract.on('PriceUpdate', async (_owner, _nft, _nftId, _oldPrice, _newPrice, _time, event) => {
       console.log('PriceUpdate event:', event.args);
       await this.handleEvent('PriceUpdate', event)
@@ -76,6 +88,25 @@ export class BlockchainEventListenerService implements OnModuleInit {
       console.log('Purchase event:', event.args);
       await this.handleEvent('Purchase', event)
     });
+
+    const gameContract = new ethers.Contract(gameContractAddress, gameContractAbi, this.provider);
+   
+    gameContract.on('Active', async (_nftAddress, _nftId, _sender, _currency, _amount,_time, event) => {
+      console.log('Active event:', event.args);
+      await this.handleEvent('Active', event)
+    });
+    gameContract.on('Deactive', async (_nftAddress, _nftId, _sender, _gameAddress, _gameStatus, event) => {
+      console.log('Deactive event:', event.args);
+      await this.handleEvent('Deactive', event)
+    });
+
+    const depositContract = new ethers.Contract(depositContractAddress, depositAbi, this.provider);
+    depositContract.on('Desposit', async (_from, _token, _amount, _time, event) => {
+      console.log('Desposit event:', event.args);
+      await this.handleEvent('Deposit', event)
+    });
+
+
 
 
 

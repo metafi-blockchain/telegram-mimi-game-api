@@ -106,9 +106,19 @@ export class NftsService extends BaseService<NFT> {
         return nftRequest; // This returns the aggregated NFT data
     }
 
-    async checkCanUpdateByBlockNumber(nftContractAddress: string, nftId: number, block_number: number){
-        const nft = await this.nftModel.findOne({tokenId: Number(nftId), collection_address: nftContractAddress}).exec();
-        return nft.block_number < block_number;
+
+    async updateStateNFT(owner: string, nftAddress: string, nftId: number, block_number: number,  updateFields: Partial<any>) {
+
+        const tokenId = Number(nftId);
+
+        const canUpdate = await this._checkCanUpdateByBlockNumber(nftAddress, tokenId, block_number);
+       
+        if (!canUpdate) {
+
+          throw new Error(`Cannot update NFT with tokenId: ${tokenId} at block: ${block_number}`);
+        }
+
+        return await this.nftModel.updateOne({ tokenId: tokenId, collection_address: nftAddress, owner }, { ...updateFields, block_number }).exec();
     }
 
 
@@ -118,6 +128,10 @@ export class NftsService extends BaseService<NFT> {
         return privateKey;
     }
 
+    private async _checkCanUpdateByBlockNumber(nftContractAddress: string, nftId: number, block_number: number){
+        const nft = await this.nftModel.findOne({tokenId: Number(nftId), collection_address: nftContractAddress}).exec();
+        return nft.block_number < block_number;
+    }
 
 
 

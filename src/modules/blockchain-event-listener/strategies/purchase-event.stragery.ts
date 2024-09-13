@@ -14,21 +14,16 @@ export class PurchaseEventStrategy implements EventStrategy {
     console.log(`Purchase handled for tokenId: ${nftId}`);
     
     const blockNumber = Number(event['log'].blockNumber);
-    const canUpdate = await this.nftService.checkCanUpdateByBlockNumber(nft, nftId, blockNumber);
-    if (!canUpdate) {
-      console.log(`Purchase Event skipped for tokenId: ${nftId}`);
-      return;
-    }
-    await this.nftService.update(
-        { tokenId: Number(nftId), collection_address: nft, owner: previousOwner },
-        {
-          owner: newOwner,
-          price: 0,
-          open_time: 0,
-          block_number: blockNumber,
-          nft_status: NFT_STATUS.AVAILABLE,
-        }
-      );
+
+    await this.nftService.updateStateNFT(previousOwner, nft, nftId, blockNumber,  {
+        owner: newOwner,
+        price: 0,
+        open_time: 0,
+        block_number: blockNumber,
+        nft_status: NFT_STATUS.AVAILABLE,
+      })
+       
+    
     console.log(`Purchase handled successfully for tokenId: ${nftId}`);
   }
 
