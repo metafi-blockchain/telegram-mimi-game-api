@@ -4,7 +4,9 @@ import { Express } from 'express';
 import { S3Service } from './s3.service';
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
 import { Multer } from 'multer'; // Add this line
+import { ApiResponse } from '@nestjs/swagger';
 
+@ApiResponse({ status: 403, description: 'Forbidden.'})
 @UseGuards(JwtAuthGuard)
 @Controller('s3')
 export class S3Controller {

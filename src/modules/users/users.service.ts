@@ -13,7 +13,7 @@ export class UsersService extends BaseService<User>{
     };
 
 
-    async findOne(email: string){
+    async findByEmail(email: string){
 
         const user = await this.userModel.findOne({email}).exec()
 
@@ -23,15 +23,7 @@ export class UsersService extends BaseService<User>{
         return user;
     }
 
-    async findByUuid(uuid: string) :Promise<User> {
 
-        const user = await this.userModel.findOne({uuid}).exec()
-
-        if(!user){
-            throw new NotFoundException('User Not found!')
-        }
-        return user;
-    }
 
     async findById(id: string) :Promise<User> {
 

@@ -9,7 +9,11 @@ export abstract class BaseService<T extends Document> {
     return this.model.find().exec();
   }
 
-  async findOne(id: string): Promise<T> {
+  async find(cond: any): Promise<T[]> {
+    return this.model.find(cond).exec();
+  }
+
+  async findById(id: string): Promise<T> {
     const entity = await this.model.findById(id).exec();
     if (!entity) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
@@ -17,23 +21,17 @@ export abstract class BaseService<T extends Document> {
     return entity;
   }
 
-  async create(createDto: any): Promise<T> {
+  finOneWithCondition(cond: any): Promise<T> {
+    return this.model.findOne(cond).exec();
+  }
+
+  create(createDto: any): Promise<T> {
     const createdEntity = new this.model(createDto);
     return createdEntity.save();
   }
 
-  // async update(id: string, updateDto: any): Promise<T> {
-  //   const updatedEntity = await this.model
-  //     .findByIdAndUpdate(id, updateDto, { new: true })
-  //     .exec();
-  //   if (!updatedEntity) {
-  //     throw new NotFoundException(`Entity with ID ${id} not found`);
-  //   }
-  //   return updatedEntity;
-  // }
-
-  aggregate(cond: any): any {
-    return this.model.aggregate(cond);
+  aggregate(cond: any): Promise<T[]>  {
+    return this.model.aggregate(cond).exec();
   }
   async delete(id: string): Promise<T> {
     const deletedEntity = await this.model.findByIdAndDelete(id).exec();
@@ -43,9 +41,8 @@ export abstract class BaseService<T extends Document> {
     return deletedEntity;
   }
 
-  finOneWithCondition(cond: any): Promise<T> {
-    return this.model.findOne(cond).exec();
-  }
+
+
   update(cond: any, attrs: Partial<T>){
     return this.model.findOneAndUpdate(cond, {$set: attrs}, {new: true} ).exec();
 }

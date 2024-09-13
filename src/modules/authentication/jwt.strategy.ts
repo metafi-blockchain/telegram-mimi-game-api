@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     console.log(payload);
     
     
-    const user = await this.authService.isValidUserByUuid(payload.sub);
+    const user = await this.authService.isValidUserByEmail(payload.sub);
     console.log("JwtStrategy validate: ", user);
 
     

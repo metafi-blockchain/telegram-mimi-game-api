@@ -9,6 +9,7 @@ import { NftsModule } from '../nfts/nfts.module';
 import { ConfigService } from '@nestjs/config';
 import { MarketService } from 'src/blockchains/services/market-place.service';
 import { OracleConfigsModule } from '../configs/oracle-configs.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports:[
@@ -16,7 +17,8 @@ import { OracleConfigsModule } from '../configs/oracle-configs.module';
     ActivityLogsModule,
     NftTypesModule,
     NftsModule,
-    OracleConfigsModule
+    OracleConfigsModule,
+    UsersModule
 
 ],
   providers: [MintRequestService,

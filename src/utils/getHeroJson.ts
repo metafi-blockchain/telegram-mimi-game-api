@@ -44,8 +44,8 @@ const _createAttributeHero = (
 ): Array<HeroAttribute | null> => {
     return [
         {
-            trait_type: 'gen',
-            value: gen,
+            trait_type: 'Hero Id',
+            value: hero.heroId,
         },
         {
             trait_type: 'Rarity',

@@ -13,8 +13,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
-  app.enableCors()
+  const corOption = { origin : ["*"], methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'], allowedHeaders: ["*"], credentials: true,};
+  app.enableCors(corOption)
   swaggerSetup(app)
+
 
   await app.listen(process.env.PORT || 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

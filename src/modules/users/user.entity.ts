@@ -8,17 +8,34 @@ export interface User extends BaseEntity {
     username: string;
     email: string;
 }
+export enum ROLE  {
+    ADMIN, //0
+    OPERATOR, //1
+    USER //2
+}
   
 @Schema({ timestamps: true })
 export class User  implements BaseEntity {
 
     _id: mongoose.Schema.Types.ObjectId
-    @Prop({ type: String, required: true, unique: true })
-    username: string;
+    @Prop({ type: String, unique: true })
+    name: string;
+
     @Prop({ default: false, required: true, unique: true })
     email: string;
+
+    @Prop({ type: String })
+    password: string;
+
+    @Prop({ type: String, default: '' })
+    address: string;
+
+
     @Prop({ default: false, type: Boolean })
-    administrator: boolean
+    administrator: boolean;
+
+    @Prop({ type: String, enum: ROLE, default: ROLE.USER })
+    role: number;
     
     @Prop({ default: 0, type: Number })
     version: number

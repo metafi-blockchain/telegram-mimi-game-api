@@ -7,7 +7,8 @@ export const swaggerSetup= (app: any)=>{
     .setTitle('Marketplace  API Docs')
     .setDescription('The Marketplace  API description')
     .setVersion('1.0.1')
-    .addTag('Marketplace')
+    .addTag('Enteral Kingdom Marketplace')
+    .addBearerAuth()
     .build();
 
     const document = SwaggerModule.createDocument(app, config);

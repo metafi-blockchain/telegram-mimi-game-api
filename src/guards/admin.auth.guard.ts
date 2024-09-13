@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
         if(!req.user){
             return false
         }
-        return req.user.admin
+        return req.user.role === 0;
         
     } catch (err) { 
         console.log(err);

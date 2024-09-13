@@ -3,17 +3,22 @@ import { IsNotEmpty } from "class-validator";
 import { ObjectId } from "mongoose";
 import { IUser } from "src/interface/user.interface";
 import { IMessageSinged } from "src/modules/authentication/dto/login.dto";
+import { ROLE } from "../user.entity";
 
 
-export class UserDto implements IUser{
+export class UserDto {
 
-    @Expose({ name: "_id" })
-    @Transform((value) => value?.obj?._id)
-    _id: ObjectId;
+
+    @Expose()
+    name: string;
     @Expose()
     address: string
     @Expose()
-    version?: number ;
+    version: number ;
+    @Expose()
+    email: string;
+    @Expose()
+    role: number;
 
 }
 

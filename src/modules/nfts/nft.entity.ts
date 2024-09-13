@@ -66,7 +66,6 @@ export class NFT  implements BaseEntity {
     @Prop({ type: String, default: "" })
     nft_status: NFT_STATUS
 
-
     @Prop({ type: Array<Attributes>, default: [] })
     attributes: Attributes[]
 

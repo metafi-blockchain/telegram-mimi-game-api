@@ -55,7 +55,7 @@ export class ListNftsByGensDto {
     nftAddress: string;
 
     @IsArray()
-    gens: number[];
+    gens: string[];
 
     @IsArray()
     prices: number[];

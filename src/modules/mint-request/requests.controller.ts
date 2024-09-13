@@ -55,63 +55,67 @@ export class MintRequestController {
 
     @Post('/list-nfts-by-gens')
     async listNftsByGen(@Body() param: ListNftsByGensDto) {
-        const { gens, nftAddress } = param;
-        console.log('gens:', gens);
-        console.log('nftAddress:', nftAddress);
+        const { gens, nftAddress, currencies, prices, durations } = param;
     
-
-        if (!gens.length) throw new BadRequestException('gens is required');
-        if (gens.length !== param.currencies.length || gens.length !== param.prices.length || gens.length !== param.durations.length) {
-            throw new BadRequestException('All arrays must have the same length');
+        if (!gens.length) {
+            throw new BadRequestException('Gens array is required');
         }
-
-        const nftType = await this.nftTypesService.finOneWithCondition({ nft_address: param.nftAddress });
-
-        if (!nftType) throw new NotFoundException('collection not found');
-
-        if (nftType.is_market_support === false) throw new BadRequestException('collection is not support in market')
-
+    
+        // Validate array lengths in one check
+        if ([gens.length, currencies.length, prices.length, durations.length].some(len => len !== gens.length)) {
+            throw new BadRequestException('All arrays (gens, currencies, prices, durations) must have the same length');
+        }
+    
+        // Retrieve the NFT type (collection) and ensure it's supported in the market
+        const nftType = await this.nftTypesService.finOneWithCondition({ nft_address: nftAddress });
+        if (!nftType) {
+            throw new NotFoundException('NFT collection not found');
+        }
+        if (!nftType.is_market_support) {
+            throw new BadRequestException('NFT collection is not supported in the market');
+        }
+    
+        // Aggregate NFTs based on the gens provided
         const nfts = await this.nftService.aggregate([
             {
                 $match: {
                     collection_address: nftAddress,
                     gen: { $in: gens },
-                    nft_status: NFT_STATUS.AVAILABLE
-                }, // Match NFTs with the desired status and generation
-            },
-            {
-                $project: {
-                    _id: 0, // Exclude _id (optional)
-                    owner: 1, // Include the owner field
-                    name: 1, // Include the name field
-                    collection_address: 1, // Include the collection_address field
-                    tokenId: 1, // Include the uri field
-                    gen: 1, // Include the gen field
-                    // Add other fields as needed
+                    nft_status: NFT_STATUS.AVAILABLE,
                 },
             },
             {
-                $limit: 100, // Limit the results to 100 NFTs
+                $project: {
+                    _id: 0,
+                    owner: 1,
+                    name: 1,
+                    collection_address: 1,
+                    tokenId: 1,
+                    gen: 1,
+                },
+            },
+            {
+                $limit: 100, // Limit results to a maximum of 100
             }
         ]);
-
+    
         console.log('nfts:', nfts);
-
+    
+        // Check if all gens provided exist
         if (nfts.length !== gens.length) {
-            //get tokenIds not exits
-            const genExits = nfts.map(e => e.gen);
-            const genNotExits = gens.filter(e => !genExits.includes(e))
-            throw new NotFoundException(`gens ${genNotExits.join(',')} not exits`)
+            const genExists = nfts.map(nft => nft.gen);
+            const gensNotFound = gens.filter(gen => !genExists.includes(gen));
+            throw new NotFoundException(`The following gens were not found: ${gensNotFound.join(', ')}`);
         }
+    
+        // List NFTs by admin via the request service
         return this.requestService.listingNftByAdmin({
-            nftAddress: nftAddress,
-            tokenIds: nfts.map((e: NFT) => e.tokenId),
-            currencies: param.currencies,
-            prices: param.prices,
-            durations: param.durations
-        })
-
-
+            nftAddress,
+            tokenIds: nfts.map(nft => nft.tokenId),
+            currencies,
+            prices,
+            durations,
+        });
     }
 
 
