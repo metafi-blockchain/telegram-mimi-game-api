@@ -53,8 +53,13 @@ export class ERC721Library {
     return new this.web3.eth.Contract(NFTAbi.abi, this.nftContract);
   }
 
-  public getContractNftAddress(){
+  public getContractAddress(){
     return this.nftContract;
+  }
+
+  async getPastEvents(eventName: string, fromBlock: number, toBlock: number){
+    const contract = this.getNftContract();
+    return await contract.getPastEvents(eventName, {fromBlock, toBlock});
   }
 
 

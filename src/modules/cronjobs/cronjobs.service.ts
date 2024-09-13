@@ -11,6 +11,8 @@ import { NftTypesService } from '../nft-types/nft-types.service';
 import { COLLECTION_TYPE, TRANSACTION } from '../nft-types/nft-types.entity';
 import { MINT_STATUS } from '../nfts/nft.entity';
 import { Queue } from 'src/blockchains/utils';
+import { BlockchainEventListenerService } from '../blockchain-event-listener/blockchain-event-listener.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CronjobsService {
@@ -21,6 +23,8 @@ export class CronjobsService {
         private readonly mintRequest: MintRequestService,
         private readonly s3Service: S3Service,
         private readonly nftTypeService: NftTypesService,
+        private readonly blockChainListener: BlockchainEventListenerService,
+        private readonly configService: ConfigService,
 
     ) {
         console.log('CronjobsService initialized');
@@ -30,24 +34,53 @@ export class CronjobsService {
     @Cron(CronExpression.EVERY_MINUTE)
     async createHeroJob() {
         try {
-            await this.handleCreateHero();
+            await this._handleCreateHero();
         } catch (error) {
             console.error('Error in createHeroJob:', error);
         }
     }
 
     // Custom cron expression (runs every 5 minutes)
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async jobMintNFT() {
         try {
-            await this.handleMintNfts();
+            await this._handleMintNfts();
         } catch (error) {
             console.error('Error in jobMintNFT:', error);
         }
     }
 
+    @Cron(CronExpression.EVERY_MINUTE)
+    async getPastEvent() {
+        try {
+            const nftTypes = await this.nftTypeService.findAllWithCondition({ status: 'DONE', is_active: true });
+            await Promise.all(nftTypes.map((nftType) => {
+
+                const erc721Address = nftType.nft_address;
+                if (!erc721Address) return;
+                console.log(erc721Address);
+
+                this.blockChainListener.getERC721Events({
+                    address: erc721Address,
+                    fromBlock: 35834464,
+                    toBlock: 35836854,
+                })
+            }));
+
+        } catch (error) {
+            console.error('Error in jobMintNFT:', error);
+        }
+        this.blockChainListener.getMarketPlaceEvents({
+            address: this.configService.get<string>('MARKET_PLACE_CONTRACT_ADDRESS'),
+            fromBlock: 35834464,
+            toBlock: 35836854,
+        })
+    }
+
+
+
     // Handle the minting of NFTs
-    public async handleMintNfts() {
+    public async _handleMintNfts() {
         console.log('============= Start minting NFTs =============');
         try {
             const nftTypes = await this.nftTypeService.findAllWithCondition({ status: TRANSACTION.DONE });
@@ -70,8 +103,10 @@ export class CronjobsService {
         }
     }
 
+
+
     // Handle creation of Hero NFTs and upload to S3
-    public async handleCreateHero() {
+    private async _handleCreateHero() {
         try {
             const path = 'src/templates';
             const mintRequests = await this.mintRequest.findWithCondition({ status: STATUS.SUBMIT });

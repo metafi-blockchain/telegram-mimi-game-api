@@ -66,3 +66,20 @@ export type DeActiveGameEvent = {
     ownerAddress: string,
     time: number
 }
+
+export type IPastEvent = {
+    
+        address: string,
+        topics: string[],
+        data: string,
+        blockNumber: number,
+        transactionHash: string,
+        transactionIndex: 0n,
+        blockHash: string,
+        logIndex: 0n,
+        removed: boolean,
+        returnValues: any,
+        event: string, //event name
+        signature: string,
+        raw: any
+      }

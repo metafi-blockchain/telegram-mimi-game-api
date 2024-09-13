@@ -9,11 +9,15 @@ export class MintEventStrategy implements EventStrategy {
   ) {}
 
   async handleEvent(event: any): Promise<void> {
-    const { recipient, tokenId, uri } = event.args;
+    const { recipient, tokenId, uri } = event.returnValues;
     console.log(`MintEvent handled for tokenId: ${tokenId}`);
     
-    const blockNumber = Number(event['log'].blockNumber);
-
+    const blockNumber = Number(event.blockNumber);
+    const nft = await this.nftService.finOneWithCondition({ uri });
+    if (nft.tokenId !== 0) {
+      console.log(`nft Minted  ${uri}`);
+      return;
+    }
     await this.nftService.update({ uri }, {
       minting_status: MINT_STATUS.MINTED,
       nft_status: NFT_STATUS.AVAILABLE,
@@ -23,6 +27,4 @@ export class MintEventStrategy implements EventStrategy {
     });
     console.log(`MintEvent handled successfully for tokenId: ${tokenId}`);
   }
-
-
 }

@@ -15,7 +15,7 @@ export const getHeroJsonTemplate = (gen: string )  => {
     }
     
     const idHero = hrOb.heroId.toString().padStart(3, '0');
-    console.log('idHero', idHero);
+ 
     
 
     const hero = HERO_COLLECTIONS[idHero];
@@ -27,7 +27,7 @@ export const getHeroJsonTemplate = (gen: string )  => {
     heroTemplate.name = `${fullHero.name}`;
     heroTemplate.description = fullHero.description;
     heroTemplate.image = fullHero.image;
-    heroTemplate.attributes = _createAttributeHero(gen, fullHero);
+    heroTemplate.attributes = _createAttributeHero(fullHero);
     heroTemplate.external_url = fullHero.image;
  
     return heroTemplate;
@@ -39,7 +39,6 @@ export type HeroAttribute = {
 };
 
 const _createAttributeHero = (
-    gen: string,
     hero: IHero,
 ): Array<HeroAttribute | null> => {
     return [

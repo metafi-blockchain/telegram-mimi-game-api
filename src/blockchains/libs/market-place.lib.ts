@@ -32,13 +32,24 @@ export class MarketPlaceLib {
 
   
 
-  public getMarketContractAddress(){
+  public getContractAddress(){
     return this.marketContract;
   }
 
   private getMarketContract(): Contract<any> {
     return new this.web3.eth.Contract(marketAbi, this.marketContract);
   }
+
+  async getPastEvents(eventName: string, fromBlock: number, toBlock: number){
+    const contract = this.getMarketContract();
+    return await contract.getPastEvents(eventName, {fromBlock, toBlock});
+  }
+
+  async getAllPastEvents(eventName: string, fromBlock: number, toBlock: number){
+    const contract = this.getMarketContract();
+    return await contract.getPastEvents(eventName, {fromBlock, toBlock});
+  }
+
 
 
 }

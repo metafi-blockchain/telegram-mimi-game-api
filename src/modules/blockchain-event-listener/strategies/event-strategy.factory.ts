@@ -32,12 +32,13 @@ export class EventStrategyFactory {
         return new ActiveGameEventStrategy(this.nftService);  
      case 'Deactive':
         return new DeActiveGameEventStrategy(this.nftService);   
-
      case 'Active':
         return new SetUpNFTEventStrategy(this.nftTypeService);      
       // Add other strategies for different events here
       default:
-        throw new Error(`No strategy found for event: ${eventName}`);
+        console.log(`No strategy found for event: ${eventName}`);
+        return null;
+        
     }
   }
 }

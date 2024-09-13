@@ -1,6 +1,7 @@
 import {ERC721Library} from '../libs';
 import {BaseService} from './common.service';
 import {  MintNFT, ResponseSendTransaction } from '../libs/interface';
+import { EventLog } from 'ethers';
 
 
 export class ERC721Service extends BaseService {
@@ -15,7 +16,7 @@ export class ERC721Service extends BaseService {
     async mintNFT(param: MintNFT, privateKey: string): Promise<ResponseSendTransaction> {
       const callData =  this.nftContract.mintERC721Data( param);
         const sendTxData = {
-            address: this.nftContract.getContractNftAddress(),
+            address: this.nftContract.getContractAddress(),
             calldata: callData,
             value: '0'
         };
@@ -31,11 +32,19 @@ export class ERC721Service extends BaseService {
       
       const callData =  this.nftContract.mintBatchERC721Data(recipients, uris);
       const sendTxData = {
-        address: this.nftContract.getContractNftAddress(),
+        address: this.nftContract.getContractAddress(),
         calldata: callData,
         value: '0'
       };
       return await this.sendTransactionAndConfirm(sendTxData, privateKey);
+    }
+
+    async getPastEvents(eventName: string, blocks: [number, number])  {
+      return await this.nftContract.getPastEvents(eventName, blocks[0], blocks[1]);
+    }
+
+    async getAllPastEvents(blocks: [number, number]) {
+      return await this.nftContract.getPastEvents("allEvents", blocks[0], blocks[1]);
     }
 
 
