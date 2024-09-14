@@ -23,13 +23,13 @@ import { Web3Module } from './modules/web3/web3.module';
 
 
 
-const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env.NODE_ENV}`
+// const pathENV = process.env.NODE_ENV === 'production'?'.env':`.env.${process.env.NODE_ENV}`
 
 @Module({
   imports:[
       ConfigModule .forRoot({
           isGlobal: true,
-          envFilePath: pathENV
+          envFilePath: ".env"
       }),
       ScheduleModule.forRoot(),
       UsersModule,

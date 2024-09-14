@@ -43,7 +43,7 @@ export class NftsService extends BaseService<NFT> {
             uri: nft.uri,
             collection_address: nft.collection_address,
         }
-        const rpcUrl = this.configService.get<string>('RPC_URL')
+        const rpcUrl = this.configService.get<string>('WEB3_RPC_URL')
         const erc721Service = new ERC721Service(nft.collection_address, rpcUrl)
         const result = await erc721Service.mintNFT(nftMint, privateKey)
         if (result.status) {
@@ -65,7 +65,7 @@ export class NftsService extends BaseService<NFT> {
             return { status: false };
         }
         const privateKey = await this._getPrivateKeyMint();
-        const rpcUrl = this.configService.get<string>('RPC_URL')
+        const rpcUrl = this.configService.get<string>('WEB3_RPC_URL')
         const erc721Service = new ERC721Service(collection_address, rpcUrl);
         const defaultOwner = CryptoUtils.getWalletFromPrivateKey(privateKey);
         const data = nftMints.map(nft => ({ recipient: nft.owner || defaultOwner, uri: nft.uri, collection_address: nft.collection_address }));

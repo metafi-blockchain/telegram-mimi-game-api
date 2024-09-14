@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 // import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto';
 import { JwtAuthService } from './jwt.auth.service';
 import { Request, Response } from 'express';
-import { AuthAddressDto, AuthDto, IVerifyEmail } from './dto/login.dto';
+import { AuthDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 

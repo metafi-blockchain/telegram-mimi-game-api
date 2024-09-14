@@ -24,7 +24,7 @@ import { UsersModule } from '../users/users.module';
   providers: [MintRequestService,
     {
       provide: "RPC_NETWORK",
-      useFactory: (configService: ConfigService) => configService.get<string>('RPC_URL'),
+      useFactory: (configService: ConfigService) => configService.get<string>('WEB3_RPC_URL'),
       inject: [ConfigService],
     },
     {

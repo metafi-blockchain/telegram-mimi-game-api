@@ -12,7 +12,7 @@ export class Web3Service implements OnModuleInit {
     constructor(private configService: ConfigService) { }
 
     onModuleInit() {
-        const rpcUrl = this.configService.get<string>('RPC_URL');
+        const rpcUrl = this.configService.get<string>('WEB3_RPC_URL');
         this.web3 = new Web3(rpcUrl);
         this.provider = new ethers.JsonRpcProvider(rpcUrl);
 

@@ -2,13 +2,16 @@ import { BadRequestException, Body, Controller, Get, NotFoundException, Param, P
 import { NftsService } from './nfts.service';
 import { NFT_STATUS } from './nft.entity';
 import { Web3 } from 'web3'
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('nfts')
 @Controller('nfts')
 export class NftsController {
     constructor(
         private readonly nftService: NftsService,
     ) {}
 
+    @ApiOperation({ summary: 'Get nft in market place' })
     @Get('/in-market')
     async getNftListMarket() {
         return this.nftService.aggregate([
@@ -26,7 +29,7 @@ export class NftsController {
             },
         ]);
     }
-
+    @ApiOperation({ summary: 'Get detail of nft in collection'  })
     @Get('/detail/:collectionAddress/:nftId')
     async getDetailNft( @Param('collectionAddress') collectionAddress: string, @Param('nftId') nftId: string,) {
 
@@ -83,8 +86,6 @@ export class NftsController {
         ]);
     }
   
-
-
 
 
 }

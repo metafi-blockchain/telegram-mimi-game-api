@@ -18,7 +18,7 @@ import { OracleConfigsService } from '../configs/oracle-configs.service';
   providers: [NftTypesService, NFTFactoryService,
     {
       provide: "RPC_NETWORK",
-      useFactory: (configService: ConfigService) => configService.get<string>('RPC_URL'),
+      useFactory: (configService: ConfigService) => configService.get<string>('WEB3_RPC_URL'),
       inject: [ConfigService],
     },
     {

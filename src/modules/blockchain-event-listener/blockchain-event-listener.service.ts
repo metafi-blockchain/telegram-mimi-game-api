@@ -22,7 +22,7 @@ export class BlockchainEventListenerService {
     private nftTypService: NftTypesService,
     private transactionService: TransactionHistoryService,
   ) {
-    this.nodeRpcUrl = this.configService.get<string>('RPC_URL');
+    this.nodeRpcUrl = this.configService.get<string>('WEB3_RPC_URL');
     this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService);
   }
 
