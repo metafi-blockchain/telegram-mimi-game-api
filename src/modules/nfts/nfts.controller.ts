@@ -64,8 +64,31 @@ export class NftsController {
         ]);
     }
 
+    @Get('/heros/:collectionAddress/:heroId')
+    async getByCollection( @Param('collectionAddress') collectionAddress: string,  @Param('heroId') heroId: string,) {
+
+        if (!Web3.utils.isAddress(collectionAddress))   throw new BadRequestException('Invalid address');
+        
+        return this.nftService.aggregate([
+            {
+                $match: {
+                    collection_address: collectionAddress,
+                    nft_status: NFT_STATUS.LISTING_MARKET,
+                    attributes: { $elemMatch: { value: heroId }}
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude _id (optional)
+                    nft_type: 0, // Exclude the nft_type field
+                    minting_status: 0, // Exclude the minting_status field
+                },
+            },
+        ]);
+    }
+
     @Get('/collection/:collectionAddress')
-    async getByCollection( @Param('collectionAddress') collectionAddress: string) {
+    async filterHeroIdInCollection( @Param('collectionAddress') collectionAddress: string) {
 
         if (!Web3.utils.isAddress(collectionAddress))   throw new BadRequestException('Invalid address');
         
