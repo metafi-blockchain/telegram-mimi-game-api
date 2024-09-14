@@ -9,6 +9,7 @@ import { ActiveGameEventStrategy } from './active-in-game-event.stragery';
 import { DeActiveGameEventStrategy } from './de-active-game-event.stragery';
 import { SetUpNFTEventStrategy } from './setup-nft-event.stragery';
 import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
+import { UnListingEventStrategy } from './un-listing-event.strategy';
 
 export class EventStrategyFactory {
   constructor(
@@ -23,7 +24,7 @@ export class EventStrategyFactory {
       case 'Listing':
         return new ListingEventStrategy(this.nftService);
       case 'UnListing':
-        return new ListingEventStrategy(this.nftService);
+        return new UnListingEventStrategy(this.nftService);
       case 'PriceUpdate':
         return new UpdatePriceEventStrategy(this.nftService);
       case 'Purchase':
@@ -32,7 +33,7 @@ export class EventStrategyFactory {
         return new ActiveGameEventStrategy(this.nftService);  
      case 'Deactive':
         return new DeActiveGameEventStrategy(this.nftService);   
-     case 'Active':
+     case 'SetNftSupport':
         return new SetUpNFTEventStrategy(this.nftTypeService);      
       // Add other strategies for different events here
       default:

@@ -9,16 +9,18 @@ export class ActiveGameEventStrategy implements EventStrategy {
   ) {}
 
   async handleEvent(event: any): Promise<void> {
-    const { user, nftAddress, nftId, feeContract, feeAmount, time } = event.args;
-    const blockNumber = Number(event['log'].blockNumber);
+    const { user, nftAddress, nftId, feeContract, feeAmount, time } = event.returnValues;
+    const blockNumber = Number(event.blockNumber);
     
     try {
-        await this.nftService.updateStateNFT(user, nftAddress, nftId, blockNumber, {
+        const result =   await this.nftService.updateStateNFT(user, nftAddress, nftId, blockNumber, {
             nft_status: NFT_STATUS.ACTIVE_IN_GAME
         });
-        console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
-        
-        
+
+        if (result) {
+            console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
+            return;
+        }   
     } catch (error) {
       console.log(`Active Game Event failed for tokenId: ${nftId}`);
       return;

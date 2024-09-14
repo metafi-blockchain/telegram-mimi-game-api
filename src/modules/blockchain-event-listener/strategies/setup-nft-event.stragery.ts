@@ -9,7 +9,7 @@ export class SetUpNFTEventStrategy implements EventStrategy {
   ) {}
 
   async handleEvent(event: any): Promise<void> {
-    const { nft, isSupport } = event.args;
+    const { nft, isSupport } = event.returnValues;
     try {
         await this.nftTypeService.update({ nft_address: nft }, { is_market_support: isSupport });
         console.log(`NFT at address ${nft} support status set to ${isSupport}`);

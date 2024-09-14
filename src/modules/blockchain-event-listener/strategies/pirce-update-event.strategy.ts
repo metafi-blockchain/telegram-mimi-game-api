@@ -6,25 +6,28 @@ import { NftsService } from 'src/modules/nfts/nfts.service';
 export class UpdatePriceEventStrategy implements EventStrategy {
   constructor(
     private nftService: NftsService,
-  ) {}
+  ) { }
 
   async handleEvent(event: any): Promise<void> {
-    const { owner, nft, nftId, oldPrice, newPrice, time } = event.args;
-    const blockNumber = Number(event['log'].blockNumber);
+    const { owner, nft, nftId, oldPrice, newPrice, time } = event.returnValues;
+    const blockNumber = Number(event.blockNumber);
     try {
-      
-     await this.nftService.updateStateNFT(owner, nft, nftId, blockNumber, {
-      price: newPrice,
-      open_time: Number(time),
-    });
-      console.log(`Update price Event handled successfully for tokenId: ${nftId}`);
+
+      const result = await this.nftService.updateStateNFT(owner, nft, nftId, blockNumber, {
+        price: newPrice,
+        open_time: Number(time),
+      });
+      if (result) {
+        console.log(`Update price Event handled successfully for tokenId: ${nftId}`);
+        return;
+      }
     } catch (error) {
       console.log(`Update price Event failed for tokenId: ${nftId}`);
       return;
-      
+
     }
 
-    
+
 
 
   }

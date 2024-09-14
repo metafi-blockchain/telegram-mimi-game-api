@@ -83,3 +83,13 @@ export type IPastEvent = {
         signature: string,
         raw: any
       }
+
+export type ContractType =  'erc721' | 'marketplace' | 'game'
+
+
+// Define the EventData type
+export type GetEventParam = {
+    address: string;
+    fromBlock: number;
+    toBlock: number;
+  };

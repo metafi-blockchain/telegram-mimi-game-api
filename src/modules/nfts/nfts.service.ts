@@ -17,41 +17,41 @@ export class NftsService extends BaseService<NFT> {
 
 
     constructor(
-        @InjectModel(NFT.name) private nftModel: Model<NFT>, 
+        @InjectModel(NFT.name) private nftModel: Model<NFT>,
         // private readonly mintRequest: MintRequestService, 
-        private readonly configService: ConfigService, 
+        private readonly configService: ConfigService,
         private readonly oracleConfigsService: OracleConfigsService,
         private readonly multiDelegateCallService: MultiDelegateCallService,
         private readonly telegramService: TelegramService
 
-    ) {     
-        super(nftModel)   
+    ) {
+        super(nftModel)
     }
 
     async createNft(nft: CreateNftDto) {
-       return this.nftModel.create(nft);
+        return this.nftModel.create(nft);
     }
 
-    async mintNft(nft: NFT){
+    async mintNft(nft: NFT) {
 
 
         const privateKey = await this._getPrivateKeyMint();
         const defaultOwner = CryptoUtils.getWalletFromPrivateKey(privateKey);
 
-        const nftMint =  {
+        const nftMint = {
             recipient: nft.owner || defaultOwner,
             uri: nft.uri,
             collection_address: nft.collection_address,
-        }  
+        }
         const rpcUrl = this.configService.get<string>('RPC_URL')
         const erc721Service = new ERC721Service(nft.collection_address, rpcUrl)
         const result = await erc721Service.mintNFT(nftMint, privateKey)
-        if(result.status){
+        if (result.status) {
             // nft.minting_status = MINT_STATUS.MINTED;
             // await nft.save();
             this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} success`)
-        }else{
-            this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} failed`)    
+        } else {
+            this.telegramService.sendMessage(`mint nft with gen: ${nft.gen} failed`)
         }
         return result;
         // return await this.multiDelegateCallService.mintBatchNFT([nftMint], privateKey);
@@ -62,19 +62,19 @@ export class NftsService extends BaseService<NFT> {
     async mintBatchNFT(collection_address: string, nftMints: NFT[]): Promise<ResponseSendTransaction> {
         if (!nftMints.length) {
             console.log('No NFT to mint');
-            return {status: false};
+            return { status: false };
         }
         const privateKey = await this._getPrivateKeyMint();
         const rpcUrl = this.configService.get<string>('RPC_URL')
         const erc721Service = new ERC721Service(collection_address, rpcUrl);
         const defaultOwner = CryptoUtils.getWalletFromPrivateKey(privateKey);
-        const data = nftMints.map(nft => ({recipient: nft.owner || defaultOwner , uri: nft.uri, collection_address: nft.collection_address}));
-        const result =  await erc721Service.mintBatchNFT(data, privateKey);
+        const data = nftMints.map(nft => ({ recipient: nft.owner || defaultOwner, uri: nft.uri, collection_address: nft.collection_address }));
+        const result = await erc721Service.mintBatchNFT(data, privateKey);
         let gen = nftMints.map(e => e.gen).join(",");
-        if(result.status){
+        if (result.status) {
             this.telegramService.sendMessage(`mint nft with gen: ${gen} success`)
-        }else{
-            this.telegramService.sendMessage(`mint nft with gen: ${gen} failed`)    
+        } else {
+            this.telegramService.sendMessage(`mint nft with gen: ${gen} failed`)
         }
         return result;
     }
@@ -82,10 +82,10 @@ export class NftsService extends BaseService<NFT> {
 
 
 
-    async getNftsByMintStatus(minting_status: MINT_STATUS, collection_address: string) : Promise<NFT[]> {
+    async getNftsByMintStatus(minting_status: MINT_STATUS, collection_address: string): Promise<NFT[]> {
         const nftRequest = await this.nftModel.aggregate([
             {
-                $match: {  minting_status,  collection_address}, // Match NFTs with the desired minting status
+                $match: { minting_status, collection_address }, // Match NFTs with the desired minting status
             },
             {
                 $project: {
@@ -102,34 +102,36 @@ export class NftsService extends BaseService<NFT> {
             },
             // Other stages like $group, $sort, etc. can be added if needed
         ]);
-    
+
         return nftRequest; // This returns the aggregated NFT data
     }
 
 
-    async updateStateNFT(owner: string, nftAddress: string, nftId: number, block_number: number,  updateFields: Partial<any>) {
+    async updateStateNFT(owner: string, nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
 
         const tokenId = Number(nftId);
 
         const canUpdate = await this._checkCanUpdateByBlockNumber(nftAddress, tokenId, block_number);
-       
-        if (!canUpdate) {
 
-          throw new Error(`Cannot update NFT with tokenId: ${tokenId} at block: ${block_number}`);
+        if (!canUpdate) {
+            console.log(`TokenId ${tokenId} already updated at block: ${block_number}`);
+            return false;
         }
 
-        return await this.nftModel.updateOne({ tokenId: tokenId, collection_address: nftAddress, owner }, { ...updateFields, block_number }).exec();
+        await this.nftModel.findOneAndUpdate({ tokenId: tokenId, collection_address: nftAddress, owner }, { ...updateFields, block_number }).exec();
+        return true;
+
     }
 
 
-    private async _getPrivateKeyMint(): Promise<string>{
+    private async _getPrivateKeyMint(): Promise<string> {
         const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
-        if(!privateKey) throw new Error('Invalid Operator Private Key')
+        if (!privateKey) throw new Error('Invalid Operator Private Key')
         return privateKey;
     }
 
-    private async _checkCanUpdateByBlockNumber(nftContractAddress: string, nftId: number, block_number: number){
-        const nft = await this.nftModel.findOne({tokenId: Number(nftId), collection_address: nftContractAddress}).exec();
+    private async _checkCanUpdateByBlockNumber(nftContractAddress: string, nftId: number, block_number: number) {
+        const nft = await this.nftModel.findOne({ tokenId: Number(nftId), collection_address: nftContractAddress }).exec();
         return nft.block_number < block_number;
     }
 

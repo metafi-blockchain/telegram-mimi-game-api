@@ -36,7 +36,7 @@ export class NFT  implements BaseEntity {
     @Prop({ type: String, required: true, index: 1 })
     collection_address: string
 
-    @Prop({ type: Number})
+    @Prop({ type: Number, default: 0 })
     tokenId: number;
 
     @Prop({ type: String, required: true, unique: true })
