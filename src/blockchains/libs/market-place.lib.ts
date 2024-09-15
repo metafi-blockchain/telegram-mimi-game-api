@@ -3,7 +3,7 @@
 import {Bytes} from 'web3-types';
 import Web3, {Contract} from 'web3';
 import marketAbi from '../abis/EnteralKingDomMarketplace.json';
-import {  ListingByAdminParam } from './interface';
+import {  ListingByAdminParam, UnListingParam } from './interface';
 
 export class MarketPlaceLib {
 
@@ -26,6 +26,13 @@ export class MarketPlaceLib {
     return contract.methods.setNFT(nftContractAddress, active).encodeABI() as Bytes
     
   }
+
+  async unListingData(params: UnListingParam){
+
+    const contract = this.getMarketContract();
+    return contract.methods.unListing( params.nftsAddress, params.nftIds).encodeABI() as Bytes
+  }
+
 
 
 

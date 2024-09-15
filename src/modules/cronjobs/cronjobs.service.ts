@@ -43,7 +43,7 @@ export class CronjobsService {
     }
 
     // Custom cron expression to run every 5 minutes
-    @Cron(CronExpression.EVERY_30_MINUTES)
+    @Cron(CronExpression.EVERY_5_MINUTES)
     async jobMintNFT() {
         await this._handleMintNfts();
     }

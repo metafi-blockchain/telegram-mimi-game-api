@@ -1,6 +1,6 @@
 import { MarketPlaceLib } from '../libs';
 import { BaseService } from './common.service';
-import { ListingByAdminParam, ResponseSendTransaction } from '../libs/interface';
+import { ListingByAdminParam, ResponseSendTransaction, UnListingParam } from '../libs/interface';
 
 
 
@@ -18,7 +18,6 @@ export class MarketService extends BaseService {
 
 
         const callData = await this.marketContract.listingByAdminData(param);
-        console.log('callData:', callData);
 
         const sendTxData = {
             address: this.marketContract.getContractAddress(),
@@ -27,6 +26,18 @@ export class MarketService extends BaseService {
         };
         return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
+
+    async unListing(param: UnListingParam, privateKey: string): Promise<ResponseSendTransaction> {
+        const callData = this.marketContract.unListingData(param);
+        const sendTxData = {
+            address: this.marketContract.getContractAddress(),
+            calldata: callData,
+            value: '0'
+        };
+        return await this.sendTransactionAndConfirm(sendTxData, privateKey);
+    }
+
+
 
     async setNFTSupport(nftContractAddress: string[], active: boolean[], privateKey: string): Promise<ResponseSendTransaction> {
         const callData = this.marketContract.setNFTSupportData(nftContractAddress, active);
@@ -39,6 +50,7 @@ export class MarketService extends BaseService {
 
         return await this.sendTransactionAndConfirm(sendTxData, privateKey);
     }
+
     async getAllPastEvents(blocks: [number, number]) {
         return await this.marketContract.getPastEvents("allEvents", blocks[0], blocks[1]);
     }

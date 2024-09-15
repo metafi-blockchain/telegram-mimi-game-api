@@ -40,6 +40,12 @@ export type ListingByAdminParam = {
     durations: number[],
 }
 
+
+export type UnListingParam = {
+    nftsAddress: string,
+    nftIds: number[]
+}
+
 export interface EventStrategy {
     handleEvent(event: any): Promise<void>;
 }

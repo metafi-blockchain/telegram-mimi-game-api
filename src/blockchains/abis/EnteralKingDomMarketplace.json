@@ -292,12 +292,6 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "listingPrice",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "price",
         "type": "uint256"
       },
@@ -484,11 +478,6 @@
       {
         "internalType": "uint256",
         "name": "_nftId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -897,9 +886,9 @@
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "_nfts",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "_nft",
+        "type": "address"
       },
       {
         "internalType": "uint256[]",
@@ -921,9 +910,9 @@
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "_nfts",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "_nft",
+        "type": "address"
       },
       {
         "internalType": "uint256[]",
