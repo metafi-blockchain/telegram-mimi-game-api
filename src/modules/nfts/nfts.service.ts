@@ -108,18 +108,24 @@ export class NftsService extends BaseService<NFT> {
 
 
     async updateStateNFT(owner: string, nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
+        try {
+            const tokenId = Number(nftId);
 
-        const tokenId = Number(nftId);
-
-        const canUpdate = await this._checkCanUpdateByBlockNumber(nftAddress, tokenId, block_number);
-
-        if (!canUpdate) {
-            console.log(`TokenId ${tokenId} already updated at block: ${block_number}`);
+            const canUpdate = await this._checkCanUpdateByBlockNumber(nftAddress, tokenId, block_number);
+    
+            if (!canUpdate) {
+                console.log(`TokenId ${tokenId} already updated at block: ${block_number}`);
+                return false;
+            }
+    
+            await this.nftModel.findOneAndUpdate({ tokenId: tokenId, collection_address: nftAddress }, { ...updateFields, block_number }).exec();
+            return true;  
+        } catch (error) {
+            console.log(`Error updating NFT: ${error}`);
             return false;
+            
         }
 
-        await this.nftModel.findOneAndUpdate({ tokenId: tokenId, collection_address: nftAddress, owner }, { ...updateFields, block_number }).exec();
-        return true;
 
     }
 

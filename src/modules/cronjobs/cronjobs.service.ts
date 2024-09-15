@@ -15,6 +15,8 @@ import { BlockchainEventListenerService } from '../blockchain-event-listener/blo
 import { ConfigService } from '@nestjs/config';
 import { OracleConfigsService } from '../configs/oracle-configs.service';
 import { Web3Service } from '../web3/web3.service';
+import { ScannerErrorsService } from '../scanner-errors/scanner-errors.service';
+import { SCAN_STATUS, ScannerError } from '../scanner-errors/scanner-error.entity';
 
 @Injectable()
 export class CronjobsService {
@@ -28,7 +30,8 @@ export class CronjobsService {
         private readonly blockChainListener: BlockchainEventListenerService,
         private readonly configService: ConfigService,
         private readonly oracleService: OracleConfigsService,
-        private readonly web3Service: Web3Service
+        private readonly web3Service: Web3Service,
+        private readonly errorScannerService: ScannerErrorsService,
     ) {
         console.log('CronjobsService initialized');
     }
@@ -36,67 +39,65 @@ export class CronjobsService {
     // Run create NFT from gen and upload to S3 every minute
     @Cron(CronExpression.EVERY_5_MINUTES)
     async createHeroJob() {
-      
         await this._handleCreateHero();
-      
     }
 
     // Custom cron expression to run every 5 minutes
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async jobMintNFT() {
         await this._handleMintNfts();
     }
 
-    // Fetch and process past blockchain events every 15 seconds
-    @Cron("*/15 * * * * *")
+    // Fetch and process past blockchain events every 20 seconds
+    @Cron('*/20 * * * * *')
     async getPastEvent() {
         try {
             const config = await this.oracleService.finOneWithCondition({});
 
-            const toBlock = await this.web3Service.getBlockNumber() - 1;
+            const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
-
-            console.log(`Fetching events from block ${fromBlock} to ${toBlock}`);
-
-            const nftTypes = await this.nftTypeService.findAllWithCondition({ status: 'DONE', is_active: true });
-            const requestListERC721 = nftTypes
-                .map((nftType) => nftType.nft_address)
-                .filter((erc721Address) => !!erc721Address)
-                .map((erc721Address) =>
-                    this.blockChainListener.getPastEvents({ address: erc721Address, fromBlock, toBlock }, 'erc721')
-                );
-
-            const requestListenMarket = this.blockChainListener.getPastEvents(
-                { address: this.configService.get<string>('MARKET_PLACE_CONTRACT_ADDRESS'), fromBlock, toBlock },
-                'marketplace'
+            await this._processGetPastEvent(fromBlock, toBlock);
+            await this.oracleService.update(
+                { _id: config._id },
+                { block_number: toBlock },
             );
-
-            const requestGame = this.blockChainListener.getPastEvents(
-                { address: this.configService.get<string>('GAME_CONTRACT_ADDRESS'), fromBlock, toBlock },
-                'game'
-            );
-
-            const eventRequests = [...requestListERC721, requestListenMarket, requestGame];
-            console.log('Fetching all events concurrently...');
-
-            const results = await Promise.allSettled(eventRequests);
-            results.forEach((result, index) => {
-                if (result.status === 'rejected') {
-                    console.error(`Event Request ${index + 1} failed:`, result.reason);
-                }
-            });
-
-            await this.oracleService.update({ _id: config._id }, { block_number: toBlock });
-            console.log('Completed fetching past events.');
         } catch (error) {
-            console.error('Critical error in getPastEvent:', error);
+            console.log('Error in getPastEvent', error);
+        }
+    }
+
+
+    @Cron(CronExpression.EVERY_30_MINUTES)
+    async getErrorPastEvent() {
+        try {
+            const errors = await this.errorScannerService.find({ status: SCAN_STATUS.ERROR });
+            if (!errors.length) return;
+            const queue = new Queue<ScannerError>();
+            errors.forEach((error) => queue.push(error));
+            while (queue.length() > 0) {
+                const erScanner = queue.pop();
+                if (erScanner) {
+                    const fromBlock = erScanner.from_block_number;
+                    const toBlock = erScanner.to_block_number;
+                    await this._processGetPastEvent(fromBlock, toBlock);
+                    await this.errorScannerService.update(
+                        { _id: erScanner._id },
+                        { status: SCAN_STATUS.SUCCEED },
+                    );
+                }
+            }
+
+        } catch (error) {
+            console.log('Error in getPastEvent', error);
         }
     }
 
     // Mint NFTs and handle errors
     private async _handleMintNfts() {
         try {
-            const nftTypes = await this.nftTypeService.findAllWithCondition({ status: TRANSACTION.DONE });
+            const nftTypes = await this.nftTypeService.findAllWithCondition({
+                status: TRANSACTION.DONE,
+            });
             if (!nftTypes.length) {
                 console.log('No NFT types found for minting');
                 return;
@@ -104,7 +105,10 @@ export class CronjobsService {
 
             const requests = nftTypes.map(async (nftType) => {
                 const collection = nftType.nft_address;
-                const nftRequest = await this.nftService.getNftsByMintStatus(MINT_STATUS.INITIALIZE, collection);
+                const nftRequest = await this.nftService.getNftsByMintStatus(
+                    MINT_STATUS.INITIALIZE,
+                    collection,
+                );
                 if (nftRequest.length > 0) {
                     return this.nftService.mintBatchNFT(collection, nftRequest);
                 }
@@ -127,20 +131,25 @@ export class CronjobsService {
     private async _handleCreateHero() {
         try {
             const path = 'src/templates';
-            const mintRequests = await this.mintRequest.findWithCondition({ status: STATUS.SUBMIT });
+            const mintRequests = await this.mintRequest.findWithCondition({
+                status: STATUS.SUBMIT,
+            });
             if (!mintRequests.length) {
                 console.log('No mint requests found');
                 return;
             }
 
             console.log('Queuing mint requests...');
-            const nftType = await this.nftTypeService.finOneWithCondition({ collection_type: COLLECTION_TYPE.HERO, status: TRANSACTION.DONE });
+            const nftType = await this.nftTypeService.finOneWithCondition({
+                collection_type: COLLECTION_TYPE.HERO,
+                status: TRANSACTION.DONE,
+            });
             if (!nftType) {
                 console.log('No NFT Type found for HERO collection');
                 return;
             }
 
-            mintRequests.forEach(request => this.requestQueue.push(request));
+            mintRequests.forEach((request) => this.requestQueue.push(request));
             console.log(`${this.requestQueue.length()} requests enqueued`);
 
             await this._processMintRequests(nftType, path);
@@ -151,7 +160,10 @@ export class CronjobsService {
     }
 
     // Create and upload file to S3
-    private async _createFileAndUploadToS3(basePath: string, gen: string): Promise<string> {
+    private async _createFileAndUploadToS3(
+        basePath: string,
+        gen: string,
+    ): Promise<string> {
         const filePath = path.join(basePath, `${gen}.json`);
         const heroTemplate = getHeroJsonTemplate(gen);
 
@@ -197,12 +209,79 @@ export class CronjobsService {
                     });
 
                     console.log(`NFT created for gen: ${nft.gen} with URI: ${s3Url}`);
-                    await this.mintRequest.update({ _id: request._id }, { status: STATUS.DONE });
-
+                    await this.mintRequest.update(
+                        { _id: request._id },
+                        { status: STATUS.DONE },
+                    );
                 } catch (requestError) {
-                    console.error(`Error processing request ${request._id}:`, requestError);
+                    console.error(
+                        `Error processing request ${request._id}:`,
+                        requestError,
+                    );
                 }
             }
+        }
+    }
+
+    // Fetch past blockchain events
+    private async _processGetPastEvent(fromBlock: number, toBlock: number) {
+        try {
+            console.log(`Fetching events from block ${fromBlock} to ${toBlock}`);
+            const nftTypes = await this.nftTypeService.findAllWithCondition({
+                status: 'DONE',
+                is_active: true,
+            });
+            const requestListERC721 = nftTypes
+                .map((nftType) => nftType.nft_address)
+                .filter((erc721Address) => !!erc721Address)
+                .map((erc721Address) =>
+                    this.blockChainListener.getPastEvents(
+                        { address: erc721Address, fromBlock, toBlock },
+                        'erc721',
+                    ),
+                );
+
+            const requestListenMarket = this.blockChainListener.getPastEvents(
+                {
+                    address: this.configService.get<string>(
+                        'MARKET_PLACE_CONTRACT_ADDRESS',
+                    ),
+                    fromBlock,
+                    toBlock,
+                },
+                'marketplace',
+            );
+
+            const requestGame = this.blockChainListener.getPastEvents(
+                {
+                    address: this.configService.get<string>('GAME_CONTRACT_ADDRESS'),
+                    fromBlock,
+                    toBlock,
+                },
+                'game',
+            );
+
+            const eventRequests = [
+                ...requestListERC721,
+                requestListenMarket,
+                requestGame,
+            ];
+            console.log('Fetching all events concurrently...');
+
+            const results = await Promise.allSettled(eventRequests);
+            results.forEach((result, index) => {
+                if (result.status === 'rejected') {
+                    console.error(`Event Request ${index + 1} failed:`, result.reason);
+                }
+            });
+            console.log('Completed fetching past events.');
+        } catch (error) {
+            await this.errorScannerService.create({
+                from_block_number: fromBlock,
+                to_block_number: toBlock,
+                error_message: error.message.toString(),
+            });
+            console.error('Critical error in getPastEvent:', error);
         }
     }
 }

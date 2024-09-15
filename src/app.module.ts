@@ -20,6 +20,7 @@ import { TelegramModule } from './modules/telegram/telegram.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TransactionHistoryModule } from './modules/event-log-history/event-history.module';
 import { Web3Module } from './modules/web3/web3.module';
+import { ScannerErrorsModule } from './modules/scanner-errors/scanner-errors.module';
 
 
 
@@ -59,6 +60,7 @@ import { Web3Module } from './modules/web3/web3.module';
       TelegramModule,
       TransactionHistoryModule,
       Web3Module,
+      ScannerErrorsModule,
   
     ],
   controllers: [],
