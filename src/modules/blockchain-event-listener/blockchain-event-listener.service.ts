@@ -77,6 +77,7 @@ export class BlockchainEventListenerService {
 
   // Handle a specific event by delegating to the corresponding strategy
   private async handleEvent(eventName: string, event: IPastEvent) {
+
     try {
       // Log the transaction
       this.transactionService.createTransactionHistory(event);

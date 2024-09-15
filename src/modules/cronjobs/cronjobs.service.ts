@@ -56,6 +56,7 @@ export class CronjobsService {
 
             const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
+            // const fromBlock = 35862644
             await this._processGetPastEvent(fromBlock, toBlock);
             await this.oracleService.update(
                 { _id: config._id },
@@ -113,15 +114,7 @@ export class CronjobsService {
                     return this.nftService.mintBatchNFT(collection, nftRequest);
                 }
             });
-
-            if (!requests.length) {
-                console.log('No NFTs found for minting');
-                return;
-            }
-
-            console.log('Start minting NFTs...');
             await Promise.all(requests);
-            console.log('Finished minting NFTs');
         } catch (error) {
             console.error('Error in handleMintNfts:', error);
         }
@@ -144,6 +137,7 @@ export class CronjobsService {
                 collection_type: COLLECTION_TYPE.HERO,
                 status: TRANSACTION.DONE,
             });
+            
             if (!nftType) {
                 console.log('No NFT Type found for HERO collection');
                 return;

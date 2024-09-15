@@ -2,7 +2,7 @@
 
 import { Bytes } from 'web3-types';
 import Web3, { Contract } from 'web3';
-import DepositAbi from '../abis/EnterKingDomDeposit.json';
+import gameAbi from '../abis/EnteralKingDomGame.json';
 import { estimateGas } from 'web3/lib/commonjs/eth.exports';
 
 export class GameLib {
@@ -34,7 +34,7 @@ export class GameLib {
 
     private getGameContract(): Contract<any> {
 
-        return new this.web3.eth.Contract(DepositAbi, this.gameContract);
+        return new this.web3.eth.Contract(gameAbi, this.gameContract);
     }
 
 
