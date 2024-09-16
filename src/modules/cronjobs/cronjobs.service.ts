@@ -17,6 +17,7 @@ import { OracleConfigsService } from '../configs/oracle-configs.service';
 import { Web3Service } from '../web3/web3.service';
 import { ScannerErrorsService } from '../scanner-errors/scanner-errors.service';
 import { SCAN_STATUS, ScannerError } from '../scanner-errors/scanner-error.entity';
+import { CreateNftDto } from '../nfts/dtos/nft.dto';
 
 @Injectable()
 export class CronjobsService {
@@ -49,7 +50,7 @@ export class CronjobsService {
     }
 
     // Fetch and process past blockchain events every 20 seconds
-    @Cron('*/20 * * * * *')
+    @Cron('*/30 * * * * *')
     async getPastEvent() {
         try {
             const config = await this.oracleService.finOneWithCondition({});
@@ -63,7 +64,7 @@ export class CronjobsService {
                 { block_number: toBlock },
             );
         } catch (error) {
-            console.log('Error in getPastEvent', error);
+            console.error('Error in getPastEvent', error);
         }
     }
 
@@ -147,7 +148,7 @@ export class CronjobsService {
             console.log(`${this.requestQueue.length()} requests enqueued`);
 
             await this._processMintRequests(nftType, path);
-            console.log('Finished processing NFT mint requests');
+
         } catch (error) {
             console.error('Error in handleCreateHero:', error);
         }
@@ -200,7 +201,7 @@ export class CronjobsService {
                         owner: reception || '',
                         collection_address: nftType.nft_address,
                         attributes: heroTemplate.attributes,
-                    });
+                    } as CreateNftDto);
 
                     console.log(`NFT created for gen: ${nft.gen} with URI: ${s3Url}`);
                     await this.mintRequest.update(

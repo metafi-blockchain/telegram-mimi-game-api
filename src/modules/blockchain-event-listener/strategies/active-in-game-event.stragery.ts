@@ -32,7 +32,7 @@ export class ActiveGameEventStrategy implements EventStrategy {
                 }) as ActiveGame;
 
                 console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
-                
+
                 return;
             }
         } catch (error) {
@@ -41,8 +41,15 @@ export class ActiveGameEventStrategy implements EventStrategy {
 
         }
     }
-    private useActiveInGame(data: ActiveGame) {
-        return this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+    private async useActiveInGame(data: ActiveGame) {
+        try {
+            console.info("Active game data", data);
+            return await   this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+        } catch (error) {
+            console.error('Error active in game:', error);
+            
+        }
+        
     }
 
 

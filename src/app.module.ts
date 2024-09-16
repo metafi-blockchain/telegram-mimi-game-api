@@ -39,19 +39,11 @@ import { DepositRequestModule } from './modules/deposit-request/deposit-request.
       MongooseModule.forRootAsync({
           inject: [ConfigService],
           useFactory: ((config: ConfigService) =>{
-            return {
-              uri:  config.get('MONGO_URI_CONNECT_STRING'), // Use the MongooseConfigService to get the URI
-              useNewUrlParser: true,
-              useUnifiedTopology: true,
-            }
+            return { uri:  config.get('MONGO_URI_CONNECT_STRING')}
           })
       }),
-      // MongooseModule .forRoot('mongodb+srv://dev:pQkZzHzuIfV0u1sP@cluster0.xyhwi3x.mongodb.net/db-dev'),
       ActivityLogsModule,
-
       S3Module,
-      // SqsConsumerModule,
-      // SqsManagerEventModule,
       NftsModule,
       CronjobsModule,
       RequestModule,

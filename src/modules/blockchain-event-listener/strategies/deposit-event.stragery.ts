@@ -42,8 +42,15 @@ export class DepositEventStrategy implements EventStrategy {
     }
   }
 
-  private userDeposit(data: DepositGame) {
-    return this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+   private async userDeposit(data: DepositGame) {
+    try {
+        console.info("Deposit game data", data);
+        
+        return this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+    } catch (error) {
+        console.error('Error depositing game:', error);
+    }
+   
   }
 }
 

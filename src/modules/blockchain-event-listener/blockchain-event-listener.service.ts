@@ -45,6 +45,7 @@ export class BlockchainEventListenerService {
         break;
       case 'game':
         serviceInstance = new GameService(data.address, this.nodeRpcUrl);
+        break;
       case 'deposit':
           serviceInstance = new DepositService(data.address, this.nodeRpcUrl);
         break;

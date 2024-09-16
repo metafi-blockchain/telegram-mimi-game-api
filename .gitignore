@@ -8,6 +8,7 @@
 /node_modules
 /production
 /keys
+/logs
 # Logs
 logs
 *.log
@@ -46,4 +47,6 @@ package-lock.json
 yarn.lock
 
 docker-compose.yml
+
+/logs/
 

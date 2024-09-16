@@ -4,11 +4,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ResponseFormatterInterceptor } from './interceptors/response-formatter.interceptor';
+import { WinstonModule } from 'nest-winston';
+import { winstonLoggerOptions } from './logger';
 import { swaggerSetup } from './swagger-setup';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule ,{
+    logger: WinstonModule.createLogger(winstonLoggerOptions), // Use Winston logger
+  });
 
   app.setGlobalPrefix('api')
   app.useGlobalFilters(new HttpExceptionFilter())

@@ -39,8 +39,14 @@ export class DeActiveGameEventStrategy implements EventStrategy {
         }
     }
 
-    private useActiveInGame(data: ActiveGame) {
-       return this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+    private async useActiveInGame(data: ActiveGame) {
+        try {
+            console.info("DeActive game data", data);
+            return await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+        } catch (error) {
+            console.error('Error deActive in game:', error);
+            
+        }
     }
 
 
