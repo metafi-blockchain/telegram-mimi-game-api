@@ -21,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TransactionHistoryModule } from './modules/event-log-history/event-history.module';
 import { Web3Module } from './modules/web3/web3.module';
 import { ScannerErrorsModule } from './modules/scanner-errors/scanner-errors.module';
+import { DepositRequestModule } from './modules/deposit-request/deposit-request.module';
 
 
 
@@ -61,6 +62,7 @@ import { ScannerErrorsModule } from './modules/scanner-errors/scanner-errors.mod
       TransactionHistoryModule,
       Web3Module,
       ScannerErrorsModule,
+      DepositRequestModule,
   
     ],
   controllers: [],

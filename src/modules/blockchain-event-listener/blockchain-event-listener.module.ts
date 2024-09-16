@@ -6,10 +6,11 @@ import { Transaction } from 'ethers';
 import { TransactionHistoryModule } from '../event-log-history/event-history.module';
 import { Web3Module } from '../web3/web3.module';
 import { AxiosHelperService } from './axios-helper.service';
+import { DepositRequestModule } from '../deposit-request/deposit-request.module';
 
 @Module({
   providers: [BlockchainEventListenerService, AxiosHelperService],
-  imports: [NftTypesModule, NftsModule, TransactionHistoryModule, Web3Module],
+  imports: [NftTypesModule, NftsModule, TransactionHistoryModule, Web3Module, DepositRequestModule],
   exports: [BlockchainEventListenerService],
 })
 export class BlockchainEventListenerModule {}

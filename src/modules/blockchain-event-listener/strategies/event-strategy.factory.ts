@@ -12,12 +12,16 @@ import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
 import { UnListingEventStrategy } from './un-listing-event.strategy';
 import { DepositEventStrategy } from './deposit-event.stragery';
 import { AxiosHelperService } from '../axios-helper.service';
+import { DepositRequestService } from 'src/modules/deposit-request/deposit-request.service';
+
 
 export class EventStrategyFactory {
   constructor(
     private nftService: NftsService,
     private nftTypeService: NftTypesService,
-    private axiosHelper: AxiosHelperService
+    private axiosHelper: AxiosHelperService,
+    private readonly depositService : DepositRequestService
+
   ) {}
 
   createStrategy(eventName: string): EventStrategy {
@@ -39,7 +43,7 @@ export class EventStrategyFactory {
      case 'SetNftSupport':
         return new SetUpNFTEventStrategy(this.nftTypeService);    
     case 'Deposit':
-        return new DepositEventStrategy(this.axiosHelper);  
+        return new DepositEventStrategy(this.axiosHelper, this.depositService);  
       // Add other strategies for different events here
       default:
         console.log(`No strategy found for event: ${eventName}`);

@@ -4,11 +4,14 @@ export type MintNftEvent = {
     recipient: string
 }
 
+
 export type DepositEvent = {
     from: string,
-    tokenAddress: string,
+    token: string,
     amount: number,
     time: number,
+    id: number,
+    blockNumber?: number
 }
 
 

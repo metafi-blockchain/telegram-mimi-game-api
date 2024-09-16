@@ -12,6 +12,7 @@ import { ContractType, GetEventParam, IPastEvent } from 'src/interface';
 import { Queue } from 'src/blockchains/utils';
 import { AxiosHelperService } from './axios-helper.service';
 import { DepositService } from 'src/blockchains/services';
+import { DepositRequestService } from '../deposit-request/deposit-request.service';
 
 @Injectable()
 export class BlockchainEventListenerService {
@@ -23,10 +24,11 @@ export class BlockchainEventListenerService {
     private nftService: NftsService,
     private nftTypService: NftTypesService,
     private transactionService: TransactionHistoryService,
-    private readonly axiosHelper: AxiosHelperService 
+    private readonly axiosHelper: AxiosHelperService,
+    private readonly depositService: DepositRequestService
   ) {
     this.nodeRpcUrl = this.configService.get<string>('WEB3_RPC_URL');
-    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService, this.axiosHelper);
+    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService, this.axiosHelper, this.depositService);
   }
 
 

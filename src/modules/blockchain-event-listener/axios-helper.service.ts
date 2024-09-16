@@ -1,17 +1,15 @@
 // axios-helper.service.ts
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
 
 @Injectable()
 export class AxiosHelperService {
 
   private readonly axiosInstance: AxiosInstance;
-
   constructor() {
     // Create the Axios instance with default config
     this.axiosInstance = axios.create({
-      baseURL: 'https://api.example.com', // You can set your default API base URL here
+      baseURL: process.env.GAME_GATE_WAY_URL || 'http://27.72.105.113:7381', // You can set your default API base URL here
       timeout: 5000, // Set a timeout for the requests
       headers: {
         'Content-Type': 'application/json',
