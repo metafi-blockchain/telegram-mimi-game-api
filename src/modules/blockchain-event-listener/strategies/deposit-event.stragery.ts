@@ -15,38 +15,37 @@ export class DepositEventStrategy implements EventStrategy {
     
     const blockNumber = Number(event.blockNumber);
     const { from, token, amount, id, time } = event.returnValues;
-
+    const packageId = Number(id);
     console.log(`Deposit ${from} handled for packageId: ${id}`);
 
     try {
       const result = await this.depositService.handleDepositRequest({
         from: from,
         token: token,
-        amount: amount,
-        id: id,
-        time: time,
+        amount: Number(amount),
+        id: packageId,
+        time: Number(time),
         blockNumber: blockNumber,
       });
       if (!result) return;
 
       await this.userDeposit({
-        packageId: id,
+        packageId: packageId,
         walletAddress: from,
         blockNumber: blockNumber,
       });
-      console.log(`DepositEvent handled successfully for tokenId: ${id}`);
-      return;
+     
     } catch (error) {
-      console.log(`Deposit from ${from} with ${id} fails`);
-      return;
+        console.log(error);
+        
+        console.error(`Deposit from ${from} with packageId ${id} fails`);
     }
   }
 
    private async userDeposit(data: DepositGame) {
     try {
-        console.info("Deposit game data", data);
-        
-        return this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+        console.info("Call gateway game ", data);
+        await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
     } catch (error) {
         console.error('Error depositing game:', error);
     }

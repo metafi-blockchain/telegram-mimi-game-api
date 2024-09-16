@@ -98,6 +98,7 @@ export type GetEventParam = {
   };
 
   export type ActiveGame = {
+    "tokenId": number,
     "heroId": number,
     "walletAddress": string,
     "blockNumber": number,

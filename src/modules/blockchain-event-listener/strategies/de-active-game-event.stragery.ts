@@ -22,13 +22,16 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                 nft_status: NFT_STATUS.AVAILABLE
             });
             if (result) {
-               await this.useActiveInGame({
-                    "heroId": nftId,
+                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
+                const data = {
+                    "tokenId": Number(nftId),
+                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'heroId').value as number,
                     "walletAddress": user,
                     "blockNumber": blockNumber,
                     "action": "deActive"
-
-                } as ActiveGame);
+                } as ActiveGame;
+                
+                await this.useActiveInGame(data);
                 console.log(`DeActive Game Event handled successfully for tokenId: ${nftId}`);
                 return;
             }
@@ -45,7 +48,7 @@ export class DeActiveGameEventStrategy implements EventStrategy {
             return await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
         } catch (error) {
             console.error('Error deActive in game:', error);
-            
+
         }
     }
 

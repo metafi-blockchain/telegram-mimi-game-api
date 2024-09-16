@@ -24,18 +24,23 @@ export class ActiveGameEventStrategy implements EventStrategy {
             });
 
             if (result) {
-                await this.useActiveInGame({
-                    "heroId": nftId,
+                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
+
+                const data = {
+                    "tokenId": Number(nftId),
+                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'heroId').value as number,
                     "walletAddress": user,
                     "blockNumber": blockNumber,
                     "action": "active"
-                }) as ActiveGame;
+                } as ActiveGame;
+                await this.useActiveInGame(data);
 
                 console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
 
                 return;
             }
         } catch (error) {
+            console.log(error);
             console.log(`Active Game Event failed for tokenId: ${nftId}`);
             return;
 

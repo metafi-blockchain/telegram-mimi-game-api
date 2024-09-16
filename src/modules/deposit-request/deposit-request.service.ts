@@ -30,7 +30,7 @@ export class DepositRequestService extends BaseService<Deposit> {
             });
             return true;
         } catch (error) {
-            console.log(`Deposit from ${deposit.from} with ${deposit.id} fails`);
+            console.log(error);
             return false;
 
         }

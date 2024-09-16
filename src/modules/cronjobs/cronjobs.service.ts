@@ -50,14 +50,15 @@ export class CronjobsService {
     }
 
     // Fetch and process past blockchain events every 20 seconds
-    @Cron('*/30 * * * * *')
+    @Cron('*/15 * * * * *')
     async getPastEvent() {
         try {
             const config = await this.oracleService.finOneWithCondition({});
 
             const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
-            // const fromBlock = 35862644
+            // const fromBlock = 
+            // 35872513
             await this._processGetPastEvent(fromBlock, toBlock);
             await this.oracleService.update(
                 { _id: config._id },
@@ -256,10 +257,21 @@ export class CronjobsService {
                 'game',
             );
 
+            const requestDeposit = this.blockChainListener.getPastEvents(
+                {
+                    address: this.configService.get<string>('DEPOSIT_CONTRACT_ADDRESS'),
+                    fromBlock,
+                    toBlock,
+                },
+                'deposit',
+            );
+
+
             const eventRequests = [
                 ...requestListERC721,
                 requestListenMarket,
                 requestGame,
+                requestDeposit,
             ];
             console.log('Fetching all events concurrently...');
 

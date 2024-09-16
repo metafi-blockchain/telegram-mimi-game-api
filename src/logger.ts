@@ -1,6 +1,7 @@
 // logger.ts
 import * as winston from 'winston';
 
+const pathLog = 'logs';
 export const winstonLoggerOptions = {
   transports: [
     // Console Transport for all log levels
@@ -16,7 +17,7 @@ export const winstonLoggerOptions = {
 
     // Info-level logs to a separate file
     new winston.transports.File({
-      filename: 'logs/info.log',
+      filename: `${pathLog}/info.log`,
       level: 'info',  // Only logs at 'info' level and higher
       format: winston.format.combine(
         winston.format.timestamp(),
@@ -26,7 +27,7 @@ export const winstonLoggerOptions = {
 
     // Error-level logs to a separate file
     new winston.transports.File({
-      filename: 'logs/error.log',
+      filename: `${pathLog}/error.log`,
       level: 'error',  // Only logs at 'error' level and higher
       format: winston.format.combine(
         winston.format.timestamp(),
@@ -36,7 +37,7 @@ export const winstonLoggerOptions = {
 
     // Debug-level logs to a separate file
     new winston.transports.File({
-      filename: 'logs/debug.log',
+      filename: `${pathLog}/debug.log`,
       level: 'debug',  // Only logs at 'debug' level and higher
       format: winston.format.combine(
         winston.format.timestamp(),
