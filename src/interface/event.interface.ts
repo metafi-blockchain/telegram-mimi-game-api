@@ -84,7 +84,7 @@ export type IPastEvent = {
         raw: any
       }
 
-export type ContractType =  'erc721' | 'marketplace' | 'game'
+export type ContractType =  'erc721' | 'marketplace' | 'game' | 'deposit'
 
 
 // Define the EventData type
@@ -93,3 +93,10 @@ export type GetEventParam = {
     fromBlock: number;
     toBlock: number;
   };
+
+  export type ActiveGame = {
+    "heroId": number,
+    "walletAddress": string,
+    "blockNumber": number,
+    "action": 'active' | 'deActive'
+}

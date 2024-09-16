@@ -10,6 +10,8 @@ import { MarketService } from 'src/blockchains/services/market-place.service';
 import { GameService } from 'src/blockchains/services/game.service';
 import { ContractType, GetEventParam, IPastEvent } from 'src/interface';
 import { Queue } from 'src/blockchains/utils';
+import { AxiosHelperService } from './axios-helper.service';
+import { DepositService } from 'src/blockchains/services';
 
 @Injectable()
 export class BlockchainEventListenerService {
@@ -21,15 +23,16 @@ export class BlockchainEventListenerService {
     private nftService: NftsService,
     private nftTypService: NftTypesService,
     private transactionService: TransactionHistoryService,
+    private readonly axiosHelper: AxiosHelperService 
   ) {
     this.nodeRpcUrl = this.configService.get<string>('WEB3_RPC_URL');
-    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService);
+    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService, this.axiosHelper);
   }
 
 
 
   async getPastEvents(data: GetEventParam, contractType: ContractType) {
-    let serviceInstance : ERC721Service | MarketService | GameService;
+    let serviceInstance : ERC721Service | MarketService | GameService | DepositService;
 
     switch (contractType) {
       case 'erc721':
@@ -40,6 +43,8 @@ export class BlockchainEventListenerService {
         break;
       case 'game':
         serviceInstance = new GameService(data.address, this.nodeRpcUrl);
+      case 'deposit':
+          serviceInstance = new DepositService(data.address, this.nodeRpcUrl);
         break;
       default:
         throw new Error('Invalid contract type');

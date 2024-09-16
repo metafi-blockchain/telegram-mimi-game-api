@@ -10,11 +10,14 @@ import { DeActiveGameEventStrategy } from './de-active-game-event.stragery';
 import { SetUpNFTEventStrategy } from './setup-nft-event.stragery';
 import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
 import { UnListingEventStrategy } from './un-listing-event.strategy';
+import { DepositEventStrategy } from './deposit-event.stragery';
+import { AxiosHelperService } from '../axios-helper.service';
 
 export class EventStrategyFactory {
   constructor(
     private nftService: NftsService,
     private nftTypeService: NftTypesService,
+    private axiosHelper: AxiosHelperService
   ) {}
 
   createStrategy(eventName: string): EventStrategy {
@@ -30,11 +33,13 @@ export class EventStrategyFactory {
       case 'Purchase':
         return new PurchaseEventStrategy(this.nftService);  
      case 'Active':
-        return new ActiveGameEventStrategy(this.nftService);  
+        return new ActiveGameEventStrategy(this.nftService, this.axiosHelper);  
      case 'Deactive':
-        return new DeActiveGameEventStrategy(this.nftService);   
+        return new DeActiveGameEventStrategy(this.nftService, this.axiosHelper);   
      case 'SetNftSupport':
-        return new SetUpNFTEventStrategy(this.nftTypeService);      
+        return new SetUpNFTEventStrategy(this.nftTypeService);    
+    case 'Deposit':
+        return new DepositEventStrategy(this.axiosHelper);  
       // Add other strategies for different events here
       default:
         console.log(`No strategy found for event: ${eventName}`);
