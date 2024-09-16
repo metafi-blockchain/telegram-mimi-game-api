@@ -10,7 +10,9 @@ export class DepositEventStrategy implements EventStrategy {
 
   async handleEvent(event: any): Promise<void> {
     const blockNumber = Number(event.blockNumber);
-    const { from, token, amount, feeContract, uint256 } = event.returnValues;
+    const { from, token, amount, id, time } = event.returnValues;
+
+    console.log(`DepositEvent handled for tokenId: ${id}`);
     
     try {
     

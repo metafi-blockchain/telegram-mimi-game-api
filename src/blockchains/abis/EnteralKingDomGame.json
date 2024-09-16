@@ -170,7 +170,7 @@
         },
         {
           "indexed": false,
-          "internalType": "contract IERC20[]",
+          "internalType": "address[]",
           "name": "currencies",
           "type": "address[]"
         },
@@ -319,7 +319,7 @@
           "type": "uint256"
         },
         {
-          "internalType": "contract IERC20[]",
+          "internalType": "address[]",
           "name": "_currencies",
           "type": "address[]"
         },

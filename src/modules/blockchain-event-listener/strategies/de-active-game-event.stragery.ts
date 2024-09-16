@@ -17,11 +17,11 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                 nft_status: NFT_STATUS.AVAILABLE
             });
             if (result) {
-                console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
+                console.log(`DeActive Game Event handled successfully for tokenId: ${nftId}`);
                 return;
             }
         } catch (error) {
-            console.log(`Active Game Event failed for tokenId: ${nftId}`);
+            console.log(`DeActive Game Event failed for tokenId: ${nftId}`);
             return;
 
         }
