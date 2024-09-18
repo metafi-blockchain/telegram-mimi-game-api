@@ -14,8 +14,7 @@ export class ListingEventStrategy implements EventStrategy {
 
 
         try {
-            const result = await this.nftService.updateStateNFT(owner, nft, nftId, blockNumber, {
-                owner: owner,
+            const result = await this.nftService.updateStateNFT(nft, nftId, blockNumber, {
                 currency,
                 price: listingPrice,
                 open_time: Number(openTime),

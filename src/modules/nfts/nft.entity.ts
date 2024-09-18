@@ -57,14 +57,20 @@ export class NFT  implements BaseEntity {
     @Prop({ type: Number})
     open_time: number
 
+    //check status request mint in blockchain
     @Prop({ type: String, default: MINT_STATUS.INITIALIZE })
     minting_status: MINT_STATUS
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: NftType.name, index: 1 })
     nft_type: NftType
 
+    //check status in blockchain
     @Prop({ type: String, default: "" })
     nft_status: NFT_STATUS
+
+    //check status with game
+    @Prop({ type: Boolean, default: false })
+    is_in_game: boolean
 
     @Prop({ type: Array<Attributes>, default: [] })
     attributes: Attributes[]

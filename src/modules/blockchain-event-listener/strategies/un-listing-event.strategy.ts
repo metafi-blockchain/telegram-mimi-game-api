@@ -13,7 +13,7 @@ export class UnListingEventStrategy implements EventStrategy {
     const blockNumber = Number(event.blockNumber);
 
     try {
-      const result = await this.nftService.updateStateNFT(owner, nft, nftId, blockNumber, {
+      const result = await this.nftService.updateStateNFT( nft, nftId, blockNumber, {
         price: 0,
         open_time: 0,
         nft_status: NFT_STATUS.AVAILABLE,

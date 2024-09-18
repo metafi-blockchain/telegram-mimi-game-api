@@ -58,7 +58,7 @@ export class CronjobsService {
             const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
             // const fromBlock = 
-            // 35872513
+            // 35896115
             await this._processGetPastEvent(fromBlock, toBlock);
             await this.oracleService.update(
                 { _id: config._id },

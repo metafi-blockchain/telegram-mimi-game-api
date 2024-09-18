@@ -17,13 +17,14 @@ export enum NFT_STATUS {
 }
 
 export enum DEPOSIT_STATUS  {
-    PENDING = 'PENDING',
+    INITIALIZE = 'INITIALIZE',
     DONE = 'DONE',
     ERROR = 'ERROR',
 }
 @Schema({ timestamps: true })
 
 export class Deposit  implements BaseEntity {
+
 
     _id: mongoose.Schema.Types.ObjectId
     @Prop({ type: Number, default: 0 })
@@ -36,10 +37,12 @@ export class Deposit  implements BaseEntity {
     currency: string;
     @Prop({ type: Number})
     time: number
-    @Prop({ type: String, default: DEPOSIT_STATUS.PENDING })
+    @Prop({ type: String, default: DEPOSIT_STATUS.INITIALIZE })
     status: DEPOSIT_STATUS;
     @Prop({ type: Number, default: 0 })
     block_number: number;
+    @Prop({ type: String})
+    transactionHash: string;
 
 }
 

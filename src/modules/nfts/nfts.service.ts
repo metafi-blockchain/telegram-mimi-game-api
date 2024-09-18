@@ -107,7 +107,7 @@ export class NftsService extends BaseService<NFT> {
     }
 
 
-    async updateStateNFT(owner: string, nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
+    async updateStateNFT( nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
         try {
             const tokenId = Number(nftId);
 
@@ -123,9 +123,7 @@ export class NftsService extends BaseService<NFT> {
         } catch (error) {
             console.log(`Error updating NFT: ${error}`);
             return false;
-            
         }
-
 
     }
 

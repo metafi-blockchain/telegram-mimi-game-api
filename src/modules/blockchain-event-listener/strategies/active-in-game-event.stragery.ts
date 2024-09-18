@@ -5,8 +5,12 @@ import { NftsService } from 'src/modules/nfts/nfts.service';
 import { AxiosHelperService } from '../axios-helper.service';
 import { ActiveGame } from 'src/interface';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
+import { Logger  } from '@nestjs/common';
 
 export class ActiveGameEventStrategy implements EventStrategy {
+
+    private readonly logger = new Logger(ActiveGameEventStrategy.name);
+
     constructor(
         private nftService: NftsService,
         private readonly axiosHelper: AxiosHelperService
@@ -19,9 +23,7 @@ export class ActiveGameEventStrategy implements EventStrategy {
         const blockNumber = Number(event.blockNumber);
 
         try {
-            const result = await this.nftService.updateStateNFT(user, nftAddress, nftId, blockNumber, {
-                nft_status: NFT_STATUS.ACTIVE_IN_GAME
-            });
+            const result = await this.nftService.updateStateNFT( nftAddress, nftId, blockNumber, { nft_status: NFT_STATUS.ACTIVE_IN_GAME });
 
             if (result) {
                 const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
@@ -33,7 +35,10 @@ export class ActiveGameEventStrategy implements EventStrategy {
                     "blockNumber": blockNumber,
                     "action": "active"
                 } as ActiveGame;
-                await this.useActiveInGame(data);
+                const result =   await this.useActiveInGame(data);
+                if (result) {
+                    await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: true });
+                }
 
                 console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
 
@@ -49,10 +54,11 @@ export class ActiveGameEventStrategy implements EventStrategy {
     private async useActiveInGame(data: ActiveGame) {
         try {
             console.info("Active game data", data);
-            return await   this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+             await  this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            return true
         } catch (error) {
             console.error('Error active in game:', error);
-            
+            return false;
         }
         
     }

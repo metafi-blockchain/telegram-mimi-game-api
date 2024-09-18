@@ -15,7 +15,7 @@ export class PurchaseEventStrategy implements EventStrategy {
 
         const blockNumber = Number(event.blockNumber);
 
-        const result = await this.nftService.updateStateNFT(previousOwner, nft, nftId, blockNumber, {
+        const result = await this.nftService.updateStateNFT( nft, nftId, blockNumber, {
             owner: newOwner,
             price: 0,
             open_time: 0,

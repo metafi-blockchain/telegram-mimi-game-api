@@ -11,7 +11,8 @@ export type DepositEvent = {
     amount: number,
     time: number,
     id: number,
-    blockNumber?: number
+    blockNumber?: number,
+    transactionHash?: string
 }
 
 

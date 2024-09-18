@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,Logger } from '@nestjs/common';
 import { Deposit } from './deposit.entity';
 import { BaseService } from '../commons/base.service';
 import { Model } from 'mongoose';
 import { DepositEvent } from 'src/interface';
 import { InjectModel } from '@nestjs/mongoose';
-
 @Injectable()
 export class DepositRequestService extends BaseService<Deposit> {
+
+    private readonly logger = new Logger(DepositRequestService.name);
 
     constructor(
         @InjectModel(Deposit.name) private readonly _model: Model<Deposit>,
@@ -26,10 +27,12 @@ export class DepositRequestService extends BaseService<Deposit> {
                 amount: deposit.amount,
                 currency: deposit.token,
                 time: deposit.time,
-                status: 'DONE'
+                transactionHash: deposit.transactionHash,
+                status: 'INITIALIZED',
             });
             return true;
         } catch (error) {
+            this.logger.error(`Handle deposit request error`, error.toString());
             console.log(error);
             return false;
 

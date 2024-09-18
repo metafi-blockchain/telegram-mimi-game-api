@@ -13,7 +13,7 @@ export class UpdatePriceEventStrategy implements EventStrategy {
     const blockNumber = Number(event.blockNumber);
     try {
 
-      const result = await this.nftService.updateStateNFT(owner, nft, nftId, blockNumber, {
+      const result = await this.nftService.updateStateNFT( nft, nftId, blockNumber, {
         price: newPrice,
         open_time: Number(time),
       });

@@ -5,8 +5,12 @@ import { NftsService } from 'src/modules/nfts/nfts.service';
 import { AxiosHelperService } from '../axios-helper.service';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
 import { ActiveGame } from 'src/interface';
+import { Logger  } from '@nestjs/common';
 
 export class DeActiveGameEventStrategy implements EventStrategy {
+
+    private readonly logger = new Logger(DeActiveGameEventStrategy.name);
+
     constructor(
         private nftService: NftsService,
         private readonly axiosHelper: AxiosHelperService
@@ -18,7 +22,7 @@ export class DeActiveGameEventStrategy implements EventStrategy {
         const blockNumber = Number(event.blockNumber);
 
         try {
-            const result = await this.nftService.updateStateNFT(user, nftAddress, nftId, blockNumber, {
+            const result = await this.nftService.updateStateNFT(nftAddress, nftId, blockNumber, {
                 nft_status: NFT_STATUS.AVAILABLE
             });
             if (result) {
@@ -31,8 +35,10 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                     "action": "deActive"
                 } as ActiveGame;
                 
-                await this.useActiveInGame(data);
-                console.log(`DeActive Game Event handled successfully for tokenId: ${nftId}`);
+                const result =  await this.useActiveInGame(data);
+                if (result) 
+                    await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: false });
+
                 return;
             }
         } catch (error) {
@@ -45,9 +51,11 @@ export class DeActiveGameEventStrategy implements EventStrategy {
     private async useActiveInGame(data: ActiveGame) {
         try {
             console.info("DeActive game data", data);
-            return await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            const response = await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            return true 
         } catch (error) {
             console.error('Error deActive in game:', error);
+            return false;
 
         }
     }

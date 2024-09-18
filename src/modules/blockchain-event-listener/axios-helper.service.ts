@@ -1,11 +1,13 @@
 // axios-helper.service.ts
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 @Injectable()
 export class AxiosHelperService {
 
   private readonly axiosInstance: AxiosInstance;
+  private readonly logger = new Logger("AxiosHelperService");
+
   constructor() {
     // Create the Axios instance with default config
     this.axiosInstance = axios.create({
@@ -15,6 +17,8 @@ export class AxiosHelperService {
         'Content-Type': 'application/json',
       },
     });
+    console.log("Game Gateway URL: ", this.axiosInstance.getUri());
+
 
     // Set up Axios interceptors (optional)
     this.setupInterceptors();
@@ -55,7 +59,7 @@ export class AxiosHelperService {
   }
 
   // Generic POST request
-  async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {    
     try {
       const response = await this.axiosInstance.post<T>(url, data, config);
       return response.data;
@@ -91,6 +95,7 @@ export class AxiosHelperService {
 
   // Centralized error handling
   private handleError(error: any): void {
+    this.logger.error('Error:', error);
     if (error.response) {
       // Server responded with a status other than 2xx
       throw new HttpException(
