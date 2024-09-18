@@ -56,8 +56,8 @@ export class DeActiveGameEventStrategy implements EventStrategy {
     private async useActiveInGame(data: ActiveGame) {
         try {
             this.logger.log(`${data.walletAddress} call deActive to game with token: ${data.tokenId} at block ${data.blockNumber}`);
-            const response = await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
-            this.logger.log(`${data.walletAddress} call deActive to game with token: ${data.tokenId} at block ${data.blockNumber}, response: ${response}`);
+            const result = await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            this.logger.log(`${data.walletAddress} call deActive to game with token: ${data.tokenId} at block ${data.blockNumber} response: ${result}`);
             await this.nftService.updateStateInGame( {nftAddress: data.collectionAddress, nftId: data.tokenId, blockNumber: data.blockNumber}, false);
             return true 
         } catch (error) {
