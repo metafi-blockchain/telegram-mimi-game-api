@@ -72,7 +72,7 @@ export class MintRequestController {
         }
     
         // Retrieve the NFT type (collection) and ensure it's supported in the market
-        const nftType = await this.nftTypesService.finOneWithCondition({ nft_address: nftAddress });
+        const nftType = await this.nftTypesService.findOneWithCondition({ nft_address: nftAddress });
         if (!nftType) {
             throw new NotFoundException('NFT collection not found');
         }
@@ -133,7 +133,7 @@ export class MintRequestController {
             throw new BadRequestException('All arrays must have the same length');
         }
 
-        const nftType = await this.nftTypesService.finOneWithCondition({ nft_address: nftAddress });
+        const nftType = await this.nftTypesService.findOneWithCondition({ nft_address: nftAddress });
 
         if (!nftType) throw new NotFoundException('collection not found');
 
@@ -177,7 +177,7 @@ export class MintRequestController {
 
     @Post('/mint-nft-by-gen')
     async mintNft(@Body() nftDto: MintNftDto) {
-        const nft = await this.nftService.finOneWithCondition({ gen: nftDto.gen, minting_status: MINT_STATUS.INITIALIZE });
+        const nft = await this.nftService.findOneWithCondition({ gen: nftDto.gen, minting_status: MINT_STATUS.INITIALIZE });
         if (!nft) throw new NotFoundException('NFT not found or NFT already minted');
         return this.nftService.mintNft(nft);
     }

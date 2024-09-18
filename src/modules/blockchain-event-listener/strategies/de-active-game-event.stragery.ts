@@ -26,7 +26,7 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                 nft_status: NFT_STATUS.AVAILABLE
             });
             if (result) {
-                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId), collection_address: nftAddress });
+                const nft = await this.nftService.findOneWithCondition({ tokenId: Number(nftId), collection_address: nftAddress });
                 const data = {
                     "tokenId": Number(nftId),
                     "heroId": nft.attributes.find((attr) => attr.trait_type === 'Hero Id').value as number,

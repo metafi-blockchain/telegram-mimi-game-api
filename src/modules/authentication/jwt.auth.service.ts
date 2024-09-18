@@ -90,7 +90,7 @@ export class JwtAuthService {
   }
 
   async isValidUserByEmail(email: string) {
-    return this.userService.finOneWithCondition({email});
+    return this.userService.findOneWithCondition({email});
   }
   
 

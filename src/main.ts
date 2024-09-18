@@ -34,9 +34,9 @@ async function bootstrap() {
       ? ["*"]
       : ["*"], 
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    allowedHeaders: ["Authorization", "Content-Type"]
+    allowedHeaders: ["*"]
   };
-  
+
   app.enableCors(corOption);
 
   // Swagger API Docs Setup

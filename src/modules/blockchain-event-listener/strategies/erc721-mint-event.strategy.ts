@@ -13,7 +13,7 @@ export class MintEventStrategy implements EventStrategy {
 
       const blockNumber = Number(event.blockNumber);
 
-      const nft = await this.nftService.finOneWithCondition({ uri });
+      const nft = await this.nftService.findOneWithCondition({ uri });
 
       if (nft.minting_status === MINT_STATUS.MINTED) {
         console.log(`gen already minted  ${uri}`);

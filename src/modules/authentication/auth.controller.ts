@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() authDto: AuthDto, @Res() res: Response) {
-    const user = await this.userService.finOneWithCondition({email: authDto.email});
+    const user = await this.userService.findOneWithCondition({email: authDto.email});
 
     if (!user)   throw new NotFoundException('email or password is incorrect');
 

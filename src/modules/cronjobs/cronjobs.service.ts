@@ -53,7 +53,7 @@ export class CronjobsService {
     @Cron('*/15 * * * * *')
     async getPastEvent() {
         try {
-            const config = await this.oracleService.finOneWithCondition({});
+            const config = await this.oracleService.findOneWithCondition({});
 
             const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
@@ -134,7 +134,7 @@ export class CronjobsService {
             }
 
             console.log('Queuing mint requests...');
-            const nftType = await this.nftTypeService.finOneWithCondition({
+            const nftType = await this.nftTypeService.findOneWithCondition({
                 collection_type: COLLECTION_TYPE.HERO,
                 status: TRANSACTION.DONE,
             });

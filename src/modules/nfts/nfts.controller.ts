@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Get, NotFoundException, Param, P
 import { NftsService } from './nfts.service';
 import { NFT_STATUS } from './nft.entity';
 import { Web3 } from 'web3'
-import { ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import e from 'express';
 
 @ApiTags('nfts')
@@ -13,15 +13,47 @@ export class NftsController {
     ) {}
 
 
-    @ApiOperation({ description: 'Get nft in market-place' })
-    async getNftListMarket(@Query('page') page = 1, @Query('limit') limit = 10) {
-        const skip = (page - 1) * limit;
-        return this.nftService.aggregate([
+    @ApiOperation({ description: 'Get a paginated list of NFTs listing the marketplace' })
+    @ApiQuery({
+        name: 'page',
+        required: false,
+        description: 'Page number for pagination (default: 1)',
+        example: 1,
+    })
+    @ApiQuery({
+        name: 'limit',
+        required: false,
+        description: 'Number of items per page (default: 100)',
+        example: 100,
+    })
+    @Get('/market')
+    async getNftListMarket(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
+        // Convert page and limit to numbers
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+
+        if (isNaN(pageNumber) || isNaN(limitNumber)) {
+            throw new BadRequestException('Page and limit must be valid numbers');
+        }
+
+        const skip = (pageNumber - 1) * limitNumber;
+
+        const nfts = await this.nftService.aggregate([
             { $match: { nft_status: NFT_STATUS.LISTING_MARKET } },
             { $project: { _id: 0, nft_type: 0, minting_status: 0 } },
             { $skip: skip },
-            { $limit: limit },
+            { $limit: limitNumber },
         ]);
+
+        const totalItems = await this.nftService.count({ nft_status: NFT_STATUS.LISTING_MARKET });
+        const totalPages = Math.ceil(totalItems / limitNumber);
+
+        return {
+            currentPage: pageNumber,
+            totalPages: totalPages,
+            totalItems: totalItems,
+            items: nfts,
+        };
     }
 
     @ApiOperation({ description: 'Get detail of an NFT in a collection' })
@@ -42,7 +74,7 @@ export class NftsController {
 
         this.validateAddress(collectionAddress);
         
-        return this.nftService.finOneWithCondition({ tokenId: Number(nftId), collection_address: collectionAddress });
+        return this.nftService.findOneWithCondition({ tokenId: Number(nftId), collection_address: collectionAddress });
     }
 
 
@@ -50,7 +82,7 @@ export class NftsController {
         name: 'account',
         required: true,
         description: 'The account address of the owner',
-        example: '0xF3AB27458205344Ce20EdC87Bb747083B6dda67b',
+        example: '0x6F7a1FF0711269bd20964168247dB76e5fda9f1f',
     })
     @ApiOkResponse({
         description: 'List of NFTs owned by the account',

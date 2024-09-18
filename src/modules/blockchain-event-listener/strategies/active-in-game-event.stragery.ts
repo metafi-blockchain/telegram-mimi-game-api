@@ -27,7 +27,7 @@ export class ActiveGameEventStrategy implements EventStrategy {
             const result = await this.nftService.updateStateNFT(nftAddress, nftId, blockNumber, { nft_status: NFT_STATUS.ACTIVE_IN_GAME });
 
             if (result) {
-                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
+                const nft = await this.nftService.findOneWithCondition({ tokenId: Number(nftId) });
 
                 const data = {
                     "tokenId": Number(nftId),
