@@ -23,6 +23,7 @@ export class ActiveGameEventStrategy implements EventStrategy {
         const blockNumber = Number(event.blockNumber);
 
         try {
+            this.logger.log(`Handle ${user} active game tokenId: ${nftId} at block ${blockNumber}`);
             const result = await this.nftService.updateStateNFT( nftAddress, nftId, blockNumber, { nft_status: NFT_STATUS.ACTIVE_IN_GAME });
 
             if (result) {
@@ -36,15 +37,17 @@ export class ActiveGameEventStrategy implements EventStrategy {
                     "action": "active"
                 } as ActiveGame;
                 const result =   await this.useActiveInGame(data);
-                if (result) {
+                if (result) 
                     await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: true });
-                }
+                
+                this.logger.log(`${user} call deActive to game with tokenId ${nftId} failed at block ${blockNumber} successfully`);
 
                 console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
 
                 return;
             }
         } catch (error) {
+            this.logger.error(`${user} call active to game with tokenId ${nftId} failed at block ${blockNumber}`, error.response.error);
             console.log(error);
             console.log(`Active Game Event failed for tokenId: ${nftId}`);
             return;

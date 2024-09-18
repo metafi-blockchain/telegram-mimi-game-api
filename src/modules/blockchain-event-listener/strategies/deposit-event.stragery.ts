@@ -46,9 +46,10 @@ export class DepositEventStrategy implements EventStrategy {
     }
 
     private async userDeposit(data: DepositGame) {
-
         try {
-            this.logger.log(`Call ${data.walletAddress} deposit to game with packageId: ${data.packageId}`);
+
+            this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} at block ${data.blockNumber}`);
+
             const result = await this.axiosHelper.post(GAME_ENDPOINT.DEPOSIT, data);
             if (result) {
                 await this.depositService.update({
@@ -56,18 +57,27 @@ export class DepositEventStrategy implements EventStrategy {
                     wallet: data.walletAddress,
                     block_number: data.blockNumber,
                     transactionHash: data.transactionHash,
+                    status: DEPOSIT_STATUS.INITIALIZE
                 }, { status: DEPOSIT_STATUS.DONE });
             }
-            this.logger.log(`Call ${data.walletAddress} deposit to game with packageId: ${data.packageId} success`);
+
+            this.logger.log(` ${data.walletAddress} call deposit to game with packageId: ${data.packageId} success`);
+
+            return true;
+
         } catch (error) {
-            this.logger.error(`Call ${data.walletAddress} deposit to game with packageId: ${data.packageId}  error`, error.toString());
+
+            this.logger.error(` ${data.walletAddress} call deposit to game with packageId: ${data.packageId}  at block ${data.blockNumber} error`, error.response.error);
+            
             this.depositService.update({
                 packageId: data.packageId,
                 wallet: data.walletAddress,
                 block_number: data.blockNumber,
                 transactionHash: data.transactionHash,
             }, { status: DEPOSIT_STATUS.ERROR });
+
             console.error('Error call depositing to game:', error);
+            return false;
         }
 
     }

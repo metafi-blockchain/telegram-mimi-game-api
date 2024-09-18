@@ -38,12 +38,17 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                 const result =  await this.useActiveInGame(data);
                 if (result) 
                     await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: false });
+                
+                this.logger.log(`${user} call deActive to game with tokenId ${nftId} failed at block ${blockNumber} successfully`);
+
+                console.log(`DeActive Game Event handled successfully for tokenId: ${nftId}`);
 
                 return;
             }
         } catch (error) {
-            console.log(`DeActive Game Event failed for tokenId: ${nftId}`);
-            return;
+            this.logger.error(`${user} Call deActive to game with tokenId ${nftId} failed at block ${blockNumber}`, error.response.error);
+            console.log(error);
+            return; 
 
         }
     }

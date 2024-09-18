@@ -51,6 +51,8 @@ export class AxiosHelperService {
   // Generic GET request
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try {
+        
+        
       const response = await this.axiosInstance.get<T>(url, config);
       return response.data;
     } catch (error) {
@@ -95,7 +97,7 @@ export class AxiosHelperService {
 
   // Centralized error handling
   private handleError(error: any): void {
-    this.logger.error('Error:', error);
+    this.logger.error('Error:', error.message || 'Something went wrong');
     if (error.response) {
       // Server responded with a status other than 2xx
       throw new HttpException(
