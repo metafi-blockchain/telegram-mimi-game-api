@@ -99,9 +99,10 @@ export type GetEventParam = {
   };
 
   export type ActiveGame = {
+    "collectionAddress": string,
     "tokenId": number,
     "heroId": number,
     "walletAddress": string,
     "blockNumber": number,
-    "action": 'active' | 'deActive'
+    "action": 'Active' | 'Deactive'
 }

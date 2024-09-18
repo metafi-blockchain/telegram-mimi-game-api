@@ -31,6 +31,7 @@ export class DepositEventStrategy implements EventStrategy {
                 blockNumber: blockNumber,
                 transactionHash: event.transactionHash,
             });
+            
             if (!result) return;
 
             await this.handleUserDepositInGame({
@@ -47,24 +48,21 @@ export class DepositEventStrategy implements EventStrategy {
 
     private async handleUserDepositInGame(data: DepositGame) {
         try {
+            
 
             this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} at block ${data.blockNumber}`);
 
             const result = await this.axiosHelper.post(GAME_ENDPOINT.DEPOSIT, data);
-            console.log('result', result);
-            
+            this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} success, response: ${result}`);
          
-            await this.depositService.update({
-                packageId: data.packageId,
+           await this.depositService.updateStatusDepositRequest({
+                package_id: data.packageId,
                 wallet: data.walletAddress,
                 block_number: data.blockNumber,
-                transactionHash: data.transactionHash,
+                transaction_hash: data.transactionHash,
                 status: DEPOSIT_STATUS.INITIALIZE
             }, { status: DEPOSIT_STATUS.DONE });
         
-
-            this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} success`);
-
             return true;
 
         } catch (error) {

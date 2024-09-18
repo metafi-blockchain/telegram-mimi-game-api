@@ -28,7 +28,7 @@ export class Deposit  implements BaseEntity {
 
     _id: mongoose.Schema.Types.ObjectId
     @Prop({ type: Number, default: 0 })
-    packageId: number;
+    package_id: number;
     @Prop({ type: String})
     wallet: string;
     @Prop({ type: String})
@@ -42,7 +42,7 @@ export class Deposit  implements BaseEntity {
     @Prop({ type: Number, default: 0 })
     block_number: number;
     @Prop({ type: String})
-    transactionHash: string;
+    transaction_hash: string;
 
 }
 

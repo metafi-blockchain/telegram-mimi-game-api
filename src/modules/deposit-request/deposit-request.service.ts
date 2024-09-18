@@ -1,5 +1,5 @@
 import { Injectable,Logger } from '@nestjs/common';
-import { Deposit } from './deposit.entity';
+import { Deposit, DEPOSIT_STATUS } from './deposit.entity';
 import { BaseService } from '../commons/base.service';
 import { Model } from 'mongoose';
 import { DepositEvent } from 'src/interface';
@@ -18,18 +18,21 @@ export class DepositRequestService extends BaseService<Deposit> {
     async handleDepositRequest(deposit: DepositEvent) {
 
         try {
+            this.logger.log(`Handle deposit request from ${deposit.from} with packageId: ${deposit.id}`);
             const canCreateDeposit = await this._checkCanCreateDeposit(deposit.from, deposit.id, deposit.time);
+
             if (!canCreateDeposit) return false;
-            await this._model.create({
-                packageId: deposit.id,
+            const item = await this._model.create({
+                package_id: deposit.id,
                 wallet: deposit.from,
-                block_number: deposit.time,
+                time: deposit.time,
+                block_number: deposit.blockNumber,
                 amount: deposit.amount,
                 currency: deposit.token,
-                time: deposit.time,
-                transactionHash: deposit.transactionHash,
-                status: 'INITIALIZED',
+                transaction_hash: deposit.transactionHash,
+                status: DEPOSIT_STATUS.INITIALIZE,
             });
+            item.save();
             return true;
         } catch (error) {
             this.logger.error(`Handle deposit request error`, error.toString());
@@ -37,8 +40,9 @@ export class DepositRequestService extends BaseService<Deposit> {
             return false;
 
         }
-
-
+    }
+    updateStatusDepositRequest(filter: any, update: Partial<Deposit>) {      
+        return this._model.updateOne(filter, update).exec();
     }
 
 

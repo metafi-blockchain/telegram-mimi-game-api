@@ -5,7 +5,7 @@ import { NftsService } from 'src/modules/nfts/nfts.service';
 import { AxiosHelperService } from '../axios-helper.service';
 import { ActiveGame } from 'src/interface';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
-import { Logger  } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 
 export class ActiveGameEventStrategy implements EventStrategy {
 
@@ -24,46 +24,56 @@ export class ActiveGameEventStrategy implements EventStrategy {
 
         try {
             this.logger.log(`Handle ${user} active game tokenId: ${nftId} at block ${blockNumber}`);
-            const result = await this.nftService.updateStateNFT( nftAddress, nftId, blockNumber, { nft_status: NFT_STATUS.ACTIVE_IN_GAME });
+            const result = await this.nftService.updateStateNFT(nftAddress, nftId, blockNumber, { nft_status: NFT_STATUS.ACTIVE_IN_GAME });
 
             if (result) {
                 const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
 
                 const data = {
                     "tokenId": Number(nftId),
-                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'heroId').value as number,
+                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'Hero Id').value as number,
                     "walletAddress": user,
                     "blockNumber": blockNumber,
-                    "action": "active"
+                    "action": "Active"
                 } as ActiveGame;
-                const result =   await this.useActiveInGame(data);
-                if (result) 
-                    await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: true });
-                
-                this.logger.log(`${user} call deActive to game with tokenId ${nftId} failed at block ${blockNumber} successfully`);
 
-                console.log(`Active Game Event handled successfully for tokenId: ${nftId}`);
+                const result = await this.handleUseActiveInGame(data);
+
+                if (!result) return;
+
+                this.logger.log(`${user} call deActive to game with tokenId ${nftId} failed at block ${blockNumber} successfully`);
 
                 return;
             }
         } catch (error) {
-            this.logger.error(`${user} call active to game with tokenId ${nftId} failed at block ${blockNumber}`, error.response.error);
+
+            this.logger.error(`${user} call active to game with tokenId ${nftId} failed at block ${blockNumber}`, error);
             console.log(error);
-            console.log(`Active Game Event failed for tokenId: ${nftId}`);
             return;
 
         }
     }
-    private async useActiveInGame(data: ActiveGame) {
+    private async handleUseActiveInGame(data: ActiveGame) {
         try {
-            console.info("Active game data", data);
-             await  this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            console.log('data', data);
+            
+
+            this.logger.log(`${data.walletAddress} call active to game with token: ${data.tokenId} at block ${data.blockNumber}`);
+
+            await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            
+            this.logger.log(`${data.walletAddress} call active to game with token: ${data.tokenId} at block ${data.blockNumber} success`);
+           
+            await this.nftService.updateStateInGame({ nftAddress: data.collectionAddress, nftId: data.tokenId, blockNumber: data.blockNumber }, true);
+
             return true
+
         } catch (error) {
+            this.logger.error(`${data.walletAddress} call active to game with token: ${data.tokenId} at block ${data.blockNumber} failed`, error);
             console.error('Error active in game:', error);
             return false;
         }
-        
+
     }
 
 

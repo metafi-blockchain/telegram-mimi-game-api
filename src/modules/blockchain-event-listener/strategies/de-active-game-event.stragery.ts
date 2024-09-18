@@ -26,27 +26,27 @@ export class DeActiveGameEventStrategy implements EventStrategy {
                 nft_status: NFT_STATUS.AVAILABLE
             });
             if (result) {
-                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId) });
+                const nft = await this.nftService.finOneWithCondition({ tokenId: Number(nftId), collection_address: nftAddress });
                 const data = {
                     "tokenId": Number(nftId),
-                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'heroId').value as number,
+                    "heroId": nft.attributes.find((attr) => attr.trait_type === 'Hero Id').value as number,
                     "walletAddress": user,
                     "blockNumber": blockNumber,
-                    "action": "deActive"
+                    "action": "Deactive"
                 } as ActiveGame;
                 
                 const result =  await this.useActiveInGame(data);
-                if (result) 
-                    await this.nftService.update( {nftAddress, nftId, blockNumber}, { is_in_game: false });
-                
-                this.logger.log(`${user} call deActive to game with tokenId ${nftId} failed at block ${blockNumber} successfully`);
+
+                if (!result) return;
+                   
+                this.logger.log(`${user} call deActive to game with tokenId ${nftId} at block ${blockNumber} successfully`);
 
                 console.log(`DeActive Game Event handled successfully for tokenId: ${nftId}`);
 
                 return;
             }
         } catch (error) {
-            this.logger.error(`${user} Call deActive to game with tokenId ${nftId} failed at block ${blockNumber}`, error.response.error);
+            this.logger.error(`${user} Call deActive to game with tokenId ${nftId} failed at block ${blockNumber}`, error);
             console.log(error);
             return; 
 
@@ -55,10 +55,14 @@ export class DeActiveGameEventStrategy implements EventStrategy {
 
     private async useActiveInGame(data: ActiveGame) {
         try {
-            console.info("DeActive game data", data);
+            this.logger.log(`${data.walletAddress} call deActive to game with token: ${data.tokenId} at block ${data.blockNumber}`);
             const response = await this.axiosHelper.post(GAME_ENDPOINT.HERO, data);
+            this.logger.log(`${data.walletAddress} call deActive to game with token: ${data.tokenId} at block ${data.blockNumber}, response: ${response}`);
+            await this.nftService.updateStateInGame( {nftAddress: data.collectionAddress, nftId: data.tokenId, blockNumber: data.blockNumber}, false);
             return true 
         } catch (error) {
+            this.logger.error(`${data.walletAddress} call deActive to game with tokenId: ${data.tokenId}  at block ${data.blockNumber} error`, error.response);
+
             console.error('Error deActive in game:', error);
             return false;
 

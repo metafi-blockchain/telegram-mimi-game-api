@@ -127,6 +127,16 @@ export class NftsService extends BaseService<NFT> {
 
     }
 
+    async updateStateInGame(filter: any, state: boolean) {
+        try {
+            await this.nftModel.findOneAndUpdate(filter, {is_in_game: state}).exec();
+            return true;
+        } catch (error) {
+            console.log(`Error updating NFT: ${error}`);
+            return false;
+        }
+    }
+
 
     private async _getPrivateKeyMint(): Promise<string> {
         const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
