@@ -33,7 +33,7 @@ export class DepositEventStrategy implements EventStrategy {
             });
             if (!result) return;
 
-            await this.userDeposit({
+            await this.handleUserDepositInGame({
                 packageId: packageId,
                 walletAddress: from,
                 blockNumber: blockNumber,
@@ -45,23 +45,25 @@ export class DepositEventStrategy implements EventStrategy {
         }
     }
 
-    private async userDeposit(data: DepositGame) {
+    private async handleUserDepositInGame(data: DepositGame) {
         try {
 
             this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} at block ${data.blockNumber}`);
 
             const result = await this.axiosHelper.post(GAME_ENDPOINT.DEPOSIT, data);
-            if (result) {
-                await this.depositService.update({
-                    packageId: data.packageId,
-                    wallet: data.walletAddress,
-                    block_number: data.blockNumber,
-                    transactionHash: data.transactionHash,
-                    status: DEPOSIT_STATUS.INITIALIZE
-                }, { status: DEPOSIT_STATUS.DONE });
-            }
+            console.log('result', result);
+            
+         
+            await this.depositService.update({
+                packageId: data.packageId,
+                wallet: data.walletAddress,
+                block_number: data.blockNumber,
+                transactionHash: data.transactionHash,
+                status: DEPOSIT_STATUS.INITIALIZE
+            }, { status: DEPOSIT_STATUS.DONE });
+        
 
-            this.logger.log(` ${data.walletAddress} call deposit to game with packageId: ${data.packageId} success`);
+            this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} success`);
 
             return true;
 
@@ -69,7 +71,7 @@ export class DepositEventStrategy implements EventStrategy {
 
             this.logger.error(` ${data.walletAddress} call deposit to game with packageId: ${data.packageId}  at block ${data.blockNumber} error`, error.response.error);
             
-            this.depositService.update({
+            await this.depositService.update({
                 packageId: data.packageId,
                 wallet: data.walletAddress,
                 block_number: data.blockNumber,
