@@ -1,6 +1,6 @@
 
 
-export const HERO_COLLECTIONS = {
+ const HERO_COLLECTIONS = {
 
     "1010": {
         "name": "Cleopatra",

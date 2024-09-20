@@ -1,6 +1,4 @@
-import { getPetObjectInfo } from './decodeGen';
-
-import * as fs from 'fs';
+import { getPetObjectInfo } from './decodeGen';;
 
 import heroTemplate from '../templates/hero.template.json';
 import { HERO_COLLECTIONS } from '../constants/hero-collection';
@@ -9,10 +7,8 @@ import { IHero } from 'src/interface/nft.interface';
 
 export const getHeroJsonTemplate = (gen: string )  => {
     const hrOb = getPetObjectInfo(gen);
-    if(!hrOb) {
-        console.log('Not found hero with gen: ', gen);
-        return null;
-    }
+   
+    if(!hrOb) return null;
     
     const idHero = hrOb.heroId.toString().padStart(3, '0');
  
@@ -20,7 +16,7 @@ export const getHeroJsonTemplate = (gen: string )  => {
 
     const hero = HERO_COLLECTIONS[idHero];
     if (!hero) {
-        console.log('Not found hero', idHero);
+        console.log('Not found hero ', idHero);
         return null;
     }
     const fullHero = Object.assign({}, hero, hrOb);

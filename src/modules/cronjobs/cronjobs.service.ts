@@ -161,6 +161,9 @@ export class CronjobsService {
     ): Promise<string> {
         const filePath = path.join(basePath, `${gen}.json`);
         const heroTemplate = getHeroJsonTemplate(gen);
+        
+        if(!heroTemplate)  return ;
+        
 
         try {
             if (!fs.existsSync(basePath)) {
@@ -192,7 +195,16 @@ export class CronjobsService {
                     }
 
                     const s3Url = await this._createFileAndUploadToS3(path, gen);
+                    if (!s3Url) {
+                        console.log(`Skipping request with missing S3 URL: ${request._id}`);
+                        continue;
+                    }
+
                     const heroTemplate = getHeroJsonTemplate(gen);
+                    if (!heroTemplate) {
+                        console.log(`Skipping request with missing hero template: ${request._id}`);
+                        continue;
+                    }
 
                     const nft = await this.nftService.createNft({
                         name: heroTemplate.name,

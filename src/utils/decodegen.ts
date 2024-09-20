@@ -34,7 +34,11 @@ export const getPetObjectInfo = (gen: string ) : IHero=> {
     
     if(!hero) return null;
     
-    if(!HERO_COLLECTIONS[hero.id]) return null;
+    if(!HERO_COLLECTIONS[hero.id]) {
+        console.log(`'Not found hero ${hero.id} with gen ${gen}`);
+        return null;
+    }
+
     return {
         type: hero.type,
         version: hero.version,
