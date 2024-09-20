@@ -42,7 +42,7 @@ export abstract class BaseService<T extends Document> {
   }
 
   // Update an entity and throw an exception if not found
-  async update(cond: FilterQuery<T>, attrs: UpdateQuery<T>): Promise<T> {
+  async update(cond: FilterQuery<T>, attrs: UpdateQuery<T>): Promise<T> {  
     const updatedEntity = await this.model.findOneAndUpdate(cond, { $set: attrs }, { new: true }).exec();
     return this.throwIfNotFound(updatedEntity, 'condition not met');
   }

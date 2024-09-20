@@ -29,15 +29,15 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseFormatterInterceptor());
 
   // CORS configuration (adjust for production)
-  const corOption = { 
-    origin: process.env.NODE_ENV === 'production' 
-      ? ["*"]
-      : ["*"], 
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    allowedHeaders: ["*"]
-  };
+  // const corOption = { 
+  //   origin: process.env.NODE_ENV === 'production' 
+  //     ? ["*"]
+  //     : ["*"], 
+  //   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  //   allowedHeaders: ["*"]
+  // };
 
-  app.enableCors(corOption);
+  app.enableCors();
 
   // Swagger API Docs Setup
   swaggerSetup(app);

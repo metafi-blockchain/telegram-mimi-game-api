@@ -41,8 +41,17 @@ export class DepositRequestService extends BaseService<Deposit> {
 
         }
     }
-    updateStatusDepositRequest(filter: any, update: Partial<Deposit>) {      
-        return this._model.updateOne(filter, update).exec();
+   async updateStatusDepositRequest(filter: any, update: Partial<Deposit>) {    
+          try {
+            
+            return await this._model.updateOne(filter, update).exec();
+          } catch (error) {
+            this.logger.error(`Update status deposit request error`, error.toString());
+            console.log(error);
+            return null;
+            
+          }
+
     }
 
 

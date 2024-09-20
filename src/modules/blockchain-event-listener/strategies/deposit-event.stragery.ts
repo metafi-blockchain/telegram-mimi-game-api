@@ -52,16 +52,17 @@ export class DepositEventStrategy implements EventStrategy {
 
             this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} at block ${data.blockNumber}`);
 
+            
             const result = await this.axiosHelper.post(GAME_ENDPOINT.DEPOSIT, data);
             this.logger.log(`${data.walletAddress} call deposit to game with packageId: ${data.packageId} success, response: ${result}`);
          
-           await this.depositService.updateStatusDepositRequest({
-                package_id: data.packageId,
-                wallet: data.walletAddress,
-                block_number: data.blockNumber,
-                transaction_hash: data.transactionHash,
-                status: DEPOSIT_STATUS.INITIALIZE
-            }, { status: DEPOSIT_STATUS.DONE });
+        //    await this.depositService.updateStatusDepositRequest({
+        //         package_id: data.packageId,
+        //         wallet: data.walletAddress,
+        //         block_number: data.blockNumber,
+        //         transaction_hash: data.transactionHash,
+        //         status: DEPOSIT_STATUS.INITIALIZE
+        //     }, { status: DEPOSIT_STATUS.DONE });
         
             return true;
 
@@ -69,11 +70,12 @@ export class DepositEventStrategy implements EventStrategy {
 
             this.logger.error(` ${data.walletAddress} call deposit to game with packageId: ${data.packageId}  at block ${data.blockNumber} error`, error.response.error);
             
-            await this.depositService.update({
-                packageId: data.packageId,
+            await this.depositService.updateStatusDepositRequest({
+                package_id: data.packageId,
                 wallet: data.walletAddress,
                 block_number: data.blockNumber,
-                transactionHash: data.transactionHash,
+                transaction_hash: data.transactionHash,
+                status: DEPOSIT_STATUS.INITIALIZE
             }, { status: DEPOSIT_STATUS.ERROR });
 
             console.error('Error call depositing to game:', error);
