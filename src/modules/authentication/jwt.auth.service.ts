@@ -1,12 +1,10 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/modules/users/users.service';
-import { randomBytes, scrypt as _scrypt } from 'crypto';
+import {  scrypt as _scrypt } from 'crypto';
 import { UserDto } from 'src/modules/users/dtos/user.dto';
 import { TOKENS } from 'src/blockchains/utils/app.enums';
-import { AuthAddressDto, AuthSocialDto } from './dto/login.dto';
 import { JwtConfigService } from './jwt.config.service';
-import * as fs from 'fs';
 import { comparePassword, hashPassword } from 'src/utils';
 
 

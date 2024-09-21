@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
 import Web3 from 'web3';
 import { ConfigService } from '@nestjs/config';
 import { ethers } from 'ethers';
+import erc20Abi  from '../../blockchains/abis/erc20Abi.json';
 
 @Injectable()
 export class Web3Service implements OnModuleInit {
@@ -36,23 +37,27 @@ export class Web3Service implements OnModuleInit {
         return await this.web3.eth.getTransaction(transactionHash);
     }
 
-   async listenToContractEvents(abi: any, contractAddress: string, handler: (event: any) => void) {
-
-        const erc721Contract = new ethers.Contract(contractAddress, abi, this.provider);
-
+    async listenToContractEvents(abi: any, contractAddress: string, blocks: number[], handler: (event: any) => void) {
 
         const contract = this.getContract(abi, contractAddress);
 
-     const blocks = [35836854,35838209]; // Define the range of blocks to listen to
-    
-     const pastEvents = await contract.getPastEvents('allEvents', 
-        {
-            fromBlock: blocks[0],         // Starting block number
-            toBlock: blocks[blocks.length - 1] 
-        })
-       console.log('pastEvents:', pastEvents);
-       handler(pastEvents) 
+
+        const pastEvents = await contract.getPastEvents('allEvents',
+            {
+                fromBlock: blocks[0],         // Starting block number
+                toBlock: blocks[blocks.length - 1]
+            })
+        console.log('pastEvents:', pastEvents);
+        handler(pastEvents)
     }
 
-   
+    async getBalance(address: string) {
+        return await this.web3.eth.getBalance(address);
+    }
+    async getBaLanceOfToken(address: string, tokenAddress: string) {
+        const contract = this.getContract(erc20Abi, tokenAddress);
+        return await contract.methods.balanceOf(address).call();
+    }
+
+
 }

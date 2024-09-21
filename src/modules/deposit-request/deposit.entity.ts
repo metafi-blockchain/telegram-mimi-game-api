@@ -41,7 +41,7 @@ export class Deposit  implements BaseEntity {
     status: DEPOSIT_STATUS;
     @Prop({ type: Number, default: 0 })
     block_number: number;
-    @Prop({ type: String})
+    @Prop({ type: String, unique: true })
     transaction_hash: string;
 
 }

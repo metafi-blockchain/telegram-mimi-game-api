@@ -57,7 +57,7 @@ export class DepositRequestService extends BaseService<Deposit> {
 
     private async _checkCanCreateDeposit(walletAddress: string, packageId: number, time: number) {
 
-        const nft = await this._model.findOne({ packageId: Number(packageId), wallet: walletAddress, block_number: time }).exec();
+        const nft = await this._model.findOne({ package_id: Number(packageId), wallet: walletAddress, block_number: time }).exec();
         if (nft) return false;
         return true;
     }
