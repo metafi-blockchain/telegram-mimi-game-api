@@ -1,5 +1,5 @@
 
-import { EventStrategy } from 'src/blockchains/libs/interface';
+import { EventStrategy } from 'src/interface';
 import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
 
 export class SetUpNFTEventStrategy implements EventStrategy {

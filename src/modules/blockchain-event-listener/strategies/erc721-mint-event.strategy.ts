@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { EventStrategy } from 'src/blockchains/libs/interface';
+import { EventStrategy } from 'src/interface';
 import { MINT_STATUS, NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 

@@ -106,3 +106,8 @@ export type GetEventParam = {
     "blockNumber": number,
     "action": 'Active' | 'Deactive'
 }
+
+
+export interface EventStrategy {
+    handleEvent(event: any): Promise<void>;
+}

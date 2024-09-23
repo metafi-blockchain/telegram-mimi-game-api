@@ -1,5 +1,5 @@
 import { Logger } from "@nestjs/common";
-import { EventStrategy } from "src/blockchains/libs/interface";
+import { EventStrategy } from "src/interface";
 import { TRANSACTION } from "src/modules/nft-types/nft-types.entity";
 import { NftTypesService } from "src/modules/nft-types/nft-types.service";
 

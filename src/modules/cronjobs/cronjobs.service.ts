@@ -38,13 +38,13 @@ export class CronjobsService {
     }
 
     // Run create NFT from gen and upload to S3 every minute
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async createHeroJob() {
         await this._handleCreateHero();
     }
 
     // Custom cron expression to run every 5 minutes
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async jobMintNFT() {
         await this._handleMintNfts();
     }
@@ -53,16 +53,16 @@ export class CronjobsService {
     @Cron('*/15 * * * * *')
     async getPastEvent() {
         try {
-            const config = await this.oracleService.findOneWithCondition({});
+            // const config = await this.oracleService.findOneWithCondition({});
 
-            const toBlock = await this.web3Service.getBlockNumber();
-            const fromBlock = config.block_number || toBlock - 100000;
-            // const fromBlock = 35964342
-            await this._processGetPastEvent(fromBlock, toBlock);
-            await this.oracleService.update(
-                { _id: config._id },
-                { block_number: toBlock },
-            );
+            // const toBlock = await this.web3Service.getBlockNumber();
+            // const fromBlock = config.block_number || toBlock - 100000;
+            // // const fromBlock = 35964342
+            // await this._processGetPastEvent(fromBlock, toBlock);
+            // await this.oracleService.update(
+            //     { _id: config._id },
+            //     { block_number: toBlock },
+            // );
         } catch (error) {
             console.error('Error in getPastEvent', error);
         }

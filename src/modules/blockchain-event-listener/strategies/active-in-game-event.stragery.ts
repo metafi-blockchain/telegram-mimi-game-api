@@ -1,9 +1,8 @@
 
-import { EventStrategy } from 'src/blockchains/libs/interface';
 import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 import { AxiosHelperService } from '../axios-helper.service';
-import { ActiveGame } from 'src/interface';
+import { ActiveGame, EventStrategy } from 'src/interface';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
 import { Logger } from '@nestjs/common';
 

@@ -1,10 +1,9 @@
 
-import { EventStrategy } from 'src/blockchains/libs/interface';
 import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 import { AxiosHelperService } from '../axios-helper.service';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
-import { ActiveGame } from 'src/interface';
+import { ActiveGame, EventStrategy } from 'src/interface';
 import { Logger  } from '@nestjs/common';
 
 export class DeActiveGameEventStrategy implements EventStrategy {

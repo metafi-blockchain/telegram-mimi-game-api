@@ -2,7 +2,6 @@
 import { MintEventStrategy } from './erc721-mint-event.strategy';
 import { ListingEventStrategy } from './listing-event.strategy';
 import { NftsService } from 'src/modules/nfts/nfts.service';
-import { EventStrategy } from 'src/blockchains/libs/interface';
 import { UpdatePriceEventStrategy } from './pirce-update-event.strategy';
 import { PurchaseEventStrategy } from './purchase-event.stragery';
 import { ActiveGameEventStrategy } from './active-in-game-event.stragery';
@@ -14,6 +13,7 @@ import { DepositEventStrategy } from './deposit-event.stragery';
 import { AxiosHelperService } from '../axios-helper.service';
 import { DepositRequestService } from 'src/modules/deposit-request/deposit-request.service';
 import { DeployNFTCollectionEventStrategy } from './deploy-nft-collection-event';
+import { EventStrategy } from 'src/interface';
 
 
 export class EventStrategyFactory {

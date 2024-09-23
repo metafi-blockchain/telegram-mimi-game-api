@@ -1,11 +1,10 @@
-import { EventStrategy } from 'src/blockchains/libs/interface';
-import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
-import { NftsService } from 'src/modules/nfts/nfts.service';
+
 import { AxiosHelperService } from '../axios-helper.service';
 import { GAME_ENDPOINT } from 'src/constants/game.endpoint';
 import { DepositRequestService } from 'src/modules/deposit-request/deposit-request.service';
-import { Injectable, NestMiddleware, Logger, HttpStatus } from '@nestjs/common';
+import {  Logger, HttpStatus } from '@nestjs/common';
 import { DEPOSIT_STATUS } from 'src/modules/deposit-request/deposit.entity';
+import { EventStrategy } from 'src/interface';
 
 
 export class DepositEventStrategy implements EventStrategy {

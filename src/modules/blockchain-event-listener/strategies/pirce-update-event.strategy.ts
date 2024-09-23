@@ -1,6 +1,5 @@
 
-import { EventStrategy } from 'src/blockchains/libs/interface';
-import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
+import { EventStrategy } from 'src/interface';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 
 export class UpdatePriceEventStrategy implements EventStrategy {

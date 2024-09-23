@@ -12,7 +12,7 @@ import { TelegramModule } from '../telegram/telegram.module';
   imports: [
     OracleConfigsModule,
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
-    forwardRef(() => TelegramModule),
+    // forwardRef(() => TelegramModule),
   ],
   providers: [NftsService, MultiDelegateCallService,
     {
