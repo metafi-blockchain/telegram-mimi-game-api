@@ -88,7 +88,7 @@ export type IPastEvent = {
         raw: any
       }
 
-export type ContractType =  'erc721' | 'marketplace' | 'game' | 'deposit'
+export type ContractType =  'erc721' | 'marketplace' | 'game' | 'deposit' | 'nft-factory'
 
 
 // Define the EventData type

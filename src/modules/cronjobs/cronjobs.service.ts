@@ -57,7 +57,7 @@ export class CronjobsService {
 
             const toBlock = await this.web3Service.getBlockNumber();
             const fromBlock = config.block_number || toBlock - 100000;
-            // const fromBlock = 35894621
+            // const fromBlock = 35964342
             await this._processGetPastEvent(fromBlock, toBlock);
             await this.oracleService.update(
                 { _id: config._id },
@@ -195,6 +195,7 @@ export class CronjobsService {
                     }
 
                     const s3Url = await this._createFileAndUploadToS3(path, gen);
+
                     if (!s3Url) {
                         console.log(`Skipping request with missing S3 URL: ${request._id}`);
                         continue;
@@ -213,6 +214,7 @@ export class CronjobsService {
                         owner: reception || '',
                         collection_address: nftType.nft_address,
                         attributes: heroTemplate.attributes,
+                        chain_id: nftType.chain_id,
                     } as CreateNftDto);
 
                     console.log(`NFT created for gen: ${nft.gen} with URI: ${s3Url}`);
@@ -277,12 +279,23 @@ export class CronjobsService {
                 'deposit',
             );
 
+            const requestNFTFactory = this.blockChainListener.getPastEvents(
+                {
+                    address: this.configService.get<string>('NFT_FACTORY_ADDRESS'),
+                    fromBlock,
+                    toBlock,
+                },
+                'nft-factory',
+            );
+            
+
 
             const eventRequests = [
                 ...requestListERC721,
                 requestListenMarket,
                 requestGame,
                 requestDeposit,
+                requestNFTFactory,
             ];
             console.log('Fetching all events concurrently...');
 

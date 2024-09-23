@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { BaseService } from '../commons/base.service';
 import { NftType, TRANSACTION } from './nft-types.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {NFTFactoryService} from '../../blockchains/services/index'
 import { CreateNftTypeDto } from './dtos/nft-types.dto';
-import { ConfigService } from '@nestjs/config';
 import { OracleConfigsService } from '../configs/oracle-configs.service';
+import { ResponseSendTransaction } from 'src/blockchains/libs/interface';
 
 @Injectable()
 export class NftTypesService extends BaseService<NftType> {
@@ -19,63 +19,59 @@ export class NftTypesService extends BaseService<NftType> {
         super(nftModel)
     };
 
-    async deployNftType(nftType: CreateNftTypeDto){
+    async deployNftType(nftType: CreateNftTypeDto) {
 
-        try { 
-            const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
-            if(!privateKey) throw new Error('Invalid Operator Private Key')
+     
+            const privateKey = await this.oracleConfigsService.getOperatorKeyHash();
+            if (!privateKey) throw new ServiceUnavailableException('Invalid Operator Private Key');
     
-            //create on database
-            const contractAdd =  await this.nftFactoryService.getContractDeployAddress({
-                owner: nftType.owner,
-                salt: nftType.salt,
-                name: nftType.name,
-                symbol: nftType.symbol,
-            })
-            const response = await this.nftModel.findOne({nft_address: contractAdd}).exec()
-            if(response) throw new Error('contract nft already exists')
-
-            //create on database    
-            const nft  = await this.nftModel.create({
+            const { owner, salt, name, symbol, type: collectionType, chainId } = nftType;
+    
+            // Check if contract already exists
+            const contractAdd = await this.nftFactoryService.getContractDeployAddress({ owner, salt, name, symbol });
+            const existingNft = await this.nftModel.findOne({ nft_address: contractAdd }).exec();
+            console.log('existingNft', existingNft);
+            
+            
+            if (existingNft) throw new ConflictException('NFT contract already exists');
+    
+            // Create NFT entry in the database with "SENDING" status
+            const nft = await this.nftModel.create({
                 nft_address: contractAdd,
-                name: nftType.name,
-                symbol: nftType.symbol,
-                salt: nftType.salt,
-                owner: nftType.owner,
-                status: TRANSACTION.SENDING,
-                collection_type: nftType.type
+                name,
+                symbol,
+                salt,
+                owner,
+                chain_id: chainId,
+                status: TRANSACTION.SUBMITTING,
+                collection_type: collectionType,
+
             });
-
-            //send request to blockchain
-            this.nftFactoryService.deployNft({
-                owner: nftType.owner,
-                salt: nftType.salt,
-                name: nftType.name,
-                symbol: nftType.symbol,
-            }, privateKey).then(async (tx) => {
-                console.log('tx:', tx);
-                nft.status = TRANSACTION.DONE;
-                nft.is_active = true;
-                nft.transaction_hash = tx.transactionHash;
-                await nft.save();
-            }).catch(async (err) => {
-                console.log('err:', err);
+    
+            // Deploy NFT on blockchain and update the database accordingly
+      
+               this.nftFactoryService.deployNft({ owner, salt, name, symbol }, privateKey).
+               then(async (response: ResponseSendTransaction) => {
+                console.log('Blockchain transaction response:', response);
+        
+               }).catch((error) => {
+                console.error('Blockchain transaction error:', error);
                 nft.status = TRANSACTION.ERROR;
-                await nft.save();
-            })   
-            return nft; 
-        } catch (error) {
-            console.log(error);
-            throw new Error('Can not deploy nft type')
-        }
-
+               });
+               return nft;
+    
+       
     }
+
+
 
     async findAllWithCondition(cond: {}){
         return this.nftModel.find(cond).exec()
     }
 
-    async checkCanUpdateByBlockNumber(nft_address: string , blockNumber: number){
+
+
+     async checkCanUpdateByBlockNumber(nft_address: string , blockNumber: number){
         const nftTypes = await this.nftModel.findOne({nft_address}).exec()
         return Number(blockNumber) > Number(nftTypes.block_number)
     }

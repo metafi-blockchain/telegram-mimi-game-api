@@ -2,6 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { BaseEntity, BaseEntitySchema } from '../commons/base.entity';
 import { NftType } from '../nft-types/nft-types.entity';
+import { ChainIds } from 'src/constants/chainIds';
 
 
 export interface NFT extends BaseEntity {
@@ -77,6 +78,9 @@ export class NFT  implements BaseEntity {
 
     @Prop({ type: Number, default: 0 })
     block_number: number;
+
+    @Prop({ type: Number, default: ChainIds.AvalancheFujiTestnet})
+    chain_id: number
 
 }
 

@@ -1,6 +1,6 @@
 
 
-import {IsString} from 'class-validator'
+import {IsNumber, isNumber, IsString} from 'class-validator'
 import { Attributes } from '../nft.entity';
 
 
@@ -18,6 +18,8 @@ export class CreateNftDto {
     name?: string;
 
     attributes?: Attributes[];
+    @IsNumber()
+    chain_id?: number;
 }
 
 

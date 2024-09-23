@@ -23,6 +23,8 @@ export class CreateNftTypeDto {
     salt: number;
     @IsString()
     type: string;
+    @IsNumber()
+    chainId: number;
 }
 
 export class SetNftSupport {

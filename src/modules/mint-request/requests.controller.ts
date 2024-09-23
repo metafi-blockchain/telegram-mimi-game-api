@@ -27,8 +27,14 @@ export class MintRequestController {
 
     @Post('/deploy-nft-contract')
     async createNftType(@Body() nftType: CreateNftTypeDto) {
+        try {
+            return this.nftTypesService.deployNftType(nftType);  
+        } catch (error) {
+            console.error('Error deploying NFT type:', error);
+            throw new Error('Failed to deploy NFT type');
+        }
 
-        return this.nftTypesService.deployNftType(nftType);
+       
     }
 
     @ApiResponse({ status: 403, description: 'Forbidden.'})

@@ -10,8 +10,6 @@ export class UserDto {
 
 
     @Expose()
-    name: string;
-    @Expose()
     address: string
     @Expose()
     version: number ;

@@ -25,10 +25,11 @@ export class JwtAuthService {
       if(!user) throw new BadRequestException("Email or password is incorrect!");
       
       const accessToken = await this.generateAccessToken(user);
+      const refreshToken = await this.generateRefreshToken(user);
   
       return {
         access_token: accessToken,
-        // refresh_token : refreshToken
+        refresh_token : refreshToken
       };
     }
 
@@ -45,11 +46,11 @@ export class JwtAuthService {
 
  
     const accessToken = await this.generateAccessToken(user);
-    // const refreshToken = await this.generateRefreshToken(user);
+    const refreshToken = await this.generateRefreshToken(user);
 
     return {
       access_token: accessToken,
-      // refresh_token : refreshToken
+      refresh_token : refreshToken
     };
   }
 
@@ -96,14 +97,14 @@ export class JwtAuthService {
 
 
   async generateAccessToken(user: UserDto) {
-    const payload = { sub: user.email, name: user.name, version: user.version };
+    const payload = { sub: user.email, version: user.version };
     // console.log(payload);
 
     return this.jwtService.sign(payload);
   }
 
   private async generateRefreshToken(user: UserDto) {
-    const payload = { sub: user.email, name: user.name, version: user.version };
+    const payload = { sub: user.email, version: user.version };
     return this.jwtService.sign(payload, { expiresIn: TOKENS.REFRESH_TOKEN_DURATION });
   }
 }

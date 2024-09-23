@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { NftsService } from './nfts.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NFT, NFTSchema } from './nft.entity';
@@ -12,7 +12,7 @@ import { TelegramModule } from '../telegram/telegram.module';
   imports: [
     OracleConfigsModule,
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
-    TelegramModule
+    forwardRef(() => TelegramModule),
   ],
   providers: [NftsService, MultiDelegateCallService,
     {

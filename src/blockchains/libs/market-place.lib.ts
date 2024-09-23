@@ -34,11 +34,6 @@ export class MarketPlaceLib {
   }
 
 
-
-
-
-  
-
   public getContractAddress(){
     return this.marketContract;
   }

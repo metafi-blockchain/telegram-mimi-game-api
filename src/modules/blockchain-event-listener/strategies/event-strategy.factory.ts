@@ -13,6 +13,7 @@ import { UnListingEventStrategy } from './un-listing-event.strategy';
 import { DepositEventStrategy } from './deposit-event.stragery';
 import { AxiosHelperService } from '../axios-helper.service';
 import { DepositRequestService } from 'src/modules/deposit-request/deposit-request.service';
+import { DeployNFTCollectionEventStrategy } from './deploy-nft-collection-event';
 
 
 export class EventStrategyFactory {
@@ -44,6 +45,8 @@ export class EventStrategyFactory {
         return new SetUpNFTEventStrategy(this.nftTypeService);    
     case 'Deposit':
         return new DepositEventStrategy(this.axiosHelper, this.depositService);  
+    case 'Deployed':
+        return new DeployNFTCollectionEventStrategy(this.nftTypeService);
       // Add other strategies for different events here
       default:
         console.log(`No strategy found for event: ${eventName}`);

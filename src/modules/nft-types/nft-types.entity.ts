@@ -27,7 +27,7 @@ export class NftType  implements BaseEntity {
     name: string;
     @Prop({ type: String, required: true})
     symbol: string;
-    @Prop({ type: String, default: '' })
+    @Prop({ type: String, default: '', unique: true })
     nft_address: string;
     @Prop({ default: 0, type: Number })
     salt: number;
@@ -49,8 +49,11 @@ export class NftType  implements BaseEntity {
     @Prop({ type: String, default: '',  unique: true  })
     transaction_hash: string;
 
-    @Prop({ type: Number, default: '',  unique: true  })
+    @Prop({ type: Number, default: 0 })
     block_number: number;
+
+    @Prop({ type: Number, default: 0 })
+    chain_id: number;
 
 }
 
