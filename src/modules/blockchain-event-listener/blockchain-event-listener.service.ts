@@ -14,6 +14,7 @@ import { AxiosHelperService } from './axios-helper.service';
 import { DepositService, NFTFactoryService } from 'src/blockchains/services';
 import { DepositRequestService } from '../deposit-request/deposit-request.service';
 import { NFTFactory } from 'src/blockchains/libs';
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class BlockchainEventListenerService {
@@ -26,10 +27,11 @@ export class BlockchainEventListenerService {
     private nftTypService: NftTypesService,
     private transactionService: TransactionHistoryService,
     private readonly axiosHelper: AxiosHelperService,
-    private readonly depositService: DepositRequestService
+    private readonly depositService: DepositRequestService,
+    private readonly telegramService: TelegramService
   ) {
     this.nodeRpcUrl = this.configService.get<string>('WEB3_RPC_URL');
-    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService, this.axiosHelper, this.depositService);
+    this.eventStrategyFactory = new EventStrategyFactory(this.nftService, this.nftTypService, this.axiosHelper, this.depositService, this.telegramService);
   }
 
 

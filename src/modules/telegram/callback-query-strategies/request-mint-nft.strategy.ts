@@ -8,6 +8,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { isHeroGenValid } from 'src/utils';
 import { isAddress } from 'ethers';
 import { NftHelperService } from 'src/modules/nfts/nft.hepler.service';
+import { getUserInput } from '../helper';
 
 export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
     constructor(
@@ -30,7 +31,7 @@ export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
           await bot.sendMessage(chatId, 'Please input gens:');
           
           // Wait for the first input (gens)
-          gensInput = await this.getUserInput(bot, chatId);
+          gensInput = await getUserInput(bot, chatId);
       
           // Validate gens input
           const arrGens = gensInput.split(',');
@@ -46,12 +47,13 @@ export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
           await bot.sendMessage(chatId, 'Please input reception:');
           
           // Wait for the second input (reception)
-          reception = await this.getUserInput(bot, chatId);
+          reception = await getUserInput(bot, chatId);
 
           if(!isAddress(reception)){
             await bot.sendMessage(chatId, 'Invalid reception input. Please enter a valid value.');
             return;
           }
+
           await this.createMintRequest(arrGens, reception);
           await bot.sendMessage(chatId, 'Mint request created successfully.');
           
@@ -61,16 +63,8 @@ export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
         }
       }
       
-      // Helper function to get input from the user
-      private getUserInput(bot: TelegramBot, chatId: number): Promise<string> {
-        return new Promise((resolve) => {
-          bot.once('message', (msg) => {
-            if (msg.chat.id === chatId) {
-              resolve(msg.text); // Resolve the user's input
-            }
-          });
-        });
-      }
+;
+      
 
       private async createMintRequest(gens: string[], reception: string){
         //create many mint request 

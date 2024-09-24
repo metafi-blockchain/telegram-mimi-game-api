@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MintRequestService } from './requests.service';
 import { MintRequestController } from './requests.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -16,7 +16,7 @@ import { UsersModule } from '../users/users.module';
     MongooseModule.forFeature([{name: MintRequest.name, schema: MintRequestSchema}]),
     ActivityLogsModule,
     NftTypesModule,
-    NftsModule,
+    forwardRef(() => NftsModule),
     OracleConfigsModule,
     UsersModule
 

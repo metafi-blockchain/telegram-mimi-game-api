@@ -188,4 +188,13 @@ export class TelegramService {
       }
     });
   }
+
+  async sendNotification2AdminGroup( message: string) {
+    const chatId = this.configService.get<string>('TELEGRAM_ADMIN_GROUP_ID');
+    await this.sendMessage(chatId, message);
+
+
+  }
+
+
 }

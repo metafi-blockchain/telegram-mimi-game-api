@@ -10,8 +10,10 @@ import { STATUS } from '../mint-request/request.entity';
 import { MintRequestService } from '../mint-request/requests.service';
 import { Queue } from 'src/blockchains/utils';
 import { CreateNftDto } from './dtos/nft.dto';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+
+@Injectable()
 export class NftHelperService {
     private readonly logger = new Logger(NftHelperService.name);
 

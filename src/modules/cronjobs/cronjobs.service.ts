@@ -38,13 +38,13 @@ export class CronjobsService {
     }
 
     // Run create NFT from gen and upload to S3 every minute
-    @Cron(CronExpression.EVERY_30_MINUTES)
+    @Cron(CronExpression.EVERY_HOUR)
     async createHeroJob() {
         await this.nftHelperService.handleCreateHero();
     }
 
     // Custom cron expression to run every 5 minutes
-    @Cron(CronExpression.EVERY_30_MINUTES)
+    @Cron(CronExpression.EVERY_HOUR)
     async jobMintNFT() {
         await this.nftHelperService.handleMintNfts();
     }

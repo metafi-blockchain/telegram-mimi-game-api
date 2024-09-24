@@ -74,13 +74,7 @@ export class NftsService extends BaseService<NFT> {
             this.logger.error(`Error minting NFT: ${error}`);
             throw new InternalServerErrorException(`Error minting NFT: ${error}`);
         }
-
-
-       
     }
-
-
-
 
     async getNftsByMintStatus(minting_status: MINT_STATUS, collection_address: string): Promise<NFT[]> {
         const nftRequest = await this.nftModel.aggregate([

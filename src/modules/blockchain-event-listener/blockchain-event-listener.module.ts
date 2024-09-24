@@ -6,10 +6,11 @@ import { TransactionHistoryModule } from '../event-log-history/event-history.mod
 import { Web3Module } from '../web3/web3.module';
 import { AxiosHelperService } from './axios-helper.service';
 import { DepositRequestModule } from '../deposit-request/deposit-request.module';
+import { TelegramModule } from '../telegram/telegram.module';
 
 @Module({
   providers: [BlockchainEventListenerService, AxiosHelperService],
-  imports: [NftTypesModule, NftsModule, TransactionHistoryModule, Web3Module, DepositRequestModule],
+  imports: [NftTypesModule, NftsModule, TransactionHistoryModule, Web3Module, DepositRequestModule, TelegramModule],
   exports: [BlockchainEventListenerService],
 })
 export class BlockchainEventListenerModule {}

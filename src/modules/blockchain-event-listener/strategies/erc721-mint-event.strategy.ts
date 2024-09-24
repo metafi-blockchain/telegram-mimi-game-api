@@ -2,14 +2,26 @@ import { Logger } from '@nestjs/common';
 import { EventStrategy } from 'src/interface';
 import { MINT_STATUS, NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
+import { TelegramService } from 'src/modules/telegram/telegram.service';
 
 export class MintEventStrategy implements EventStrategy {
-  constructor(private nftService: NftsService) {}
+
+  
+  constructor(
+    private nftService: NftsService,
+
+    private readonly telegramService: TelegramService,
+  ) {
+
+
+  }
 
   async handleEvent(event: any): Promise<void> {
     try {
       const { recipient, tokenId, uri } = event.returnValues;
       console.log(`MintEvent handled for tokenId: ${tokenId}`);
+
+
 
       const blockNumber = Number(event.blockNumber);
 
@@ -31,6 +43,7 @@ export class MintEventStrategy implements EventStrategy {
           block_number: blockNumber,
         },
       );
+      this.telegramService.sendNotification2AdminGroup( `Mint ${nft.gen} successfully with tokenId ${tokenId}`);
       Logger.log(`MintEvent handled successfully for tokenId: ${tokenId}`);
     } catch (error) {
       console.log(`MintEvent failed for`);

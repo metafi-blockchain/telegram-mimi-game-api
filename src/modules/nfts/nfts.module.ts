@@ -9,13 +9,17 @@ import { NftsController } from './nfts.controller';
 import { TelegramModule } from '../telegram/telegram.module';
 import { S3Module } from '../s3/s3.module';
 import { NftHelperService } from './nft.hepler.service';
+import { NftTypesModule } from '../nft-types/nft-types.module';
+import { RequestModule } from '../mint-request/requests.module';
 
 @Module({
   imports: [
     OracleConfigsModule,
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
-    // forwardRef(() => TelegramModule),
-    S3Module
+    forwardRef(() => RequestModule),
+    S3Module,
+   NftTypesModule, 
+    RequestModule 
   ],
   providers: [NftsService, MultiDelegateCallService, NftHelperService,
     {

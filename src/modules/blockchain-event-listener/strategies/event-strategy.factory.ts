@@ -14,21 +14,23 @@ import { AxiosHelperService } from '../axios-helper.service';
 import { DepositRequestService } from 'src/modules/deposit-request/deposit-request.service';
 import { DeployNFTCollectionEventStrategy } from './deploy-nft-collection-event';
 import { EventStrategy } from 'src/interface';
+import { TelegramService } from 'src/modules/telegram/telegram.service';
 
 
 export class EventStrategyFactory {
   constructor(
-    private nftService: NftsService,
-    private nftTypeService: NftTypesService,
-    private axiosHelper: AxiosHelperService,
-    private readonly depositService : DepositRequestService
+    private readonly nftService: NftsService,
+    private readonly nftTypeService: NftTypesService,
+    private readonly axiosHelper: AxiosHelperService,
+    private readonly depositService : DepositRequestService,
+    private readonly telegramService: TelegramService,
 
   ) {}
 
   createStrategy(eventName: string): EventStrategy {
     switch (eventName) {
       case 'NFTMinted':
-        return new MintEventStrategy(this.nftService);
+        return new MintEventStrategy(this.nftService, this.telegramService);
       case 'Listing':
         return new ListingEventStrategy(this.nftService);
       case 'UnListing':
