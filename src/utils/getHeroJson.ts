@@ -3,21 +3,23 @@ import { getPetObjectInfo } from './decodeGen';;
 import heroTemplate from '../templates/hero.template.json';
 import { HERO_COLLECTIONS } from '../constants/hero-collection';
 import { IHero } from 'src/interface/nft.interface';
+import { NotImplementedException } from '@nestjs/common';
 
 
 export const getHeroJsonTemplate = (gen: string )  => {
     const hrOb = getPetObjectInfo(gen);
    
-    if(!hrOb) return null;
+    if(!hrOb) throw new NotImplementedException('Not found hero');
     
     const idHero = hrOb.heroId.toString().padStart(3, '0');
  
     
 
     const hero = HERO_COLLECTIONS[idHero];
+
     if (!hero) {
-        console.log('Not found hero ', idHero);
-        return null;
+        console.log('Not not support', idHero);
+        throw new NotImplementedException('Not not support');
     }
     const fullHero = Object.assign({}, hero, hrOb);
     heroTemplate.name = `${fullHero.name}`;

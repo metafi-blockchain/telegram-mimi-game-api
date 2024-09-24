@@ -52,7 +52,7 @@ export class EventStrategyFactory {
       // Add other strategies for different events here
       default:
         console.log(`No strategy found for event: ${eventName}`);
-        return null;
+        return ;
         
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable,Logger } from '@nestjs/common';
+import { Injectable,Logger, NotImplementedException } from '@nestjs/common';
 import { Deposit, DEPOSIT_STATUS } from './deposit.entity';
 import { BaseService } from '../commons/base.service';
 import { Model } from 'mongoose';
@@ -47,8 +47,7 @@ export class DepositRequestService extends BaseService<Deposit> {
             return await this._model.updateOne(filter, update).exec();
           } catch (error) {
             this.logger.error(`Update status deposit request error`, error.toString());
-            console.log(error);
-            return null;
+             throw new NotImplementedException("Update status deposit request error");
             
           }
 

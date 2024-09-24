@@ -30,7 +30,7 @@ export  class CallBackTelegramStrategyFactory  {
           
           default:
             console.log(`No strategy found for event: ${query_name}`);
-            return null;
+            return;
             
         }
       }

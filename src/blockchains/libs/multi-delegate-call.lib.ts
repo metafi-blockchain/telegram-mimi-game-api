@@ -19,7 +19,7 @@ export class MultiDelegateCall {
 
     if (!this.web3) {
       console.log('Web3 or contract ABI is not initialized');
-      return null;
+      throw new Error('Web3 or contract ABI is not initialized');
     }
     const contract = this.getMultiDelegateCallContract();
     

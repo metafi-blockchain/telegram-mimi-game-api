@@ -46,7 +46,7 @@ export class NFTFactory {
 
     } catch (error) {
       console.log('Error:', error);
-      return null;
+      throw new Error('Error in getDeployContractAddress');
     }
   }
 

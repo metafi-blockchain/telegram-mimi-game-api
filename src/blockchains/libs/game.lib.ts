@@ -16,6 +16,7 @@ export class GameLib {
     }
 
     public getWeb3Provider(): Web3 {
+        if (!this.web3)  throw new Error('Web3 or contract ABI is not initialized');
         return this.web3;
     }
 
@@ -33,7 +34,6 @@ export class GameLib {
 
 
     private getGameContract(): Contract<any> {
-
         return new this.web3.eth.Contract(gameAbi, this.gameContract);
     }
 

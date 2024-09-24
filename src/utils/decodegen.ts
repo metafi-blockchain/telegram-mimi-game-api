@@ -9,10 +9,9 @@ import { isHeroGenValid } from "./helper";
 
 export const decodePetGen = (gen: string) => {
 
-    //1009
 
-    if (!isHeroGenValid(gen)) return null;
-    
+    if (!isHeroGenValid(gen)) throw new Error(`Invalid gen ${gen}`);
+
     return {
         type: Number(gen.substring(0, 8)),
         version: Number(gen.substring(8, 10)),
@@ -29,13 +28,12 @@ export const decodePetGen = (gen: string) => {
 }
 
 export const getPetObjectInfo = (gen: string ) : IHero=> {
+
     const hero  = decodePetGen(gen);
-    
-    if(!hero) return null;
     
     if(!HERO_COLLECTIONS[hero.id]) {
         console.log(`Not found hero ${hero.id} with gen ${gen}`);
-        return null;
+        throw new Error(`Not found hero ${hero.id} with gen ${gen}`);
     }
 
     return {
@@ -61,17 +59,17 @@ export const getPetObjectInfo = (gen: string ) : IHero=> {
 
 
 
-const getElementFromGen = (genElement: string) : String=> {
-    let result= []
-    const element1 = genElement.toString().padStart(6, '0').substring(0, 2);
-    const element2 = genElement.toString().padStart(6, '0').substring(2, 4);
-    const element3 = genElement.toString().padStart(6, '0').substring(4, 6);
+// const getElementFromGen = (genElement: string) : String=> {
+//     let result= []
+//     const element1 = genElement.toString().padStart(6, '0').substring(0, 2);
+//     const element2 = genElement.toString().padStart(6, '0').substring(2, 4);
+//     const element3 = genElement.toString().padStart(6, '0').substring(4, 6);
 
-    if(PetElements[element1]) result.push(PetElements[element1]);
-    if(PetElements[element2]) result.push(PetElements[element2]);
-    if(PetElements[element3]) result.push(PetElements[element3]);
-   return result.join(", ");
-}
+//     if(PetElements[element1]) result.push(PetElements[element1]);
+//     if(PetElements[element2]) result.push(PetElements[element2]);
+//     if(PetElements[element3]) result.push(PetElements[element3]);
+//    return result.join(", ");
+// }
 
 
 

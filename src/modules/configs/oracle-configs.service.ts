@@ -19,19 +19,18 @@ export class OracleConfigsService  extends BaseService<OracleConfig> {
          
             
             
-            if(!config) return null;
+            if(!config) throw new Error('Oracle config not found');
 
             const privateKeyHash =  config.private_key_hash;
             const decryptCode = this.configService.get<string>('DECRIPT_PRIVATE_KEY')
           
-            
-            if(!decryptCode) return null;
+            if(!decryptCode) throw new Error('Get operator key hash error');
 
             return decryptPrivateKeyWithARES(privateKeyHash, decryptCode);
 
         } catch (error) {
             console.log(error);
-            return null;    
+            throw new Error('Get operator key hash error');
         }
 
     }
