@@ -27,3 +27,12 @@ export  async function hashPassword (password: string){
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
+
+
+  export function isHeroGenValid  (gen: string): boolean  {
+    if (gen.length != "100000000100001009000001700450000120000010000320000000001700000".length) {
+      console.log('gen is not valid:' , gen);
+      return false;
+    }
+    return true
+  }

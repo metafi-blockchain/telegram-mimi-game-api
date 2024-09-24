@@ -48,7 +48,7 @@ export class MintRequestController {
         const response = await this.requestService.findWithCondition({ gen: { $in: gens } })
 
         if (response.length > 0) {
-            let genExits = await this.checkGensExits(gens);
+            let genExits = await this.requestService.checkGensExits(gens);
             throw new ConflictException(`${genExits.join(";")} gen already exists`)
         }
         return this.requestService.createManyMintNftRequest(reception, gens);
@@ -195,14 +195,6 @@ export class MintRequestController {
     }
 
 
-    private async checkGensExits(gens: string[]) {
-        let genExits = []
 
-        for (let gen of gens) {
-            const response = await this.requestService.checkGenExits(gen)
-            if (response) genExits.push(gen)
-        }
-        return genExits;
-    }
 
 }

@@ -56,7 +56,7 @@ export class MintRequestService extends BaseService<MintRequest> {
 
 
 
-    async checkGenExits(gen: string): Promise<boolean>{
+    async isGenExits(gen: string): Promise<boolean>{
         const nft = await this.mintRequestModel.findOne({gen}).exec();
         return !!nft;
     }
@@ -68,6 +68,17 @@ export class MintRequestService extends BaseService<MintRequest> {
         const privateKey = await this.oracleConfigsService.getOperatorKeyHash()
         if(!privateKey) throw new Error('Invalid Operator Private Key')
         return privateKey;
+    }
+
+    async checkGensExits(gens: string[]): Promise<string[]>{ {
+        let genExits = []
+
+        for (let gen of gens) {
+            const response = await this.isGenExits(gen)
+            if (response) genExits.push(gen)
+        }
+        return genExits;
+    }
     }
 
 }

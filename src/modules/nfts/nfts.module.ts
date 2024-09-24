@@ -7,14 +7,17 @@ import { ConfigService } from '@nestjs/config';
 import { OracleConfigsModule } from '../configs/oracle-configs.module';
 import { NftsController } from './nfts.controller';
 import { TelegramModule } from '../telegram/telegram.module';
+import { S3Module } from '../s3/s3.module';
+import { NftHelperService } from './nft.hepler.service';
 
 @Module({
   imports: [
     OracleConfigsModule,
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
     // forwardRef(() => TelegramModule),
+    S3Module
   ],
-  providers: [NftsService, MultiDelegateCallService,
+  providers: [NftsService, MultiDelegateCallService, NftHelperService,
     {
       provide: "RPC_NETWORK",
       useFactory: (configService: ConfigService) => configService.get<string>('WEB3_RPC_URL'),
@@ -32,7 +35,7 @@ import { TelegramModule } from '../telegram/telegram.module';
     },
 
   ],
-  exports: [NftsService],
+  exports: [NftsService, NftHelperService],
   controllers: [NftsController],
 
 })

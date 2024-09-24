@@ -5,12 +5,16 @@ import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
 import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 import TelegramBot from 'node-telegram-bot-api';
+import { isHeroGenValid } from 'src/utils';
+import { isAddress } from 'ethers';
+import { NftHelperService } from 'src/modules/nfts/nft.hepler.service';
 
-export class TelegramMintNftStrategy implements CallbackQueryStrategy {
+export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
     constructor(
         private mintService: MintRequestService,
         private collectionService: NftTypesService,
         private nftService: NftsService,
+        private nftHelperService: NftHelperService
     ) { }
 
     async handleCallbackQuery(callbackQuery: any, bot: TelegramBot): Promise<void> {
@@ -29,26 +33,27 @@ export class TelegramMintNftStrategy implements CallbackQueryStrategy {
           gensInput = await this.getUserInput(bot, chatId);
       
           // Validate gens input
-          if (!this.isValidGensInput(gensInput)) {
-            await bot.sendMessage(chatId, 'Invalid gens input. Please enter a valid value.');
+          const arrGens = gensInput.split(',');
+   
+          const checkGensInput = await this.validGensUserInput(arrGens);
+
+          if(checkGensInput !='ok'){
+            await bot.sendMessage(chatId, checkGensInput);
             return;
           }
-          
-          // Send confirmation for gens input
-          await bot.sendMessage(chatId, `You entered gens: ${gensInput}`);
           
           // Prompt the user to input "reception"
           await bot.sendMessage(chatId, 'Please input reception:');
           
           // Wait for the second input (reception)
           reception = await this.getUserInput(bot, chatId);
-      
-          // Send confirmation for reception input
-          await bot.sendMessage(chatId, `You entered reception: ${reception}`);
-      
-          // Do something with gensInput and reception
-          console.log('Gens:', gensInput);
-          console.log('Reception:', reception);
+
+          if(!isAddress(reception)){
+            await bot.sendMessage(chatId, 'Invalid reception input. Please enter a valid value.');
+            return;
+          }
+          await this.createMintRequest(arrGens, reception);
+          await bot.sendMessage(chatId, 'Mint request created successfully.');
           
         } catch (error) {
           console.error('Error handling callback query:', error);
@@ -66,10 +71,26 @@ export class TelegramMintNftStrategy implements CallbackQueryStrategy {
           });
         });
       }
-      
-      // Example validation function for gens input
-      private isValidGensInput(input: string): boolean {
-        // Add your validation logic here (e.g., check if the input is a number)
-        return !isNaN(Number(input)) && Number(input) > 0; // Example: only allow positive numbers
+
+      private async createMintRequest(gens: string[], reception: string){
+        //create many mint request 
+        await this.mintService.createManyMintNftRequest(reception, gens);
+
+        //handle mint request
       }
+
+
+      private async validGensUserInput(gens: string[]): Promise<string> {
+        const check = gens.every(isHeroGenValid);
+        if (!check) return "Invalid gen input. Please enter a valid value.";
+
+        const response = await this.mintService.findWithCondition({ gen: { $in: gens } })
+        if (response.length > 0) {
+          let genExits = await this.mintService.checkGensExits(gens);
+          return `${genExits.join(";")} gen already exists`;
+        }
+        return 'ok';
+      }
+      
+    
 }

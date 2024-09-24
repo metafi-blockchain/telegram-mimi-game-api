@@ -1,19 +1,18 @@
 import { HERO_COLLECTIONS, PetElements } from "src/constants";
 import { IHero } from "src/interface/nft.interface";
+import { isHeroGenValid } from "./helper";
 
 // const {PetContains, CollectionNft} = require('../../constants/index');
 
 
 
 
-export const decodePetGen = (gen: String) => {
+export const decodePetGen = (gen: string) => {
 
     //1009
 
-    if (gen.length != "100000000100001009000001700450000120000010000320000000001700000".length) {
-        console.log('gen is not valid:' , gen);
-        return null
-    }
+    if (!isHeroGenValid(gen)) return null;
+    
     return {
         type: Number(gen.substring(0, 8)),
         version: Number(gen.substring(8, 10)),
