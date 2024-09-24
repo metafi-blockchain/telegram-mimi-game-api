@@ -7,8 +7,8 @@ import { NftsService } from 'src/modules/nfts/nfts.service';
 import TelegramBot from 'node-telegram-bot-api';
 import { isHeroGenValid } from 'src/utils';
 import { isAddress } from 'ethers';
-import { NftHelperService } from 'src/modules/nfts/nft.hepler.service';
-import { getUserInput } from '../helper';
+import { NftHelperService } from "src/modules/nfts/nft.helper.service";
+import { getUserInput } from '../telegram.helper';
 
 export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
     constructor(
@@ -54,7 +54,7 @@ export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
             return;
           }
 
-          await this.createMintRequest(arrGens, reception);
+          await this.mintRequestHandling(arrGens, reception);
           await bot.sendMessage(chatId, 'Mint request created successfully.');
           
         } catch (error) {
@@ -66,11 +66,15 @@ export class TelegramRequestMintNftStrategy implements CallbackQueryStrategy {
 ;
       
 
-      private async createMintRequest(gens: string[], reception: string){
-        //create many mint request 
-        await this.mintService.createManyMintNftRequest(reception, gens);
+      private async mintRequestHandling(gens: string[], reception: string){
+        try {
+          await this.mintService.createManyMintNftRequest(reception, gens);
+          await this.nftHelperService.handleCreateHero();
+          await this.nftHelperService.handleMintNfts();
+        } catch (error) {
+          console.log('Error in handleCreateHero:', error);
 
-        //handle mint request
+        }
       }
 
 

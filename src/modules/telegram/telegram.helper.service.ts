@@ -9,11 +9,9 @@ import { NftsService } from '../nfts/nfts.service';
 import { CallBackTelegramStrategyFactory } from './callback-query-strategies/callback-handling.strategies';
 import { MintRequestService } from '../mint-request/requests.service';
 import { NftHelperService } from '../nfts/nft.helper.service';
-import { TELEGRAM_QUERY } from './telegram.constants';
-
 
 @Injectable()
-export class TelegramService {
+export class TelegramHelperService {
   private readonly telegramStrategyFactory: CallBackTelegramStrategyFactory;
   private readonly token: string;
   private bot: TelegramBot;
@@ -35,12 +33,6 @@ export class TelegramService {
     );
 
     this.initializeBot();
-  }
-
-  async sendNotification2AdminGroup( message: string) {
-    const chatId = this.configService.get<string>('TELEGRAM_ADMIN_GROUP_ID');
-    await this.sendMessage(chatId, message);
-
   }
 
   private initializeBot() {
@@ -107,14 +99,10 @@ export class TelegramService {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Request Mint Hero', callback_data: TELEGRAM_QUERY.REQUEST_MINT_HERO },
-            { text: 'Mint Hero', callback_data: TELEGRAM_QUERY.MINTING_HERO },
-           
+            { text: 'Mint Hero', callback_data: 'MINT_HERO' },
+            { text: 'List Hero', callback_data: 'LIST_HERO' },
           ],
-          [
-            { text: 'List Hero', callback_data: TELEGRAM_QUERY.LISTING_HERO },
-            { text: 'UnList Hero', callback_data: TELEGRAM_QUERY.UN_LISTING_HERO },
-          ],
+          [{ text: 'Get Hero' }, { text: 'Menu 4' }],
         ],
         resize_keyboard: true,
         one_time_keyboard: false,
@@ -131,14 +119,10 @@ export class TelegramService {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Request Mint Hero', callback_data: TELEGRAM_QUERY.REQUEST_MINT_HERO },
-            { text: 'Mint Hero', callback_data: TELEGRAM_QUERY.MINTING_HERO },
-           
+            { text: 'Visit Market Kingdoms', url: 'https://market.kingdoms.game' },
+            { text: 'Mint Heroes', callback_data: 'MINT_HERO' },
           ],
-          [
-            { text: 'List Hero', callback_data: TELEGRAM_QUERY.LISTING_HERO },
-            { text: 'UnList Hero', callback_data: TELEGRAM_QUERY.UN_LISTING_HERO },
-          ],
+          [{ text: 'Contact Support', callback_data: 'CONTACT_SUPPORT' }],
         ],
       },
     };
@@ -205,7 +189,11 @@ export class TelegramService {
     });
   }
 
+  async sendNotification2AdminGroup( message: string) {
+    const chatId = this.configService.get<string>('TELEGRAM_ADMIN_GROUP_ID');
+    await this.sendMessage(chatId, message);
 
+  }
 
 
 }

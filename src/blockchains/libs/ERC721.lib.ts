@@ -38,6 +38,17 @@ export class ERC721Library {
 
   }
 
+  unListERC721Data(tokenId: number): Bytes{
+
+    if (!this.web3) {
+      console.log('Web3 or contract ABI is not initialized');
+      return null;
+    }
+    const contract = this.getNftContract();
+    
+    return contract.methods.unListNFT(tokenId).encodeABI() as Bytes
+  }
+
    getBurnERC721Data(tokenId: number): Bytes{
 
     if (!this.web3) {

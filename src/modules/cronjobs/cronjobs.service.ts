@@ -1,13 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { NftsService } from '../nfts/nfts.service';
-import { MintRequestService } from '../mint-request/requests.service';
-import { S3Service } from '../s3/s3.service';
-import { STATUS } from '../mint-request/request.entity';
-import { getHeroJsonTemplate } from 'src/utils/getHeroJson';
 import { NftTypesService } from '../nft-types/nft-types.service';
-import { COLLECTION_TYPE, TRANSACTION } from '../nft-types/nft-types.entity';
-import { MINT_STATUS } from '../nfts/nft.entity';
 import { Queue } from 'src/blockchains/utils';
 import { BlockchainEventListenerService } from '../blockchain-event-listener/blockchain-event-listener.service';
 import { ConfigService } from '@nestjs/config';
@@ -15,17 +8,13 @@ import { OracleConfigsService } from '../configs/oracle-configs.service';
 import { Web3Service } from '../web3/web3.service';
 import { ScannerErrorsService } from '../scanner-errors/scanner-errors.service';
 import { SCAN_STATUS, ScannerError } from '../scanner-errors/scanner-error.entity';
-import { CreateNftDto } from '../nfts/dtos/nft.dto';
-import { NftHelperService } from '../nfts/nft.hepler.service';
+import { NftHelperService } from '../nfts/nft.helper.service';
 
 @Injectable()
 export class CronjobsService {
     private requestQueue: Queue<any> = new Queue();
 
     constructor(
-        private readonly nftService: NftsService,
-        private readonly mintRequest: MintRequestService,
-        private readonly s3Service: S3Service,
         private readonly nftTypeService: NftTypesService,
         private readonly blockChainListener: BlockchainEventListenerService,
         private readonly configService: ConfigService,

@@ -8,7 +8,7 @@ import { OracleConfigsModule } from '../configs/oracle-configs.module';
 import { NftsController } from './nfts.controller';
 import { TelegramModule } from '../telegram/telegram.module';
 import { S3Module } from '../s3/s3.module';
-import { NftHelperService } from './nft.hepler.service';
+import { NftHelperService } from './nft.helper.service';
 import { NftTypesModule } from '../nft-types/nft-types.module';
 import { RequestModule } from '../mint-request/requests.module';
 
@@ -18,7 +18,7 @@ import { RequestModule } from '../mint-request/requests.module';
     MongooseModule.forFeature([{name: NFT.name, schema: NFTSchema}]), 
     forwardRef(() => RequestModule),
     S3Module,
-   NftTypesModule, 
+     NftTypesModule, 
     RequestModule 
   ],
   providers: [NftsService, MultiDelegateCallService, NftHelperService,

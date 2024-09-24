@@ -6,7 +6,7 @@ import { MINT_STATUS, NFT } from './nft.entity';
 import { Model } from 'mongoose';
 import { CreateNftDto } from './dtos/nft.dto';
 import { OracleConfigsService } from '../configs/oracle-configs.service';
-import { ERC721Service } from 'src/blockchains/services';
+import { ERC721Service, MarketService } from 'src/blockchains/services';
 import { BaseService } from '../commons/base.service';
 import { ResponseSendTransaction } from 'src/blockchains/libs/interface';
 import { CryptoUtils } from 'src/blockchains/utils';
@@ -15,6 +15,7 @@ import { CryptoUtils } from 'src/blockchains/utils';
 export class NftsService extends BaseService<NFT> {
 
     private readonly logger = new Logger(NftsService.name);
+    private marketContractAddress: string;
 
     constructor(
         @InjectModel(NFT.name) private nftModel: Model<NFT>,
@@ -24,6 +25,7 @@ export class NftsService extends BaseService<NFT> {
         private readonly multiDelegateCallService: MultiDelegateCallService,
     ) {
         super(nftModel)
+        this.marketContractAddress =  this.configService.get<string>( 'MARKET_PLACE_CONTRACT_ADDRESS');
     }
 
     async createNft(nft: CreateNftDto) {
@@ -56,8 +58,9 @@ export class NftsService extends BaseService<NFT> {
 
     }
 
-
+    // Mint NFTs from NFT types in DONE status
     async mintBatchNFT(collection_address: string, nftMints: NFT[]): Promise<ResponseSendTransaction> {
+
         if (!nftMints.length) {
             console.log('No NFT to mint');
             return { status: false };
@@ -73,6 +76,23 @@ export class NftsService extends BaseService<NFT> {
         } catch (error) {
             this.logger.error(`Error minting NFT: ${error}`);
             throw new InternalServerErrorException(`Error minting NFT: ${error}`);
+        }
+    }
+
+    async unlistNfts(tokenIds: number[], collectionAddress: string): Promise<ResponseSendTransaction> {
+        try {
+            const rpcUrl = this.configService.get<string>('WEB3_RPC_URL')
+
+            const privateKey = await this._getPrivateKeyMint();
+            const erc721Service = new MarketService(this.marketContractAddress, rpcUrl);
+            const result = await erc721Service.unListing({
+                nftIds: tokenIds,
+                nftsAddress: collectionAddress
+            }, privateKey);
+            return result;
+        } catch (error) {
+            this.logger.error(`Error unlisting NFT: ${error}`);
+            throw new InternalServerErrorException(`Error unlisting NFT: ${error}`);
         }
     }
 
@@ -101,6 +121,7 @@ export class NftsService extends BaseService<NFT> {
     }
 
 
+    //using update state NFT in blockchain
     async updateStateNFT( nftAddress: string, nftId: number, block_number: number, updateFields: Partial<any>) {
         try {
             const tokenId = Number(nftId);
@@ -121,6 +142,7 @@ export class NftsService extends BaseService<NFT> {
 
     }
 
+    //using for update state in game when active or deactive call game gateway
     async updateStateInGame(filter: any, state: boolean) {
         try {
             await this.nftModel.findOneAndUpdate(filter, {is_in_game: state}).exec();

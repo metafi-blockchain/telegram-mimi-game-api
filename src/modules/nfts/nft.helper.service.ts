@@ -135,7 +135,7 @@ export class NftHelperService {
                 console.error(`Error processing request ${request._id}:`, requestError);
             }
         }
-    }
+     }
 
 
     private async _createFileAndUploadToS3(basePath: string, gen: string): Promise<string | void> {

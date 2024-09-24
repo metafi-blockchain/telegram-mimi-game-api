@@ -1,18 +1,13 @@
 
 import { CallbackQueryStrategy } from 'src/interface';
-import { MintRequestService } from 'src/modules/mint-request/requests.service';
 import { NftTypesService } from 'src/modules/nft-types/nft-types.service';
-import { NFT_STATUS } from 'src/modules/nfts/nft.entity';
 import { NftsService } from 'src/modules/nfts/nfts.service';
 import TelegramBot from 'node-telegram-bot-api';
-import { isAddress } from 'ethers';
-import { NftHelperService } from "src/modules/nfts/nft.helper.service";
 import { getUserInput } from '../telegram.helper';
 
-export class TelegramListingNftStrategy implements CallbackQueryStrategy {
+export class TelegramUnListingNftStrategy implements CallbackQueryStrategy {
     constructor(
         private nftTypeService: NftTypesService,
-
         private nftService: NftsService,
     ) { }
 
@@ -31,13 +26,22 @@ export class TelegramListingNftStrategy implements CallbackQueryStrategy {
           
           // Wait for the first input (gens)
           tokenInput = await getUserInput(bot, chatId);
-          
+
           const tokenIds = tokenInput.split(',').map(tokenId => parseInt(tokenId));
+
           const collection = await this.nftTypeService.findOneWithCondition({ collection_type: 'hero' });
-          const nftAddress = collection?.nft_address;
-          
+          console.log('collection', collection);
 
+            if (!collection) {
+                await bot.sendMessage(chatId, 'Collection not found.');
+                return;
+            }
+            const collectionAddress = collection.nft_address;
 
+            const result = await this.nftService.unlistNfts(tokenIds, collectionAddress);
+
+            const tx = result.transactionHash;
+            await bot.sendMessage(chatId, `Unlisting NFTs with tokenIds ${tokenIds.join(', ')} successfully. Transaction: ${tx}`);
           
         } catch (error) {
           console.error('Error handling callback query:', error);
