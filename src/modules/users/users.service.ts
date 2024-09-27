@@ -14,6 +14,7 @@ import moment from 'moment';
 import { POINT_CONFIG, TELEGRAM_AGE } from 'src/constants/telegram';
 import { ConnectXDto } from './dtos/connect-x.dto';
 import { CLICK_TIME_REFRESH, MAX_INCUBATE } from 'src/constants/miniapp';
+import { getIncubationCanSpent } from 'src/utils';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -195,11 +196,7 @@ export class UsersService extends BaseService<User> {
       }
       const point = userUpdate.balance + POINT_CONFIG.INCREASE_POINT_CLICK;
 
-      let incubationCanSpent = userUpdate.incubationCanSpent;
-
-      if (userUpdate.latestIncubationClick < now - CLICK_TIME_REFRESH) {
-        incubationCanSpent = MAX_INCUBATE;
-      }
+      let incubationCanSpent = getIncubationCanSpent(now, userUpdate);
 
       const incubationPoint =
         incubationCanSpent - POINT_CONFIG.INCREASE_POINT_CLICK;
