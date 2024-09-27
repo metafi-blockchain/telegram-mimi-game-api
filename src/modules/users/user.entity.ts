@@ -3,6 +3,7 @@ import { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import { BaseEntity, BaseEntitySchema } from '../commons/base.entity';
 import paginate from './plugins/paginate.plugin';
+import { MAX_INCUBATE } from 'src/constants/miniapp';
 
 
 export interface User extends BaseEntity {
@@ -70,11 +71,11 @@ export class User  implements BaseEntity {
     @Prop({ type: Number, default: 0 })
     xVerifiedPoint: number;
   
-    @Prop({ type: Number, default: 0 })
-    xFollowerPoint: number;
+    // @Prop({ type: Number, default: 0 })
+    // xFollowerPoint: number;
   
-    @Prop({ type: Number, default: 0 })
-    xReferPoint: number;
+    // @Prop({ type: Number, default: 0 })
+    // xReferPoint: number;
   
     @Prop({ type: String })
     referId: string;
@@ -82,14 +83,14 @@ export class User  implements BaseEntity {
     @Prop({ type: Number })
     pointReferedTo: number;
   
-    @Prop({ type: Boolean, default: false })
-    telegramChannelJoined: boolean;
+    // @Prop({ type: Boolean, default: false })
+    // telegramChannelJoined: boolean;
   
-    @Prop({ type: Number, default: 0 })
-    gamePoint: number;
+    // @Prop({ type: Number, default: 0 })
+    // gamePoint: number;
   
-    @Prop({ type: Number, default: 0 })
-    incubationSpent: number;
+    @Prop({ type: Number, default: MAX_INCUBATE })
+    incubationCanSpent: number;
   
     @Prop({ type: String })
     tonWallet: string;

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { UsersService } from '../users/users.service';
 import { ROLE } from '../users/user.entity';
 import { validate, parse, type InitDataParsed } from '@telegram-apps/init-data-node';
+import { TOKEN_TELEGRAM_DURATION } from 'src/constants/telegram';
 
 
 
@@ -51,7 +52,7 @@ export class TelegramService {
   validateInitData(authData: string): boolean {
     try {
       validate(authData, this.token, {
-        expiresIn: 3600, // Valid for 1 hour
+        expiresIn: TOKEN_TELEGRAM_DURATION, // Valid for 1 hour
       });
       return true;
     } catch (e) {

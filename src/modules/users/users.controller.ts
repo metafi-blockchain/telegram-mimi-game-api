@@ -24,7 +24,7 @@ declare global {
 }
 
 // @UseInterceptors(CurrentUserInterceptor)   //config one class
-// @UseGuards( RolesGuard)
+@UseGuards(TelegramAuthGuard)
 @Serialize(UserDto)
 @Controller('user')
 export class UsersController {
@@ -41,7 +41,7 @@ export class UsersController {
 
 
 
-  @UseGuards(TelegramAuthGuard)
+
   @Post('create-account')
   async createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
     const telegramId = req.telegram.user.id;
@@ -50,7 +50,7 @@ export class UsersController {
 
 
 
-  @UseGuards(TelegramAuthGuard)
+
   @Put('increase-point')
   async increasePoint(@Req() req) {
     const telegramId = req.telegram.user.id;
@@ -59,7 +59,13 @@ export class UsersController {
   }
 
 
-
+  @Get('/me')
+  async whoAmI(@Req() req) {
+    
+    const telegramId = req.telegram.user.id;
+    const user = await this.userService.findByTelegramId(telegramId); 
+    
+  }
 
 
   // @UseGuards(JwtAuthGuard)
@@ -69,37 +75,5 @@ export class UsersController {
   //   return this.userService.connectX(telegramId, connectXDto);
   // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-  @Get('/profile/:id')
-  async getUserProfile(@Param('id') id: string) {
-
-    return this.userService.findById(id)
-  }
-
-
-  @Post('logout')
-  async logOut(@Req() req) {
-
-    try {
-      await this.userService.logout(req.user);
-
-      return true
-
-    } catch (error) {
-      console.log(error);
-
-    }
-    return false;
-  }
+  
 }

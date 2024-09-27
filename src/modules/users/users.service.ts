@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BaseService } from '../commons/base.service';
@@ -123,64 +123,76 @@ export class UsersService extends BaseService<User>{
       }
 
       
-      async connectX(telegramId: string, connectXDto: ConnectXDto): Promise<boolean> {
-        const { xId, xName, xAccount, xFollowers, xCreatedAt, xAvatar, xVerified } = connectXDto;
+      // async connectX(telegramId: string, connectXDto: ConnectXDto): Promise<boolean> {
+      //   const { xId, xName, xAccount, xFollowers, xCreatedAt, xAvatar, xVerified } = connectXDto;
     
-        const user = await this.userModel.findOne({ telegramId });
-        if (user.xId) {
-          throw new BadRequestException('You already connected X');
-        }
+      //   const user = await this.userModel.findOne({ telegramId });
+      //   if (user.xId) {
+      //     throw new BadRequestException('You already connected X');
+      //   }
     
-        const xAgePoint = moment().diff(moment(Number(xCreatedAt)), 'day') * POINT_CONFIG.AGE_POINT;
-        const xVerifiedPoint = xVerified === 'true' ? POINT_CONFIG.XVERIFIED : 0;
-        const xFollowerPoint = xFollowers * POINT_CONFIG.FOLLOWER_POINT;
-        const xBalance = xAgePoint + xVerifiedPoint + xFollowerPoint;
+      //   const xAgePoint = moment().diff(moment(Number(xCreatedAt)), 'day') * POINT_CONFIG.AGE_POINT;
+      //   const xVerifiedPoint = xVerified === 'true' ? POINT_CONFIG.XVERIFIED : 0;
+      //   const xFollowerPoint = xFollowers * POINT_CONFIG.FOLLOWER_POINT;
+      //   const xBalance = xAgePoint + xVerifiedPoint + xFollowerPoint;
     
-        await this.userModel.updateOne(
-          { telegramId },
-          {
-            xId,
-            xName,
-            xAccount,
-            xAvatar,
-            xFollowers,
-            xVerified: xVerified === 'true',
-            xAgePoint,
-            xVerifiedPoint,
-            xFollowerPoint,
-            balance: user.balance + xBalance,
-          }
-        );
+      //   await this.userModel.updateOne(
+      //     { telegramId },
+      //     {
+      //       xId,
+      //       xName,
+      //       xAccount,
+      //       xAvatar,
+      //       xFollowers,
+      //       xVerified: xVerified === 'true',
+      //       xAgePoint,
+      //       xVerifiedPoint,
+      //       xFollowerPoint,
+      //       balance: user.balance + xBalance,
+      //     }
+      //   );
     
-        if (user.referId) {
-          const referUser = await this.userModel.findOne({ telegramId: user.referId });
-          if (referUser) {
-            await this.userModel.updateOne(
-              { telegramId: referUser.telegramId },
-              {
-                balance: referUser.balance + POINT_CONFIG.REFER_RATE * xBalance,
-                xReferPoint: (referUser.xReferPoint || 0) + POINT_CONFIG.REFER_RATE * xBalance,
-              }
-            );
-          }
-        }
-        return true;
-      }
+      //   if (user.referId) {
+      //     const referUser = await this.userModel.findOne({ telegramId: user.referId });
+      //     if (referUser) {
+      //       await this.userModel.updateOne(
+      //         { telegramId: referUser.telegramId },
+      //         {
+      //           balance: referUser.balance + POINT_CONFIG.REFER_RATE * xBalance
+      //         }
+      //       );
+      //     }
+      //   }
+      //   return true;
+      // }
 
       findByTelegramId(telegramId: string): Promise<User> {
         return this.userModel.findOne({ telegramId }).exec();
       }
 
 
-      async increasePoint(telegramId: string): Promise<Number> {
-        const userUpdate = await this.userModel.findOne({ telegramId}).exec();
-        if (!userUpdate) {
-          throw new NotFoundException('User not found');
+      async increasePoint(telegramId: string): Promise<any> {
+        try {
+          const userUpdate = await this.userModel.findOne({ telegramId}).exec();
+          if (!userUpdate) {
+            throw new NotFoundException('User not found');
+          }
+          const point = userUpdate.balance + POINT_CONFIG.INCREASE_POINT_CLICK;
+          const incubationPoint = userUpdate.incubationCanSpent - POINT_CONFIG.INCREASE_POINT_CLICK;
+          
+          await this.userModel.updateOne({ telegramId }, { balance: point, incubationCanSpent: incubationPoint });
+         
+          return {
+            balance: point,
+            incubationCanSpent: incubationPoint,
+          }
+          
+        } catch (error) {
+          console.log(`error`, error);
+          
+          throw new BadGatewayException(error.message);
         }
-        const point = userUpdate.balance + POINT_CONFIG.INCREASE_POINT_CLICK;
-        await this.userModel.updateOne({ telegramId }, { balance: point });
-        return point;
-        
+       
       };
 
 }
