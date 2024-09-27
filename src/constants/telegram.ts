@@ -10,6 +10,8 @@ export const POINT_CONFIG = {
     CREATE_ACCOUNT_POINT: 500,
     INCREASE_POINT_CLICK: 1,
   }
+
+  export const TOKEN_TELEGRAM_DURATION = 3600
   
 export const SKIP_TIME_BIRDS = 0.25
 

@@ -3,6 +3,7 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Unauthor
 import { ConfigService } from '@nestjs/config'; // For accessing TOKEN_TELEGRAM
 import { Request } from 'express';
 import { parse, validate } from '@telegram-apps/init-data-node';
+import { TOKEN_TELEGRAM_DURATION } from 'src/constants/telegram';
 
 @Injectable()
 export class TelegramAuthGuard implements CanActivate {
@@ -31,7 +32,7 @@ export class TelegramAuthGuard implements CanActivate {
     
       
 
-      validate(authData ?? '', TOKEN_TELEGRAM, { expiresIn: 0 });
+      validate(authData ?? '', TOKEN_TELEGRAM, { expiresIn: TOKEN_TELEGRAM_DURATION });
 
       const telegram = parse(initData);
 

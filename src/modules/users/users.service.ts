@@ -172,14 +172,14 @@ export class UsersService extends BaseService<User>{
       }
 
 
-      async increasePoint(telegramId: string): Promise<User> {
+      async increasePoint(telegramId: string): Promise<Number> {
         const userUpdate = await this.userModel.findOne({ telegramId}).exec();
         if (!userUpdate) {
           throw new NotFoundException('User not found');
         }
         const point = userUpdate.balance + POINT_CONFIG.INCREASE_POINT_CLICK;
         await this.userModel.updateOne({ telegramId }, { balance: point });
-        return userUpdate;
+        return point;
         
       };
 
