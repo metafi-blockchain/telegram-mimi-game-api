@@ -25,7 +25,6 @@ declare global {
 
 // @UseInterceptors(CurrentUserInterceptor)   //config one class
 // @UseGuards( RolesGuard)
-@UseGuards(JwtAuthGuard)
 @Serialize(UserDto)
 @Controller('user')
 export class UsersController {

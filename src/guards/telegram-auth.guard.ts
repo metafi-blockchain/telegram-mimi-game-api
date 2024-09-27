@@ -10,41 +10,43 @@ export class TelegramAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const authHeader = request.headers['telegramauth'];
+    const authHeader = request.headers['Authorization'] || request.headers['authorization'];
+
+    // We expect passing init data in the Authorization header in the following format:
+  // <auth-type> <auth-data>
+  // <auth-type> must be "tma", and <auth-data> is Telegram Mini Apps init data.
+    const [authType, authData = ''] = (request.header('authorization') || '').split(' ');
+    console.log(`authType`, authType);
+    console.log(`authData`, authData);    
 
     if (!authHeader) {
       throw new UnauthorizedException('Telegram auth header not provided');
     }
 
     try {
-      const TOKEN_TELEGRAM = this.configService.get<string>('TOKEN_TELEGRAM');
+      const TOKEN_TELEGRAM = this.configService.get<string>('TELEGRAM_API_TOKEN');
       const initData = `${authHeader ?? ''}`.split(' ').pop();
 
-      validate(initData ?? '', TOKEN_TELEGRAM, { expiresIn: 0 });
+      console.log(`TOKEN_TELEGRAM`, TOKEN_TELEGRAM);
+    
+      
+
+      validate(authData ?? '', TOKEN_TELEGRAM, { expiresIn: 0 });
 
       const telegram = parse(initData);
+
+      console.log(`telegram`, telegram);
+      
 
       if (!telegram?.user || telegram?.user?.isBot) {
         throw new ForbiddenException('Invalid Telegram user');
       }
 
-    //   const blockIds = [
-    //     '1218689869',
-    //     '6620874607',
-    //     '5186301440',
-    //     '7122009907',
-    //     '7068883782',
-    //     '6360027950',
-    //   ];
-
-    //   if (blockIds.includes(telegram.user.id.toString())) {
-    //     throw new ForbiddenException('Your account has been suspended');
-    //   }
-
-      // Attach telegram info to the request
       request['telegram'] = telegram;
       return true;
     } catch (error) {
+      console.log(`error`, error);
+      
       throw new ForbiddenException('Telegram authentication failed');
     }
   }

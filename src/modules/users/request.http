@@ -1,0 +1,32 @@
+
+
+
+### Get all items
+
+
+### Create a new item
+POST http://localhost:3000/api/user/create-account
+Content-Type: application/json
+Authorization: tma {{access_token}}
+
+{
+  "name": "name",
+  "username": "Description of the item",
+  "referId": "0",
+  "isPremium": false
+}
+
+### Update an existing item
+PUT http://localhost:3001/api/items/1
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+### Define access_token variable
+@access_token = query_id=AAFCficsAAAAAEJ-JyzqcmOn&user=%7B%22id%22%3A740785730%2C%22first_name%22%3A%22Tho%E1%BA%A1i%22%2C%22last_name%22%3A%22Nguyen%22%2C%22username%22%3A%22roster90%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1727442050&hash=de250d7e8459f5504bf1273a907a908c4741f0b5a440518e85c88c5e97123761
+
+
+{
+  "name": "Updated Item Name",
+  "description": "Updated description",
+  "price": 29.99
+}
