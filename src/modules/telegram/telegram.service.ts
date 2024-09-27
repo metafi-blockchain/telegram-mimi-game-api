@@ -4,35 +4,21 @@ import TelegramBot from 'node-telegram-bot-api';
 import axios from 'axios';
 import { UsersService } from '../users/users.service';
 import { ROLE } from '../users/user.entity';
-import { NftTypesService } from '../nft-types/nft-types.service';
-import { NftsService } from '../nfts/nfts.service';
-import { CallBackTelegramStrategyFactory } from './callback-query-strategies/callback-handling.strategies';
-import { MintRequestService } from '../mint-request/requests.service';
-import { NftHelperService } from '../nfts/nft.helper.service';
+
 import { TELEGRAM_QUERY } from './telegram.constants';
 
 
 @Injectable()
 export class TelegramService {
-  private readonly telegramStrategyFactory: CallBackTelegramStrategyFactory;
   private readonly token: string;
   private bot: TelegramBot;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
-    private readonly collectionService: NftTypesService,
-    private readonly nftService: NftsService,
-    private readonly mintRequestService: MintRequestService,
-    private readonly nftHelperService: NftHelperService,
   ) {
     this.token = this.configService.get<string>('TELEGRAM_API_TOKEN');
-    this.telegramStrategyFactory = new CallBackTelegramStrategyFactory(
-      this.nftService,
-      this.collectionService,
-      this.mintRequestService,
-      this.nftHelperService,
-    );
+
 
     this.initializeBot();
   }
@@ -170,14 +156,14 @@ export class TelegramService {
     const data = query.data;
 
     try {
-      const strategy = this.telegramStrategyFactory.createStrategy(data);
+      // const strategy = this.telegramStrategyFactory.createStrategy(data);
 
-      if (!strategy) {
-        console.error(`No strategy found for event: ${data}`);
-        return;
-      }
+      // if (!strategy) {
+      //   console.error(`No strategy found for event: ${data}`);
+      //   return;
+      // }
 
-      await strategy.handleCallbackQuery(query, this.bot);
+      // await strategy.handleCallbackQuery(query, this.bot);
     } catch (error) {
       console.error(`Error handling callback query ${data}:`, error);
     }

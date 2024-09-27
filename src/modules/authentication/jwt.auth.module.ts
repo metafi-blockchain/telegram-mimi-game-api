@@ -7,7 +7,6 @@ import { JwtAuthService } from './jwt.auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtConfigService } from './jwt.config.service';
 import { ConfigService } from '@nestjs/config';
-import { OtpService } from './opt.service';
 
 @Module({
   imports: [
@@ -20,7 +19,7 @@ import { OtpService } from './opt.service';
     PassportModule,
    ],
   controllers: [AuthController],
-  providers: [ JwtConfigService, JwtAuthService, JwtStrategy, OtpService], 
+  providers: [ JwtConfigService, JwtAuthService, JwtStrategy], 
   exports: [JWTAuthModule],
 
 })

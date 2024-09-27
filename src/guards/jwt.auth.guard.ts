@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import { JwtAuthService } from '../modules/authentication/jwt.auth.service';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
-import { ActivitylogsService } from 'src/modules/activitylogs/activitylogs.service';
 import { UsersService } from 'src/modules/users/users.service';
 import { User } from 'src/modules/users/user.entity';
 
@@ -21,7 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   constructor(
     private readonly jwtConfigService: ConfigService, 
-    private readonly userService: UsersService, private logService: ActivitylogsService) {
+    private readonly userService: UsersService) {
     super();
   }
 
@@ -61,22 +60,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
          throw new UnauthorizedException("User logout!");
       }
       // console.log(uuid)
-      this.writeLogAction(req)
       return req;
     } catch (err) {
       throw new UnauthorizedException("Token expired!");
     }
   }
-  private writeLogAction = async (req: Request) => {
-    let requestMethod = req.method
-    if (requestMethod === 'POST' || requestMethod === 'PUT' || requestMethod === 'DELETE' || requestMethod === 'PATCH') {
-      await this.logService.create({
-        methods: requestMethod,
-        account: <string>req["user"].uuid,
-        ipAddress: req["ip"],
-        path: req["path"] || req.url,
-        data: req.body ? JSON.stringify(req.body) : ""
-      })
-    }
-  }
+  
 }

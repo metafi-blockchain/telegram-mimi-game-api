@@ -8,7 +8,6 @@ import { APP_PIPE } from '@nestjs/core';
 import { CustomMiddleware } from './custom.middleware';
 
 import { TelegramModule } from './modules/telegram/telegram.module';
-import { ScheduleModule } from '@nestjs/schedule';
 
 
 
@@ -20,7 +19,6 @@ import { ScheduleModule } from '@nestjs/schedule';
           isGlobal: true,
           envFilePath: ".env"
       }),
-      ScheduleModule.forRoot(),
       UsersModule,
       JWTAuthModule,
       MongooseModule.forRootAsync({

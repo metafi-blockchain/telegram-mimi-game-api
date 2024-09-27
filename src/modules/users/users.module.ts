@@ -4,10 +4,9 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { ActivityLogsModule } from 'src/modules/activitylogs/activity-logs.module';
 import { ConfigService } from '@nestjs/config';
 @Module({
-  imports:[MongooseModule.forFeature([{name: User.name, schema: UserSchema}]), ActivityLogsModule],
+  imports:[MongooseModule.forFeature([{name: User.name, schema: UserSchema}])],
   providers: [UsersService, ConfigService
     // UsersService,
     // {
