@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm install --force
+RUN npm ci
 
 # Bundle app source
 COPY --chown=node:node . .
