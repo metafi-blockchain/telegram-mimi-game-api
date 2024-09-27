@@ -7,7 +7,8 @@ export const POINT_CONFIG = {
     FOLLOWER_POINT: 1 / 2, //1 followers -> 0.5 points
     REFER_RATE: 10 / 100, // 10% F1
     JOINED_POINT: 200,
-    CREATE_ACCOUNT_POINT: 500
+    CREATE_ACCOUNT_POINT: 500,
+    INCREASE_POINT_CLICK: 1,
   }
   
 export const SKIP_TIME_BIRDS = 0.25

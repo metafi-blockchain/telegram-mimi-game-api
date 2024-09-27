@@ -121,6 +121,8 @@ export class UsersService extends BaseService<User>{
         //   );
         // }
       }
+
+      
       async connectX(telegramId: string, connectXDto: ConnectXDto): Promise<boolean> {
         const { xId, xName, xAccount, xFollowers, xCreatedAt, xAvatar, xVerified } = connectXDto;
     
@@ -162,8 +164,23 @@ export class UsersService extends BaseService<User>{
             );
           }
         }
-    
         return true;
       }
+
+      findByTelegramId(telegramId: string): Promise<User> {
+        return this.userModel.findOne({ telegramId }).exec();
+      }
+
+
+      async increasePoint(telegramId: string): Promise<User> {
+        const userUpdate = await this.userModel.findOne({ telegramId}).exec();
+        if (!userUpdate) {
+          throw new NotFoundException('User not found');
+        }
+        const point = userUpdate.balance + POINT_CONFIG.INCREASE_POINT_CLICK;
+        await this.userModel.updateOne({ telegramId }, { balance: point });
+        return userUpdate;
+        
+      };
 
 }

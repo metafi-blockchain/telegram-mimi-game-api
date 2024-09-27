@@ -32,9 +32,10 @@ export class UsersController {
 
 
 
-  constructor(private userService: UsersService,
+  constructor(
+    private userService: UsersService,
 
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
   };
 
@@ -54,7 +55,7 @@ export class UsersController {
   @Put('increase-point')
   async increasePoint(@Req() req) {
     const telegramId = req.telegram.user.id;
-    return telegramId
+    return this.userService.increasePoint(telegramId);
     
   }
 
