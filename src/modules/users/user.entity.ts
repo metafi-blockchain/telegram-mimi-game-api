@@ -2,11 +2,10 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import { BaseEntity, BaseEntitySchema } from '../commons/base.entity';
+import paginate from './plugins/paginate.plugin';
 
 
 export interface User extends BaseEntity {
-    username: string;
-    email: string;
 }
 export enum ROLE  {
     ADMIN, //0
@@ -17,33 +16,83 @@ export enum ROLE  {
 @Schema({ timestamps: true })
 export class User  implements BaseEntity {
 
-    _id: mongoose.Schema.Types.ObjectId
-
-
-
-    @Prop({ default: false, required: true, unique: true })
-    email: string;
-
     @Prop({ type: String })
-    password: string;
-
-    @Prop({ type: String, default: '' })
-    address: string;
-
-
-    @Prop({ type: String, default: '' })
     name: string;
-
-
-    @Prop({ default: false, type: Boolean })
-    administrator: boolean;
-
-    @Prop({ type: String, enum: ROLE, default: ROLE.USER })
-    role: number;
-
-
-    @Prop({ type: String, default: '' })
-    telegram_user: string;
+  
+    @Prop({ type: String })
+    telegramId: string;
+  
+    @Prop({ type: String })
+    telegramUserName: string;
+  
+    @Prop({ type: Number })
+    telegramAge: number;
+  
+    @Prop({ type: Number, default: 0 })
+    telegramAgePoint: number;
+  
+    @Prop({ type: Boolean })
+    telegramVerified: boolean;
+  
+    @Prop({ type: Number, default: 0 })
+    telegramVerifiedPoint: number;
+  
+    @Prop({ type: Number, default: 0 })
+    telegramReferPoint: number;
+  
+    @Prop({ type: String })
+    xId: string;
+  
+    @Prop({ type: String })
+    xAccount: string;
+  
+    @Prop({ type: String })
+    xAvatar: string;
+  
+    @Prop({ type: String })
+    xName: string;
+  
+    @Prop({ type: Number })
+    xCreatedAt: number;
+  
+    @Prop({ type: Boolean })
+    xVerified: boolean;
+  
+    @Prop({ type: Number })
+    xFollowers: number;
+  
+    @Prop({ type: Number, default: 0 })
+    balance: number;
+  
+    @Prop({ type: Number, default: 0 })
+    xAgePoint: number;
+  
+    @Prop({ type: Number, default: 0 })
+    xVerifiedPoint: number;
+  
+    @Prop({ type: Number, default: 0 })
+    xFollowerPoint: number;
+  
+    @Prop({ type: Number, default: 0 })
+    xReferPoint: number;
+  
+    @Prop({ type: String })
+    referId: string;
+  
+    @Prop({ type: Number })
+    pointReferedTo: number;
+  
+    @Prop({ type: Boolean, default: false })
+    telegramChannelJoined: boolean;
+  
+    @Prop({ type: Number, default: 0 })
+    gamePoint: number;
+  
+    @Prop({ type: Number, default: 0 })
+    incubationSpent: number;
+  
+    @Prop({ type: String })
+    tonWallet: string;
     
     @Prop({ default: 0, type: Number })
     version: number
@@ -51,3 +100,6 @@ export class User  implements BaseEntity {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+
+
+UserSchema.plugin(paginate); // Example plugin

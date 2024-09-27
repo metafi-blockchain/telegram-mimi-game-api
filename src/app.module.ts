@@ -5,9 +5,11 @@ import { JWTAuthModule } from './modules/authentication/jwt.auth.module';
 import {ConfigModule , ConfigService} from '@nestjs/config'
 
 import { APP_PIPE } from '@nestjs/core';
-import { CustomMiddleware } from './custom.middleware';
+import { CustomMiddleware } from './middlewares/custom.middleware';
 
 import { TelegramModule } from './modules/telegram/telegram.module';
+import { WeeklyFriendModule } from './modules/weekly-friend/weekly-friend.module';
+import { TelegramAuthMiddleware } from './middlewares/telegram-auth.middleware';
 
 
 
@@ -28,6 +30,7 @@ import { TelegramModule } from './modules/telegram/telegram.module';
           })
       }),
       TelegramModule,
+      WeeklyFriendModule,
 
     ],
   controllers: [],
@@ -42,8 +45,17 @@ import { TelegramModule } from './modules/telegram/telegram.module';
 
 
 // export class AppModule {}
-export class AppModule implements NestModule{
+// export class AppModule implements NestModule{
+//   configure(consumer: MiddlewareConsumer) {
+//       consumer.apply(CustomMiddleware).forRoutes('*');;
+//     }
+// }
+
+
+export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-      consumer.apply(CustomMiddleware).forRoutes('*');;
-    }
+    consumer
+      .apply(TelegramAuthMiddleware)
+      .forRoutes({ path: '/', method: RequestMethod.GET });
+  }
 }

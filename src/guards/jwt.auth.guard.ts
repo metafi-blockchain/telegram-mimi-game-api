@@ -53,7 +53,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const version = <number>decoded.version
 
       //product can get it from redis
-      const user = await this.userService.findByEmail(email);
+      const user = await this.userService.findById(email);
 
       req.user = user;
       if(user.version !== version){

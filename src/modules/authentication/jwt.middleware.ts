@@ -48,11 +48,9 @@ export class JwtMiddleware implements NestMiddleware {
         console.log("email", email);
         
         
-        const user = await this.userService.findByEmail(email);
+        // const user = await this.userService.findByEmail(email);
         
-        req.user = user;
-    
-        this._writeLogAction(req)
+        // req.user = user;
         next();
       }else{
         return res.status(HttpStatus.UNAUTHORIZED).send({ message: "Auth token is not supplied'" })
@@ -69,21 +67,9 @@ export class JwtMiddleware implements NestMiddleware {
 
     }
    
-  //working
-  private _writeLogAction = async (req : Request) => {
-    let requestMethod = req.method
-    if (requestMethod === 'POST' || requestMethod === 'PUT' || requestMethod === 'DELETE' || requestMethod === 'PATCH') {
-        // await this.active.create({
-        //     methods: requestMethod,
-        //     //@ts-ignore
-        //     account: req.user.uuid ,
-        //     ipAddress: req.ip,
-        //     path: req.path || req.url,
-        //     data: req.body ? JSON.stringify(req.body) : ""
-        // })
-    }
+  
 
-}
+
 }
 
 

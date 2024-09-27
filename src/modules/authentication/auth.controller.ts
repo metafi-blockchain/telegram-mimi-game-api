@@ -16,27 +16,26 @@ export class AuthController {
     private readonly configService: ConfigService) {
   }
 
-  @Post('login')
-  async login(@Body() authDto: AuthDto, @Res() res: Response) {
-    const user = await this.userService.findOneWithCondition({email: authDto.email});
+  // @Post('login')
+  // async login(@Body() authDto: AuthDto, @Res() res: Response) {
+  //   const user = await this.userService.findOneWithCondition({email: authDto.email});
 
-    if (!user)   throw new NotFoundException('email or password is incorrect');
+  //   if (!user)   throw new NotFoundException('email or password is incorrect');
 
-    const token = await this.jwtAuthService.login(authDto.email, authDto.password);
+  //   const token = await this.jwtAuthService.login(authDto.email, authDto.password);
 
-    return res.json(token);
-  }
+  //   return res.json(token);
+  // }
 
-  @Post('signup')
-  async signup(@Body() authDto: AuthDto, @Res() res: Response) {
-    const users = await this.userService.find({email: authDto.email})
-    if (users.length) 
-        throw new ConflictException("Email in use!");
+  // @Get('twitter')
+  // async twitterAuth(): Promise<string> {
+  //   return this.authService.twitterAuth();
+  // }
 
-    const token = await this.jwtAuthService.signup(authDto.email, authDto.password);
+  // @Get('twitter/callback')
+  // async twitterAuthCallback(): Promise<string> {
+  //   return this.authService.twitterAuthCallback();
+  // }
 
-    return res.json({ token });
-  
-  }
 
 }

@@ -15,12 +15,12 @@ export class CurrentUserInterceptor implements NestInterceptor{
     async intercept(context: ExecutionContext, next: CallHandler<any>) {
        const request = context.switchToHttp().getRequest();
        // getUserId form request
-        const email = request.user.email || ""
+        const id = request.user.id || ""
 
-        console.log("Interceptors running==>",email )        
+        console.log("Interceptors running==>",id )        
         
-       if(email){
-        const user = await this.userService.findByEmail(email);
+       if(id){
+        const user = await this.userService.findById(id);
         request.currentUser = user;
        }
        return next.handle()

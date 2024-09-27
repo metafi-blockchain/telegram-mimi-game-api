@@ -1,17 +1,16 @@
 import { Body, Controller, Get, Param, Post, Put, ClassSerializerInterceptor, UseGuards, Request, BadRequestException, ConflictException, Req, BadGatewayException } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import {  UserDto } from './dtos/user.dto';
+import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
 import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 import { AdminGuard } from 'src/guards/admin.auth.guard';
-import { SelfUserGuard } from 'src/guards/user.guard';
 import { randomBytes } from 'crypto';
 
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
 import { User } from './user.entity';
+import { CreateAccountDto } from './dtos/create-account.dto';
+import { ConnectXDto } from './dtos/connect-x.dto';
 
 
 declare global {
@@ -32,37 +31,37 @@ export class UsersController {
 
 
 
-  constructor(private userService: UsersService, 
+  constructor(private userService: UsersService,
 
     private readonly configService: ConfigService
-    ) { 
-    };
+  ) {
+  };
 
-  // @UseInterceptors(CurrentUserInterceptor) //config one route
-  @Serialize(UserDto)
-  @UseGuards(AdminGuard)
-  @Get('/whoami')
-  async whoAmI(@Request() request: any) {
-    // console.log("whoami");
 
-    return request.user
+
+
+  @UseGuards(JwtAuthGuard)
+  @Post('create-account')
+  async createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
+    const telegramId = req.telegram.user.id;
+    return this.userService.createAccount(telegramId, createAccountDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('connect-x')
+  async connectX(@Req() req, @Body() connectXDto: ConnectXDto) {
+    const telegramId = req.telegram.user.id;
+    return this.userService.connectX(telegramId, connectXDto);
   }
 
 
-  @Serialize(UserDto) //use default interceptor
-  @Get('/me')
-  async findUserBuyId(@Req() req) {
-    return req.user
-  }
-
- 
 
 
-  
 
-  
 
-  
+
+
+
 
 
 
@@ -81,11 +80,11 @@ export class UsersController {
       await this.userService.logout(req.user);
 
       return true
-      
+
     } catch (error) {
-        console.log(error);
-        
-    } 
+      console.log(error);
+
+    }
     return false;
   }
 }

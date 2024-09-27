@@ -18,41 +18,41 @@ export class JwtAuthService {
     private readonly jwtConfigService: JwtConfigService) { }
 
 
-    async login(email: string, password: string) {
+    // async login(email: string, password: string) {
 
-      const user  = await this.validateUser(email, password);
+    //   const user  = await this.validateUser(email, password);
   
-      if(!user) throw new BadRequestException("Email or password is incorrect!");
+    //   if(!user) throw new BadRequestException("Email or password is incorrect!");
       
-      const accessToken = await this.generateAccessToken(user);
-      const refreshToken = await this.generateRefreshToken(user);
+    //   const accessToken = await this.generateAccessToken(user);
+    //   const refreshToken = await this.generateRefreshToken(user);
   
-      return {
-        access_token: accessToken,
-        refresh_token : refreshToken
-      };
-    }
+    //   return {
+    //     access_token: accessToken,
+    //     refresh_token : refreshToken
+    //   };
+    // }
 
   
 
 
-  async signup(email: string, password: string){
+  // async signup(email: string, password: string){
 
 
 
-    const pwdHash = await hashPassword(password);
+  //   const pwdHash = await hashPassword(password);
 
-    const user = await  this.userService.create({email, password: pwdHash }) ;
+  //   const user = await  this.userService.create({email, password: pwdHash }) ;
 
  
-    const accessToken = await this.generateAccessToken(user);
-    const refreshToken = await this.generateRefreshToken(user);
+  //   const accessToken = await this.generateAccessToken(user);
+  //   const refreshToken = await this.generateRefreshToken(user);
 
-    return {
-      access_token: accessToken,
-      refresh_token : refreshToken
-    };
-  }
+  //   return {
+  //     access_token: accessToken,
+  //     refresh_token : refreshToken
+  //   };
+  // }
 
 
 
@@ -61,18 +61,18 @@ export class JwtAuthService {
 
 
   // validate user
-  async validateUser(email : string, password: string) : Promise<UserDto>{
+  // async validateUser(email : string, password: string) : Promise<UserDto>{
 
-    const  [user] = await this.userService.find({email});
+  //   const  [user] = await this.userService.find({id});
 
-    if(!user) return null;
-    if(!user.password || !password ) return null
-    const checkPwd = await comparePassword(user.password, password);
+  //   // if(!user) return null;
+  //   // if(!user.password || !password ) return null
+  //   // const checkPwd = await comparePassword(user.password, password);
 
-    if(!checkPwd) return null;
-    return user;
+  //   // if(!checkPwd) return null;
+  //   return user;
 
-  }
+  // }
 
 
   async verifyAsyncToken(token: string) {
