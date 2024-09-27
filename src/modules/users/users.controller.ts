@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import { ConnectXDto } from './dtos/connect-x.dto';
+import { TelegramAuthGuard } from 'src/guards/telegram-auth.guard';
 
 
 declare global {
@@ -40,19 +41,33 @@ export class UsersController {
 
 
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(TelegramAuthGuard)
   @Post('create-account')
   async createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
     const telegramId = req.telegram.user.id;
     return this.userService.createAccount(telegramId, createAccountDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('connect-x')
-  async connectX(@Req() req, @Body() connectXDto: ConnectXDto) {
+
+
+  @UseGuards(TelegramAuthGuard)
+  @Put('increase-point')
+  async increasePoint(@Req() req) {
     const telegramId = req.telegram.user.id;
-    return this.userService.connectX(telegramId, connectXDto);
+    return telegramId
+    
   }
+
+
+
+
+
+  // @UseGuards(JwtAuthGuard)
+  // @Post('connect-x')
+  // async connectX(@Req() req, @Body() connectXDto: ConnectXDto) {
+  //   const telegramId = req.telegram.user.id;
+  //   return this.userService.connectX(telegramId, connectXDto);
+  // }
 
 
 

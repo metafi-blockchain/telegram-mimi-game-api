@@ -17,6 +17,7 @@ export class TelegramService {
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
   ) {
+    
     this.token = this.configService.get<string>('TELEGRAM_API_TOKEN');
 
 
