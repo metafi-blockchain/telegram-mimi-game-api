@@ -13,6 +13,8 @@ export const POINT_CONFIG = {
 
 export const TOKEN_TELEGRAM_DURATION = 3600
 
+
+
 export const SKIP_TIME_BIRDS = 0.25
 
 export const TELEGRAM_AGE = [
