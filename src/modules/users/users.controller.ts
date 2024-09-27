@@ -61,19 +61,11 @@ export class UsersController {
 
   @Get('/me')
   async whoAmI(@Req() req) {
-    
+
     const telegramId = req.telegram.user.id;
     const user = await this.userService.findByTelegramId(telegramId); 
+    return user;
     
   }
-
-
-  // @UseGuards(JwtAuthGuard)
-  // @Post('connect-x')
-  // async connectX(@Req() req, @Body() connectXDto: ConnectXDto) {
-  //   const telegramId = req.telegram.user.id;
-  //   return this.userService.connectX(telegramId, connectXDto);
-  // }
-
   
 }

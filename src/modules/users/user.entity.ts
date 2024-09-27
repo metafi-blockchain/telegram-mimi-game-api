@@ -91,6 +91,9 @@ export class User  implements BaseEntity {
   
     @Prop({ type: Number, default: MAX_INCUBATE })
     incubationCanSpent: number;
+
+    @Prop({ type: Number, default: 0 })
+    latestIncubationClick: number;
   
     @Prop({ type: String })
     tonWallet: string;
