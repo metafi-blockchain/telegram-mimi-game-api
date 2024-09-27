@@ -4,10 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 export const swaggerSetup= (app: any)=>{
 
     const config = new DocumentBuilder()
-    .setTitle('Marketplace  API Docs')
-    .setDescription('The Marketplace  API description')
+    .setTitle('Mini game  API Docs')
+    .setDescription('The mini game Kingdoms API description')
     .setVersion('1.0.1')
-    .addTag('Enteral Kingdom Marketplace')
+    .addTag('Mini game Kingdoms API')
     .addBearerAuth()
     .build();
 
