@@ -23,7 +23,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 
 // @UseInterceptors(CurrentUserInterceptor)   //config one class
-// @UseGuards(TelegramAuthGuard)
+@UseGuards(TelegramAuthGuard)
 @ApiTags('user')
 @Controller('user')
 export class UsersController {
