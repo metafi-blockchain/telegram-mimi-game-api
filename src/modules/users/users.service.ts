@@ -142,7 +142,7 @@ export class UsersService extends BaseService<User> {
 
 
   findByTelegramId(telegramId: string | number): Promise<User> {
-    return this.userModel.findOne({ telegramId });
+    return this.userModel.findOne({ telegramId }).exec();
   }
 
   async increasePoint(telegramId: string | number): Promise<any> {

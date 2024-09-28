@@ -20,8 +20,3 @@ import { TelegramModule } from '../telegram/telegram.module';
   exports: [UsersService]
 })
 export class UsersModule {}
-// export class UsersModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(UserMiddleware).forRoutes({ path: 'user/*', method: RequestMethod.ALL });
-//   }
-// }

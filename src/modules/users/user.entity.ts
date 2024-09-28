@@ -1,7 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
-import { BaseEntity, BaseEntitySchema } from '../commons/base.entity';
+import { BaseEntity } from '../commons/base.entity';
 import paginate from './plugins/paginate.plugin';
 import { MAX_INCUBATE } from 'src/constants/miniapp';
 
@@ -40,9 +38,6 @@ export class User  implements BaseEntity {
   
     @Prop({ type: Number, default: 0 })
     telegramReferPoint: number;
-  
-
-
   
   
     @Prop({ type: Number, default: 0 })
@@ -86,4 +81,4 @@ export class User  implements BaseEntity {
 export const UserSchema = SchemaFactory.createForClass(User)
 
 
-// UserSchema.plugin(paginate); // Example plugin
+UserSchema.plugin(paginate); // Example plugin

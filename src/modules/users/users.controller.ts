@@ -13,24 +13,18 @@ import {
   Req,
   BadGatewayException,
 } from '@nestjs/common';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
-import { AdminGuard } from 'src/guards/admin.auth.guard';
-import { randomBytes } from 'crypto';
-
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
 import { CreateAccountDto } from './dtos/create-account.dto';
-import { ConnectXDto } from './dtos/connect-x.dto';
 import { TelegramAuthGuard } from 'src/guards/telegram-auth.guard';
 import { getIncubationCanSpent } from 'src/utils';
+import { ApiTags } from '@nestjs/swagger';
 
 
 // @UseInterceptors(CurrentUserInterceptor)   //config one class
-@UseGuards(TelegramAuthGuard)
+// @UseGuards(TelegramAuthGuard)
+@ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(
@@ -42,6 +36,8 @@ export class UsersController {
   @Post('create-account')
   createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
     const telegramId = req.telegram.user.id;
+    const initData = req.locals.initData;
+    console.log('initData', initData);
     return this.userService.createAccount(telegramId, createAccountDto);
   }
 
@@ -54,11 +50,22 @@ export class UsersController {
   @Get('me')
   async whoAmI(@Req() req) {
     try {
+      const initData = req.locals.initData;
+      console.log('initData', initData);
       const telegramId = req.telegram.user.id;
       const user = await this.userService.findByTelegramId(telegramId);
       console.log('user', user);
 
-      if (!user) return null;
+      if (!user) {
+        //create user
+        const newUser = await this.userService.createAccount(telegramId, {
+          name: req.telegram.user.first_name,
+          referId: req.query.referId,
+          isPremium: false,
+          username: req.telegram.user.username
+        })
+        return newUser
+      }
 
       const incubationCanSpent = getIncubationCanSpent(
         new Date().getTime(),
