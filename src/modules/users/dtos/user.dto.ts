@@ -3,7 +3,6 @@ import { IsNotEmpty } from "class-validator";
 import { ObjectId } from "mongoose";
 import { IUser } from "src/interface/user.interface";
 import { IMessageSinged } from "src/modules/authentication/dto/login.dto";
-import { ROLE } from "../user.entity";
 
 
 export class UserDto {

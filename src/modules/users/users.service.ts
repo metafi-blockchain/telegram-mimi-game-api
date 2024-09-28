@@ -141,11 +141,11 @@ export class UsersService extends BaseService<User> {
   }
 
 
-  findByTelegramId(telegramId: string): Promise<User> {
-    return this.userModel.findOne({ telegramId }).exec();
+  findByTelegramId(telegramId: string | number): Promise<User> {
+    return this.userModel.findOne({ telegramId });
   }
 
-  async increasePoint(telegramId: string): Promise<any> {
+  async increasePoint(telegramId: string | number): Promise<any> {
     try {
       const now = new Date().getTime();
       const userUpdate = await this.userModel.findOne({ telegramId }).exec();

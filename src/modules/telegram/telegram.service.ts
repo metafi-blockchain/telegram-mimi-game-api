@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import TelegramBot from 'node-telegram-bot-api';
 import axios from 'axios';
 import { UsersService } from '../users/users.service';
-import { ROLE } from '../users/user.entity';
 import { validate, parse, type InitDataParsed } from '@telegram-apps/init-data-node';
 import { TOKEN_TELEGRAM_DURATION } from 'src/constants/telegram';
 

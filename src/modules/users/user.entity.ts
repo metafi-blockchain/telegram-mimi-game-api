@@ -8,11 +8,11 @@ import { MAX_INCUBATE } from 'src/constants/miniapp';
 
 export interface User extends BaseEntity {
 }
-export enum ROLE  {
-    ADMIN, //0
-    OPERATOR, //1
-    USER //2
-}
+// export enum ROLE  {
+//     ADMIN, //0
+//     OPERATOR, //1
+//     USER //2
+// }
   
 @Schema({ timestamps: true })
 export class User  implements BaseEntity {
@@ -86,4 +86,4 @@ export class User  implements BaseEntity {
 export const UserSchema = SchemaFactory.createForClass(User)
 
 
-UserSchema.plugin(paginate); // Example plugin
+// UserSchema.plugin(paginate); // Example plugin

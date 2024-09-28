@@ -28,18 +28,9 @@ import { ConnectXDto } from './dtos/connect-x.dto';
 import { TelegramAuthGuard } from 'src/guards/telegram-auth.guard';
 import { getIncubationCanSpent } from 'src/utils';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-      body?: any;
-    }
-  }
-}
 
 // @UseInterceptors(CurrentUserInterceptor)   //config one class
 @UseGuards(TelegramAuthGuard)
-@Serialize(UserDto)
 @Controller('user')
 export class UsersController {
   constructor(
@@ -68,12 +59,32 @@ export class UsersController {
       console.log('user', user);
 
       if (!user) return null;
+
       const incubationCanSpent = getIncubationCanSpent(
         new Date().getTime(),
         user,
       );
       user.incubationCanSpent = incubationCanSpent;
       return user;
+    } catch (error) {
+      console.log('error', error);
+      throw new BadRequestException('error');
+    }
+  }
+
+  @Get('test')
+  async test(@Req() req) {
+    try {
+      const telegramId = "740785730";
+      const user = await this.userService.findByTelegramId(telegramId);
+
+      if (!user) return null;
+
+      const incubationCanSpent = getIncubationCanSpent(
+        new Date().getTime(),
+        user,
+      );
+      return { ...user, incubationCanSpent };
     } catch (error) {
       console.log('error', error);
       throw new BadRequestException('error');
