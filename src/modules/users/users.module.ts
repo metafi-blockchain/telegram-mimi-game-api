@@ -5,8 +5,10 @@ import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ConfigService } from '@nestjs/config';
+import { TelegramModule } from '../telegram/telegram.module';
+
 @Module({
-  imports:[MongooseModule.forFeature([{name: User.name, schema: UserSchema}])],
+  imports:[MongooseModule.forFeature([{name: User.name, schema: UserSchema}]), TelegramModule],
   providers: [UsersService, ConfigService
     // UsersService,
     // {
@@ -15,7 +17,7 @@ import { ConfigService } from '@nestjs/config';
     // } //config use all app 
   ],
   controllers: [UsersController],
-  exports: [UsersService, UsersModule]
+  exports: [UsersService]
 })
 export class UsersModule {}
 // export class UsersModule {

@@ -4,7 +4,7 @@ import { UsersModule } from '../users/users.module';
 import { TelegramController } from './telegram.controller';
 
 @Module({
-  imports: [UsersModule],
+  imports: [ forwardRef(() => UsersModule) ],
   providers: [TelegramService],
   exports: [TelegramService],
   controllers: [TelegramController]

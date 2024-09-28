@@ -7,6 +7,7 @@ import {
 import { now } from 'moment';
 import { CLICK_TIME_REFRESH, MAX_INCUBATE } from 'src/constants/miniapp';
 import { POINT_CONFIG } from 'src/constants/telegram';
+import { User } from 'src/modules/users/user.entity';
 import { promisify } from 'util';
 const scrypt = promisify(_scrypt);
 
@@ -41,10 +42,10 @@ export function isHeroGenValid(gen: string): boolean {
   return true;
 }
 
-export function getIncubationCanSpent(now, userUpdate) {
+export function getIncubationCanSpent(now: number, userUpdate: User) : number{
   let incubationCanSpent = userUpdate.incubationCanSpent;
 
-  if (userUpdate.latestIncubationClick < now - CLICK_TIME_REFRESH) {
+  if (Number(userUpdate.latestIncubationClick) < Number(now) - Number(CLICK_TIME_REFRESH)) {
     incubationCanSpent = MAX_INCUBATE;
   }
 

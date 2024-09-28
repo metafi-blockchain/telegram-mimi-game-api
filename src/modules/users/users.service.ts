@@ -140,48 +140,6 @@ export class UsersService extends BaseService<User> {
     // }
   }
 
-  // async connectX(telegramId: string, connectXDto: ConnectXDto): Promise<boolean> {
-  //   const { xId, xName, xAccount, xFollowers, xCreatedAt, xAvatar, xVerified } = connectXDto;
-
-  //   const user = await this.userModel.findOne({ telegramId });
-  //   if (user.xId) {
-  //     throw new BadRequestException('You already connected X');
-  //   }
-
-  //   const xAgePoint = moment().diff(moment(Number(xCreatedAt)), 'day') * POINT_CONFIG.AGE_POINT;
-  //   const xVerifiedPoint = xVerified === 'true' ? POINT_CONFIG.XVERIFIED : 0;
-  //   const xFollowerPoint = xFollowers * POINT_CONFIG.FOLLOWER_POINT;
-  //   const xBalance = xAgePoint + xVerifiedPoint + xFollowerPoint;
-
-  //   await this.userModel.updateOne(
-  //     { telegramId },
-  //     {
-  //       xId,
-  //       xName,
-  //       xAccount,
-  //       xAvatar,
-  //       xFollowers,
-  //       xVerified: xVerified === 'true',
-  //       xAgePoint,
-  //       xVerifiedPoint,
-  //       xFollowerPoint,
-  //       balance: user.balance + xBalance,
-  //     }
-  //   );
-
-  //   if (user.referId) {
-  //     const referUser = await this.userModel.findOne({ telegramId: user.referId });
-  //     if (referUser) {
-  //       await this.userModel.updateOne(
-  //         { telegramId: referUser.telegramId },
-  //         {
-  //           balance: referUser.balance + POINT_CONFIG.REFER_RATE * xBalance
-  //         }
-  //       );
-  //     }
-  //   }
-  //   return true;
-  // }
 
   findByTelegramId(telegramId: string): Promise<User> {
     return this.userModel.findOne({ telegramId }).exec();

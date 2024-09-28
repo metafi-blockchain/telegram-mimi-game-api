@@ -11,7 +11,7 @@ export const POINT_CONFIG = {
   INCREASE_POINT_CLICK: 1,
 }
 
-export const TOKEN_TELEGRAM_DURATION = 3600
+export const TOKEN_TELEGRAM_DURATION = 36000;
 
 
 

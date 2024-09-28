@@ -41,35 +41,15 @@ export class User  implements BaseEntity {
     @Prop({ type: Number, default: 0 })
     telegramReferPoint: number;
   
-    @Prop({ type: String })
-    xId: string;
+
+
   
-    @Prop({ type: String })
-    xAccount: string;
-  
-    @Prop({ type: String })
-    xAvatar: string;
-  
-    @Prop({ type: String })
-    xName: string;
-  
-    @Prop({ type: Number })
-    xCreatedAt: number;
-  
-    @Prop({ type: Boolean })
-    xVerified: boolean;
-  
-    @Prop({ type: Number })
-    xFollowers: number;
   
     @Prop({ type: Number, default: 0 })
     balance: number;
   
-    @Prop({ type: Number, default: 0 })
-    xAgePoint: number;
-  
-    @Prop({ type: Number, default: 0 })
-    xVerifiedPoint: number;
+    @Prop({ type: Number, default: 1 })
+    level: number;
   
     // @Prop({ type: Number, default: 0 })
     // xFollowerPoint: number;

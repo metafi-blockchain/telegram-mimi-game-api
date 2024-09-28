@@ -49,7 +49,7 @@ export class UsersController {
   ) {}
 
   @Post('create-account')
-  async createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
+  createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
     const telegramId = req.telegram.user.id;
     return this.userService.createAccount(telegramId, createAccountDto);
   }
@@ -60,14 +60,23 @@ export class UsersController {
     return this.userService.increasePoint(telegramId);
   }
 
-  @Get('/me')
+  @Get('me')
   async whoAmI(@Req() req) {
-    const telegramId = req.telegram.user.id;
-    const user = await this.userService.findByTelegramId(telegramId);
-    const incubationCanSpent = getIncubationCanSpent(
-      new Date().getTime(),
-      user,
-    );
-    return { ...user, incubationCanSpent };
+    try {
+      const telegramId = req.telegram.user.id;
+      const user = await this.userService.findByTelegramId(telegramId);
+      console.log('user', user);
+
+      if (!user) return null;
+      const incubationCanSpent = getIncubationCanSpent(
+        new Date().getTime(),
+        user,
+      );
+      user.incubationCanSpent = incubationCanSpent;
+      return user;
+    } catch (error) {
+      console.log('error', error);
+      throw new BadRequestException('error');
+    }
   }
 }
