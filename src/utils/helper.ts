@@ -42,12 +42,21 @@ export function isHeroGenValid(gen: string): boolean {
   return true;
 }
 
-export function getIncubationCanSpent(now: number, userUpdate: User) : number{
+export function getIncubationCanSpent(now: number, userUpdate: User): number {
   let incubationCanSpent = userUpdate.incubationCanSpent;
 
-  if (Number(userUpdate.latestIncubationClick) < Number(now) - Number(CLICK_TIME_REFRESH)) {
+  if (
+    Number(userUpdate.latestIncubationClick) <
+    Number(now) - Number(CLICK_TIME_REFRESH)
+  ) {
     incubationCanSpent = MAX_INCUBATE;
   }
+  let added = Math.floor(
+    (now - userUpdate.latestIncubationClick) / Number(CLICK_TIME_REFRESH),
+  );
+  incubationCanSpent = incubationCanSpent += added;
+
+  if (incubationCanSpent > MAX_INCUBATE) incubationCanSpent = MAX_INCUBATE;
 
   return incubationCanSpent;
 }
