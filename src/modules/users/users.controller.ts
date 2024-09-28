@@ -36,8 +36,8 @@ export class UsersController {
   @Post('create-account')
   createAccount(@Req() req, @Body() createAccountDto: CreateAccountDto) {
     const telegramId = req.telegram.user.id;
-    const initData = req.locals.initData;
-    console.log('initData', initData);
+    // const initData = req.locals.initData;
+    // console.log('initData', initData);
     return this.userService.createAccount(telegramId, createAccountDto);
   }
 
@@ -50,8 +50,8 @@ export class UsersController {
   @Get('me')
   async whoAmI(@Req() req) {
     try {
-      const initData = req.locals.initData;
-      console.log('initData', initData);
+      // const initData = req.locals.initData;
+      // console.log('initData', initData);
       const telegramId = req.telegram.user.id;
       const user = await this.userService.findByTelegramId(telegramId);
       console.log('user', user);
