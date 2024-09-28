@@ -56,16 +56,8 @@ export class UsersController {
       const user = await this.userService.findByTelegramId(telegramId);
       console.log('user', user);
 
-      if (!user) {
-        //create user
-        const newUser = await this.userService.createAccount(telegramId, {
-          name: req.telegram.user.first_name,
-          referId: req.query.referId,
-          isPremium: false,
-          username: req.telegram.user.username
-        })
-        return newUser
-      }
+      if (!user) return null;
+       
 
       const incubationCanSpent = getIncubationCanSpent(
         new Date().getTime(),
