@@ -83,7 +83,8 @@ export class UsersController {
         new Date().getTime(),
         user,
       );
-      return { ...user, incubationCanSpent };
+      user.incubationCanSpent = incubationCanSpent;
+     return user
     } catch (error) {
       console.log('error', error);
       throw new BadRequestException('error');
